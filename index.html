@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Axenova Digital | Modern Web Development Agency</title>
+    <meta name="description" content="We build modern, high-performance websites that grow your business. From portfolios to e-commerce — affordable, fast, and beautifully designed." />
+    <meta name="author" content="Axenova Digital" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <meta property="og:title" content="Axenova Digital | Modern Web Development Agency" />
+    <meta property="og:description" content="We build modern websites that grow your business. Fast delivery, affordable pricing, premium design." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/logo.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="/logo.png" />
+  </head>
+
+  <body>
+    <script>
+      // Apply theme before first paint to prevent flash
+      (function() {
+        var theme = localStorage.getItem('axenova_theme');
+        if (!theme) {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        if (theme === 'dark') document.documentElement.classList.add('dark');
+      })();
+    </script>
+    <div id="root"></div>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
