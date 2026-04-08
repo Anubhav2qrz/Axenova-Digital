@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useToast } from "@/hooks/use-toast";
-
-const WHATSAPP_NUMBER = "+917001919941";
+import { CONTACT_INFO, getWhatsAppLink } from "@/config/contact";
 
 const ContactSection = () => {
   const ref = useScrollAnimation();
@@ -73,7 +72,7 @@ const ContactSection = () => {
               <p className="text-sm text-muted-foreground mb-3">Quick chat for instant quotes</p>
               <Button variant="hero-outline" size="sm" asChild>
                 <a
-                  href={`https://wa.me/${+917001919941}?text=${encodeURIComponent("Hi, I want a website")}`}
+                  href={getWhatsAppLink()}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -87,7 +86,7 @@ const ContactSection = () => {
                 <Mail className="text-primary" size={20} />
                 <span className="font-semibold">Email</span>
               </div>
-              <p className="text-sm text-muted-foreground">hello@axenovadigital.com</p>
+              <p className="text-sm text-muted-foreground">{CONTACT_INFO.email}</p>
             </div>
           </div>
         </div>
