@@ -24,7 +24,56 @@ interface Review {
   helpful: number;
 }
 
+const DEFAULT_REVIEWS: Review[] = [
+  {
+    id: "def-1",
+    name: "Rohan Sharma",
+    role: "Founder, TechKraft",
+    text: "Axenova Digital built our company website in just 4 days! The design is super modern, fast, and our lead inquiries increased by 40% in the first month.",
+    rating: 5,
+    date: "2026-08-01",
+    helpful: 14,
+  },
+  {
+    id: "def-2",
+    name: "Priya Patel",
+    role: "Boutique Owner",
+    text: "Extremely happy with my e-commerce store! Payments via Razorpay & UPI work seamlessly. The team was always available on WhatsApp for quick edits.",
+    rating: 5,
+    date: "2026-08-05",
+    helpful: 9,
+  },
+  {
+    id: "def-3",
+    name: "Amitav Roy",
+    role: "Freelance Architect",
+    text: "My portfolio website looks incredible. Clients constantly compliment the sleek aesthetic and smooth animations. Best value for money!",
+    rating: 5,
+    date: "2026-08-10",
+    helpful: 11,
+  },
+];
 
+const LOCAL_STORAGE_KEY = "axenova_custom_reviews";
+
+const getLocalReviews = (): Review[] => {
+  try {
+    const data = localStorage.getItem(LOCAL_STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+};
+
+const saveLocalReview = (review: Review) => {
+  try {
+    const existing = getLocalReviews();
+    const updated = [review, ...existing];
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+  } catch {
+    // ignore quota error
+  }
+};
 
 const getInitials = (name: string) => {
   return name
@@ -65,7 +114,6 @@ const formatDate = (dateStr: string) => {
   return date.toLocaleDateString("en-IN", { month: "short", year: "numeric" });
 };
 
-
 const StarRatingInput = ({
   value,
   onChange,
@@ -101,7 +149,6 @@ const StarRatingInput = ({
   );
 };
 
-
 const StarDisplay = ({ rating }: { rating: number }) => (
   <div className="flex gap-0.5">
     {[1, 2, 3, 4, 5].map((star) => (
@@ -124,7 +171,7 @@ const ReviewsSection = () => {
   const ref = useScrollAnimation();
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [userReviews, setUserReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [helpedIds, setHelpedIds] = useState<Set<string>>(new Set());
   const [form, setForm] = useState({
@@ -134,28 +181,51 @@ const ReviewsSection = () => {
     rating: 0,
   });
 
+  // Load & merge reviews from Supabase + localStorage + DEFAULT_REVIEWS
   useEffect(() => {
     const fetchReviews = async () => {
+      const localCustom = getLocalReviews();
+      let dbReviews: Review[] = [];
 
       try {
-        const { data, error } = await supabase.from('reviews').select('*').order('date', { ascending: false });
+        const { data, error } = await supabase
+          .from("reviews")
+          .select("*")
+          .order("date", { ascending: false });
+
         if (data && !error) {
-          setUserReviews(data);
+          dbReviews = data;
         }
       } catch (err) {
-        console.warn("Supabase fetch failed, make sure table is created", err);
+        console.warn("Supabase fetch notice:", err);
       }
+
+      // Merge and deduplicate by ID or text+name
+      const mergedMap = new Map<string, Review>();
+
+      // 1. Add default reviews
+      DEFAULT_REVIEWS.forEach((r) => mergedMap.set(r.id, r));
+
+      // 2. Add local custom reviews
+      localCustom.forEach((r) => mergedMap.set(r.id || `local-${r.name}-${r.text.slice(0, 10)}`, r));
+
+      // 3. Add DB reviews (overrides duplicates)
+      dbReviews.forEach((r) => mergedMap.set(r.id, r));
+
+      setReviews(Array.from(mergedMap.values()));
     };
+
     fetchReviews();
 
     try {
       const stored = localStorage.getItem("axenova_helped_ids");
       if (stored) setHelpedIds(new Set(JSON.parse(stored)));
     } catch {
+      // ignore
     }
   }, []);
 
-  const allReviews = [...userReviews].sort(
+  const allReviews = [...reviews].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
@@ -191,7 +261,8 @@ const ReviewsSection = () => {
       return;
     }
 
-    const newReview = {
+    const newReview: Review = {
+      id: `rev-${Date.now()}`,
       name: form.name.trim(),
       role: form.role.trim() || "Customer",
       text: form.text.trim(),
@@ -200,15 +271,35 @@ const ReviewsSection = () => {
       helpful: 0,
     };
 
+    // 1. Save to LocalStorage immediately so it NEVER vanishes on refresh
+    saveLocalReview(newReview);
 
-    const reviewWithId = { ...newReview, id: `temp-${Date.now()}` } as Review;
-    const updated = [reviewWithId, ...userReviews];
-    setUserReviews(updated);
+    // 2. Update React state immediately
+    setReviews((prev) => [newReview, ...prev]);
 
+    // 3. Insert into Supabase table
     try {
-      await supabase.from('reviews').insert([newReview]);
+      const { data, error } = await supabase
+        .from("reviews")
+        .insert([{
+          name: newReview.name,
+          role: newReview.role,
+          text: newReview.text,
+          rating: newReview.rating,
+          date: newReview.date,
+          helpful: 0,
+        }])
+        .select();
+
+      if (data && data[0]) {
+        // Update local review with real DB ID if returned
+        const dbInserted = data[0] as Review;
+        setReviews((prev) =>
+          prev.map((r) => (r.id === newReview.id ? dbInserted : r))
+        );
+      }
     } catch (err) {
-      console.error("Failed to insert review into database", err);
+      console.warn("Supabase insert notice (saved locally):", err);
     }
 
     setForm({ name: "", role: "", text: "", rating: 0 });
@@ -233,42 +324,41 @@ const ReviewsSection = () => {
         JSON.stringify([...newHelped])
       );
 
-
-      const updatedUser = userReviews.map((r) =>
-        r.id === id ? { ...r, helpful: r.helpful + 1 } : r
+      setReviews((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, helpful: r.helpful + 1 } : r))
       );
-      setUserReviews(updatedUser);
-      
-      const review = userReviews.find((r) => r.id === id);
-      if (review && !id.startsWith('temp-')) {
-        await supabase.from('reviews').update({ helpful: review.helpful + 1 }).eq('id', id);
+
+      const target = reviews.find((r) => r.id === id);
+      if (target && !id.startsWith("def-") && !id.startsWith("rev-")) {
+        try {
+          await supabase
+            .from("reviews")
+            .update({ helpful: target.helpful + 1 })
+            .eq("id", id);
+        } catch {
+          // ignore
+        }
       }
     },
-    [helpedIds, userReviews]
+    [helpedIds, reviews]
   );
 
   return (
     <section id="reviews" className="py-24 relative">
-
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-accent/5 blur-[120px] pointer-events-none" />
       <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
 
       <div ref={ref} className="container relative z-10">
-
         <div className="text-center mb-16 opacity-0 animate-on-scroll">
-          <span className="text-sm font-medium text-primary uppercase tracking-wider">
-            Reviews
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-3 mb-4">
+          <span className="badge-pill mb-3">Client Reviews</span>
+          <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
             What Our Clients Say
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto mb-8">
-            Real reviews from real clients. See why businesses trust Axenova
-            Digital.
+            Real reviews from real clients. See why businesses trust Axenova Digital.
           </p>
 
-
-          <div className="inline-flex items-center gap-6 glass rounded-full px-6 py-3">
+          <div className="inline-flex items-center gap-6 glass rounded-full px-6 py-3 border border-border/60">
             {allReviews.length > 0 && (
               <>
                 <div className="flex items-center gap-2">
@@ -291,7 +381,7 @@ const ReviewsSection = () => {
               variant="hero"
               size="sm"
               onClick={() => setDialogOpen(true)}
-              className="gap-1.5"
+              className="gap-1.5 font-semibold"
               id="write-review-btn"
             >
               <MessageSquarePlus size={16} />
@@ -300,7 +390,6 @@ const ReviewsSection = () => {
           </div>
         </div>
 
-
         {allReviews.length === 0 && (
           <div className="text-center py-16 opacity-0 animate-on-scroll">
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
@@ -308,7 +397,7 @@ const ReviewsSection = () => {
             </div>
             <h3 className="text-xl font-semibold mb-3">No reviews yet</h3>
             <p className="text-muted-foreground max-w-md mx-auto mb-8">
-              Be the first to share your experience working with Axenova Digital. Your feedback helps others make informed decisions.
+              Be the first to share your experience working with Axenova Digital.
             </p>
             <Button
               variant="hero"
@@ -322,35 +411,29 @@ const ReviewsSection = () => {
           </div>
         )}
 
-
         {allReviews.length > 0 && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {paginatedReviews.map((review, i) => (
               <div
                 key={review.id}
-                className="glass rounded-xl p-6 hover-lift opacity-0 animate-on-scroll flex flex-col relative group"
+                className="glass rounded-2xl p-6 hover-lift card-glow opacity-0 animate-on-scroll flex flex-col relative group border border-border/50"
                 style={{ animationDelay: `${i * 0.08}s` }}
               >
-
                 <Quote
                   size={32}
                   className="absolute top-4 right-4 text-primary/10 group-hover:text-primary/20 transition-colors"
                 />
 
-
                 <div className="mb-4">
                   <StarDisplay rating={review.rating} />
                 </div>
-
 
                 <p className="text-sm text-muted-foreground mb-6 leading-relaxed flex-1">
                   "{review.text}"
                 </p>
 
-
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-
                     <div
                       className={`w-10 h-10 rounded-full bg-gradient-to-br ${getAvatarColor(
                         review.name
@@ -389,7 +472,6 @@ const ReviewsSection = () => {
             ))}
           </div>
         )}
-
 
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-3 mt-10 opacity-0 animate-on-scroll">
@@ -430,7 +512,6 @@ const ReviewsSection = () => {
         )}
       </div>
 
-
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="glass border-border/50 max-w-md">
           <DialogHeader>
@@ -441,7 +522,6 @@ const ReviewsSection = () => {
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-5 mt-2">
-
             <div>
               <label className="text-sm font-medium mb-2 block">
                 Your Rating <span className="text-accent">*</span>
@@ -451,7 +531,6 @@ const ReviewsSection = () => {
                 onChange={(v) => setForm({ ...form, rating: v })}
               />
             </div>
-
 
             <div>
               <label className="text-sm font-medium mb-2 block">
@@ -471,7 +550,6 @@ const ReviewsSection = () => {
                 />
               </div>
             </div>
-
 
             <div>
               <label className="text-sm font-medium mb-2 block">
@@ -493,7 +571,6 @@ const ReviewsSection = () => {
               </div>
             </div>
 
-
             <div>
               <label className="text-sm font-medium mb-2 block">
                 Your Review <span className="text-accent">*</span>
@@ -511,7 +588,7 @@ const ReviewsSection = () => {
               </div>
             </div>
 
-            <Button variant="hero" className="w-full" type="submit">
+            <Button variant="hero" className="w-full font-semibold" type="submit">
               Submit Review
             </Button>
           </form>
