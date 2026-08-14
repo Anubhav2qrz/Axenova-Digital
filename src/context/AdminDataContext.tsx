@@ -155,6 +155,7 @@ interface AdminDataContextType {
   updatePlan: (id: string, p: Partial<PlanItem>) => void;
   deleteReview: (id: string) => void;
   addReview: (r: Omit<ReviewItem, "id" | "date" | "helpful">) => void;
+  syncReviewsToSupabase: () => Promise<number>;
   updateOrderStatus: (id: string, status: string) => Promise<void>;
   refreshOrders: () => Promise<void>;
 }
@@ -301,7 +302,35 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         date: newRev.date,
         helpful: 0,
       }]);
-    } catch {}
+    } catch (err) {
+      console.warn("Supabase insert notice:", err);
+    }
+  };
+
+  const syncReviewsToSupabase = async (): Promise<number> => {
+    let synced = 0;
+    try {
+      const saved = localStorage.getItem("axenova_custom_reviews");
+      if (saved) {
+        const localList: ReviewItem[] = JSON.parse(saved);
+        for (const rev of localList) {
+          const { data, error } = await supabase.from("reviews").insert([{
+            name: rev.name,
+            role: rev.role,
+            text: rev.text,
+            rating: rev.rating,
+            date: rev.date,
+            helpful: rev.helpful || 0,
+          }]).select();
+
+          if (data && !error) synced++;
+        }
+      }
+    } catch (e) {
+      console.error("Sync error:", e);
+    }
+    await fetchReviews();
+    return synced;
   };
 
   const updateOrderStatus = async (id: string, status: string) => {
@@ -325,6 +354,7 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         updatePlan,
         deleteReview,
         addReview,
+        syncReviewsToSupabase,
         updateOrderStatus,
         refreshOrders,
       }}

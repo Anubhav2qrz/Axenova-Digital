@@ -44,6 +44,7 @@ const AdminPage = () => {
     updatePlan,
     deleteReview,
     addReview,
+    syncReviewsToSupabase,
     updateOrderStatus,
     refreshOrders,
   } = useAdminData();
@@ -433,6 +434,25 @@ const AdminPage = () => {
         {/* ============================================================ */}
         {activeTab === "reviews" && (
           <div className="space-y-8 animate-fade-in">
+            {/* Sync Bar */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 glass rounded-2xl p-4 border border-border/50">
+              <div>
+                <p className="font-bold text-sm">Sync Local Reviews to Supabase</p>
+                <p className="text-xs text-muted-foreground">Push reviews added on this device to Supabase so they show on all phones & devices.</p>
+              </div>
+              <Button
+                variant="hero-outline"
+                size="sm"
+                onClick={async () => {
+                  const count = await syncReviewsToSupabase();
+                  toast({ title: `Synced ${count} reviews to Supabase cloud! ☁️` });
+                }}
+                className="gap-2 text-xs font-semibold shrink-0"
+              >
+                <RefreshCw size={14} /> Push Reviews to Supabase
+              </Button>
+            </div>
+
             {/* Add Manual Review Form */}
             <div className="glass rounded-2xl p-6 border border-border/50">
               <h3 className="text-lg font-bold mb-4 flex items-center gap-2" style={{ fontFamily: "'Outfit', sans-serif" }}>
