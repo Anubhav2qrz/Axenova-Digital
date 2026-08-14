@@ -1,5 +1,7 @@
 const GEMINI_API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+const GROQ_API_URL =
+  "https://api.groq.com/openai/v1/chat/completions";
 
 export const SYSTEM_PROMPT = `You are the AI Website Advisor for Axenova Digital, a professional web development agency based in India. Your job is to have a friendly conversation with potential clients and help them figure out exactly what kind of website they need, then recommend the perfect plan.
 
@@ -40,13 +42,8 @@ export interface GeminiMessage {
   text: string;
 }
 
-export async function chatWithAdvisor(history: GeminiMessage[]): Promise<string> {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-
-  if (!apiKey) {
-    throw new Error("NO_API_KEY");
-  }
-
+// ── Call Gemini API ──
+async function callGemini(history: GeminiMessage[], apiKey: string): Promise<string> {
   const contents = history.map((m) => ({
     role: m.role === "user" ? "user" : "model",
     parts: [{ text: m.text }],
@@ -73,12 +70,87 @@ export async function chatWithAdvisor(history: GeminiMessage[]): Promise<string>
   });
 
   if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Gemini API error: ${res.status} — ${err}`);
+    const errText = await res.text();
+    throw new Error(`Gemini status ${res.status}: ${errText}`);
   }
 
   const data = await res.json();
-  return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "Sorry, I couldn't generate a response. Please try again.";
+  const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!reply) throw new Error("Empty Gemini response");
+  return reply;
+}
+
+// ── Fallback Call Groq API ──
+async function callGroq(history: GeminiMessage[], apiKey: string): Promise<string> {
+  const messages = [
+    { role: "system", content: SYSTEM_PROMPT },
+    ...history.map((m) => ({
+      role: m.role === "user" ? "user" : "assistant",
+      content: m.text,
+    })),
+  ];
+
+  const body = {
+    model: "llama-3.3-70b-versatile",
+    messages,
+    temperature: 0.7,
+    max_tokens: 600,
+  };
+
+  const res = await fetch(GROQ_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Groq status ${res.status}: ${errText}`);
+  }
+
+  const data = await res.json();
+  const reply = data?.choices?.[0]?.message?.content;
+  if (!reply) throw new Error("Empty Groq response");
+  return reply;
+}
+
+// ── Main Chat function with automatic Groq Fallback ──
+export async function chatWithAdvisor(history: GeminiMessage[]): Promise<string> {
+  const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const groqKey = import.meta.env.VITE_GROQ_API_KEY;
+
+  if (!geminiKey && !groqKey) {
+    throw new Error("NO_API_KEY");
+  }
+
+  // 1. Try Gemini first if key exists
+  if (geminiKey) {
+    try {
+      return await callGemini(history, geminiKey);
+    } catch (geminiError) {
+      console.warn("Gemini API failed, attempting Groq fallback...", geminiError);
+      // If Groq key exists, try Groq fallback
+      if (groqKey) {
+        try {
+          return await callGroq(history, groqKey);
+        } catch (groqError) {
+          console.error("Groq fallback also failed:", groqError);
+          throw new Error("BOTH_APIS_FAILED");
+        }
+      }
+      throw geminiError;
+    }
+  }
+
+  // 2. If no Gemini key, but Groq key exists, call Groq directly
+  if (groqKey) {
+    return await callGroq(history, groqKey);
+  }
+
+  throw new Error("NO_API_KEY");
 }
 
 export interface Recommendation {

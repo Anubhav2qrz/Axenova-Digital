@@ -141,7 +141,9 @@ const AIAdvisorWidget = () => {
       }
     } catch (err: any) {
       if (err.message === "NO_API_KEY") {
-        setError("🔑 Gemini API key not configured. Add VITE_GEMINI_API_KEY to your .env file to enable the AI Advisor.");
+        setError("🔑 AI Advisor API key missing. Please add VITE_GEMINI_API_KEY or VITE_GROQ_API_KEY to your .env file.");
+      } else if (err.message === "BOTH_APIS_FAILED") {
+        setError("⚠️ Both Gemini & Groq APIs are currently unavailable. Please try again in a few moments.");
       } else {
         setError("Something went wrong. Please try again in a moment.");
       }
