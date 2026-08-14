@@ -4,7 +4,7 @@ export const CONTACT_INFO = {
     number: "917001919941",
     message: "Hi, I want a website",
   },
-  email: "hello@axenovadigital.com",
+  email: "axenovadigital@gmail.com",
 };
 
 export const getWhatsAppLink = (message?: string) => {
