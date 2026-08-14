@@ -1,4 +1,5 @@
--- Execute this entire file in your Supabase SQL Editor
+-- Execute this entire file in your Supabase SQL Editor once:
+-- (Go to https://supabase.com -> Select Project -> SQL Editor -> Paste & Run)
 
 -- 1. Create Reviews Table
 CREATE TABLE IF NOT EXISTS public.reviews (
@@ -12,22 +13,27 @@ CREATE TABLE IF NOT EXISTS public.reviews (
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Turn on Row Level Security for reviews
+-- Enable Row Level Security for reviews
 ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
 
--- Allow public read access (so anyone can see reviews)
+-- Allow public read access
 CREATE POLICY "Public reviews are viewable by everyone."
   ON public.reviews FOR SELECT
   USING (true);
 
--- Allow public insert access (so anyone can submit a review)
+-- Allow public insert access
 CREATE POLICY "Anyone can submit a review."
   ON public.reviews FOR INSERT
   WITH CHECK (true);
 
--- Allow public update access (for the helpful counter)
+-- Allow update access (for helpful counts)
 CREATE POLICY "Anyone can update helpful count."
   ON public.reviews FOR UPDATE
+  USING (true);
+
+-- Allow delete access (for Admin deletion)
+CREATE POLICY "Anyone can delete reviews."
+  ON public.reviews FOR DELETE
   USING (true);
 
 
@@ -46,20 +52,20 @@ CREATE TABLE IF NOT EXISTS public.orders (
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Turn on Row Level Security for orders
+-- Enable Row Level Security for orders
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 
--- Allow public insert access (so the form can submit the lead)
+-- Allow public insert access (for client order lead creation)
 CREATE POLICY "Anyone can create an order lead."
   ON public.orders FOR INSERT
   WITH CHECK (true);
 
--- Allow update access (so the Razorpay handler can update status to 'paid')
-CREATE POLICY "Anyone can update order status on success."
-  ON public.orders FOR UPDATE
+-- Allow select access (so Admin panel can view incoming orders)
+CREATE POLICY "Orders are viewable for Admin."
+  ON public.orders FOR SELECT
   USING (true);
 
--- Restrict SELECT (Only you via the dashboard should see orders)
-CREATE POLICY "Orders are private."
-  ON public.orders FOR SELECT
-  USING (false);
+-- Allow update access (for status updates)
+CREATE POLICY "Anyone can update order status."
+  ON public.orders FOR UPDATE
+  USING (true);
