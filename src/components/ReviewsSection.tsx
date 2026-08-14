@@ -349,16 +349,16 @@ const ReviewsSection = () => {
       <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
 
       <div ref={ref} className="container relative z-10">
-        <div className="text-center mb-16 opacity-0 animate-on-scroll">
+        <div className="text-center mb-12 sm:mb-16 animate-on-scroll">
           <span className="badge-pill mb-3">Client Reviews</span>
           <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
             What Our Clients Say
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto mb-8">
+          <p className="text-muted-foreground max-w-xl mx-auto mb-8 text-sm sm:text-base">
             Real reviews from real clients. See why businesses trust Axenova Digital.
           </p>
 
-          <div className="inline-flex items-center gap-6 glass rounded-full px-6 py-3 border border-border/60">
+          <div className="flex flex-wrap sm:inline-flex items-center justify-center gap-3 sm:gap-6 glass rounded-2xl sm:rounded-full p-4 sm:px-6 sm:py-3 border border-border/60 max-w-xs sm:max-w-none mx-auto">
             {allReviews.length > 0 && (
               <>
                 <div className="flex items-center gap-2">
@@ -367,21 +367,21 @@ const ReviewsSection = () => {
                     {averageRating.toFixed(1)}
                   </span>
                 </div>
-                <div className="w-px h-5 bg-border" />
+                <div className="hidden sm:block w-px h-5 bg-border" />
                 <span className="text-sm text-muted-foreground">
                   <span className="font-semibold text-foreground">
                     {allReviews.length}
                   </span>{" "}
                   {allReviews.length === 1 ? "review" : "reviews"}
                 </span>
-                <div className="w-px h-5 bg-border" />
+                <div className="hidden sm:block w-px h-5 bg-border" />
               </>
             )}
             <Button
               variant="hero"
               size="sm"
               onClick={() => setDialogOpen(true)}
-              className="gap-1.5 font-semibold"
+              className="gap-1.5 font-semibold w-full sm:w-auto"
               id="write-review-btn"
             >
               <MessageSquarePlus size={16} />
@@ -391,7 +391,7 @@ const ReviewsSection = () => {
         </div>
 
         {allReviews.length === 0 && (
-          <div className="text-center py-16 opacity-0 animate-on-scroll">
+          <div className="text-center py-16 animate-on-scroll">
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
               <MessageCircle size={36} className="text-primary" />
             </div>
@@ -412,11 +412,11 @@ const ReviewsSection = () => {
         )}
 
         {allReviews.length > 0 && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
             {paginatedReviews.map((review, i) => (
               <div
                 key={review.id}
-                className="glass rounded-2xl p-6 hover-lift card-glow opacity-0 animate-on-scroll flex flex-col relative group border border-border/50"
+                className="glass rounded-2xl p-6 hover-lift card-glow animate-on-scroll flex flex-col relative group border border-border/50"
                 style={{ animationDelay: `${i * 0.08}s` }}
               >
                 <Quote
