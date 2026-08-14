@@ -6,7 +6,8 @@ const WhatsAppButton = () => {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 md:bottom-8 md:right-8 flex items-center gap-3">
+    // Only show floating button on desktop (md and up) since mobile has the sticky bottom bar with Chat
+    <div className="hidden md:flex fixed bottom-8 right-8 z-50 items-center gap-3">
       {/* Tooltip */}
       <div
         className={`glass border border-border/60 rounded-xl px-4 py-2.5 text-sm font-semibold text-foreground shadow-xl transition-all duration-300 whitespace-nowrap ${

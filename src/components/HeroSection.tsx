@@ -80,21 +80,20 @@ const HeroSection = () => {
   const counts = [count1, count2, count3];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16 md:py-20">
 
       {/* Animated dot-grid background */}
-      <div className="absolute inset-0 dot-grid opacity-50 pointer-events-none" />
+      <div className="absolute inset-0 dot-grid opacity-40 md:opacity-50 pointer-events-none" />
       {/* Radial fade mask over the grid */}
       <div className="absolute inset-0 pointer-events-none" style={{
         background: "radial-gradient(ellipse 80% 60% at 50% 50%, transparent 30%, hsl(var(--background)) 85%)"
       }} />
 
       {/* Animated gradient orbs */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full bg-primary/10 blur-[130px] pointer-events-none animate-glow-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] rounded-full bg-accent/8 blur-[110px] pointer-events-none animate-float" style={{ animationDelay: "2s" }} />
-      <div className="absolute top-1/3 left-1/4 w-[300px] h-[300px] rounded-full bg-primary/5 blur-[90px] pointer-events-none animate-float" style={{ animationDelay: "4s" }} />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] sm:w-[700px] h-[400px] sm:h-[700px] rounded-full bg-primary/10 blur-[100px] sm:blur-[130px] pointer-events-none animate-glow-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-[300px] sm:w-[450px] h-[300px] sm:h-[450px] rounded-full bg-accent/8 blur-[90px] sm:blur-[110px] pointer-events-none animate-float" style={{ animationDelay: "2s" }} />
 
-      {/* Floating tech badges */}
+      {/* Floating tech badges (Desktop only) */}
       {techBadges.map((badge) => (
         <div
           key={badge.label}
@@ -106,19 +105,19 @@ const HeroSection = () => {
         </div>
       ))}
 
-      <div className="container relative z-10 text-center max-w-5xl">
+      <div className="container relative z-10 text-center max-w-5xl px-4">
         {/* Live badge */}
-        <div className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 text-sm text-muted-foreground mb-8 animate-fade-in">
-          <span className="relative flex h-2 w-2">
+        <div className="inline-flex items-center gap-2 glass rounded-full px-3.5 py-1.5 text-xs sm:text-sm text-muted-foreground mb-6 max-w-[95%] sm:max-w-none animate-fade-in border border-border/60">
+          <span className="relative flex h-2 w-2 shrink-0">
             <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-75 animate-ping" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
           </span>
-          Available for new projects · Web Development Agency
+          <span className="truncate">Available for new projects · Web Development Agency</span>
         </div>
 
         {/* Headline */}
         <h1
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight mb-4 animate-fade-in"
+          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.2] sm:leading-tight tracking-tight mb-3 sm:mb-4 animate-fade-in"
           style={{ animationDelay: "0.1s", fontFamily: "'Outfit', sans-serif" }}
         >
           We Build Modern{" "}
@@ -134,12 +133,12 @@ const HeroSection = () => {
             </span>
           </span>
         </h1>
-        <p className="text-sm font-medium text-muted-foreground uppercase tracking-[0.2em] mb-6 animate-fade-in" style={{ animationDelay: "0.15s" }}>
+        <p className="text-xs sm:text-sm font-semibold text-muted-foreground uppercase tracking-[0.15em] sm:tracking-[0.2em] mb-6 animate-fade-in" style={{ animationDelay: "0.15s" }}>
           That Grow Your Business
         </p>
 
         <p
-          className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in"
+          className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2 animate-fade-in"
           style={{ animationDelay: "0.2s" }}
         >
           From stunning portfolios to powerful e-commerce stores, we craft pixel-perfect,
@@ -148,39 +147,39 @@ const HeroSection = () => {
 
         {/* CTA Buttons */}
         <div
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in"
+          className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-xs sm:max-w-none mx-auto animate-fade-in"
           style={{ animationDelay: "0.3s" }}
         >
-          <Button variant="hero" size="lg" asChild className="group shadow-lg hover:shadow-xl hover:shadow-primary/25 transition-all duration-300">
+          <Button variant="hero" size="lg" asChild className="group shadow-lg hover:shadow-xl hover:shadow-primary/25 transition-all duration-300 w-full sm:w-auto font-semibold">
             <a href="#pricing">
               Get Your Website
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
             </a>
           </Button>
-          <Button variant="hero-outline" size="lg" asChild>
+          <Button variant="hero-outline" size="lg" asChild className="w-full sm:w-auto font-semibold">
             <a href="#portfolio">View Our Work</a>
           </Button>
         </div>
 
         {/* Trust badges */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mt-8 animate-fade-in" style={{ animationDelay: "0.35s" }}>
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-6 sm:mt-8 animate-fade-in" style={{ animationDelay: "0.35s" }}>
           {["⚡ 3–7 Day Delivery", "🔒 100% Code Ownership", "💳 Razorpay Secure Pay"].map((badge) => (
-            <span key={badge} className="badge-pill text-xs">{badge}</span>
+            <span key={badge} className="badge-pill text-[11px] sm:text-xs py-1 px-2.5">{badge}</span>
           ))}
         </div>
 
         {/* Stats */}
         <div
           ref={statsRef}
-          className="mt-16 grid grid-cols-3 gap-8 max-w-md mx-auto animate-fade-in"
+          className="mt-12 sm:mt-16 grid grid-cols-3 gap-3 sm:gap-8 max-w-md mx-auto animate-fade-in"
           style={{ animationDelay: "0.4s" }}
         >
           {stats.map((stat, i) => (
-            <div key={stat.label}>
-              <div className="text-2xl md:text-3xl font-bold gradient-text" style={{ fontFamily: "'Outfit', sans-serif" }}>
+            <div key={stat.label} className="p-2 sm:p-0">
+              <div className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 {statsVisible ? counts[i] : 0}{stat.suffix}
               </div>
-              <div className="text-xs text-muted-foreground mt-1">{stat.label}</div>
+              <div className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 leading-tight">{stat.label}</div>
             </div>
           ))}
         </div>

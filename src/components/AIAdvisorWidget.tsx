@@ -167,22 +167,22 @@ const AIAdvisorWidget = () => {
   return (
     <>
       {/* Floating trigger button */}
-      <div className="fixed bottom-24 left-4 z-50 md:bottom-10 md:left-8">
+      <div className="fixed bottom-[68px] left-3 z-50 md:bottom-8 md:left-8">
         <button
           onClick={() => setOpen(true)}
-          className={`relative flex items-center gap-2.5 glass border border-primary/30 rounded-full px-4 py-3 shadow-xl hover:shadow-primary/20 transition-all duration-300 hover:scale-105 group ${open ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+          className={`relative flex items-center gap-2 glass border border-primary/30 rounded-full px-3 py-2 md:px-4 md:py-3 shadow-xl hover:shadow-primary/20 transition-all duration-300 hover:scale-105 group ${open ? "opacity-0 pointer-events-none" : "opacity-100"}`}
           aria-label="Open AI Website Advisor"
         >
           {/* Pulse ring */}
           <span className="absolute inset-0 rounded-full border border-primary/40 animate-ripple" />
           <span className="absolute inset-0 rounded-full border border-primary/20 animate-ripple" style={{ animationDelay: "0.5s" }} />
 
-          <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent shadow-inner">
-            <Sparkles size={16} className="text-white" />
+          <span className="relative flex h-7 w-7 md:h-8 md:w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent shadow-inner">
+            <Sparkles size={15} className="text-white" />
           </span>
           <div className="text-left">
-            <p className="text-xs font-bold text-foreground">AI Advisor</p>
-            <p className="text-[10px] text-muted-foreground leading-none">Find your perfect plan</p>
+            <p className="text-xs font-bold text-foreground leading-tight">AI Advisor</p>
+            <p className="hidden md:block text-[10px] text-muted-foreground leading-none">Find your perfect plan</p>
           </div>
         </button>
       </div>
