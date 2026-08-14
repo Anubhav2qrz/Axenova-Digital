@@ -2,33 +2,31 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
-const ROTATING_WORDS = ["Business Website", "Online Store", "Portfolio Site", "Custom Web App", "SaaS Platform"];
+const ROTATING_WORDS = [
+  "Business Websites",
+  "Online Stores",
+  "Portfolio Sites",
+  "Custom Web Apps",
+  "SaaS Platforms",
+];
 
-const useTypewriter = (words: string[], speed = 80, pause = 1800) => {
-  const [text, setText] = useState("");
-  const [wordIndex, setWordIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
+const useRotatingWord = (words: string[], interval = 2800) => {
+  const [index, setIndex] = useState(0);
+  const [fadeState, setFadeState] = useState<"in" | "out">("in");
 
   useEffect(() => {
-    const current = words[wordIndex % words.length];
-    const timeout = setTimeout(() => {
-      if (!isDeleting) {
-        setText(current.slice(0, text.length + 1));
-        if (text.length + 1 === current.length) {
-          setTimeout(() => setIsDeleting(true), pause);
-        }
-      } else {
-        setText(current.slice(0, text.length - 1));
-        if (text.length - 1 === 0) {
-          setIsDeleting(false);
-          setWordIndex((i) => (i + 1) % words.length);
-        }
-      }
-    }, isDeleting ? speed / 2 : speed);
-    return () => clearTimeout(timeout);
-  }, [text, isDeleting, wordIndex, words, speed, pause]);
+    const timer = setInterval(() => {
+      setFadeState("out");
+      setTimeout(() => {
+        setIndex((prev) => (prev + 1) % words.length);
+        setFadeState("in");
+      }, 350);
+    }, interval);
 
-  return text;
+    return () => clearInterval(timer);
+  }, [words, interval]);
+
+  return { word: words[index], fadeState };
 };
 
 const useCounterAnimation = (end: number, duration = 1800, shouldStart = false) => {
@@ -63,7 +61,7 @@ const techBadges = [
 ];
 
 const HeroSection = () => {
-  const typewriterText = useTypewriter(ROTATING_WORDS);
+  const { word, fadeState } = useRotatingWord(ROTATING_WORDS);
   const [statsVisible, setStatsVisible] = useState(false);
   const statsRef = useRef<HTMLDivElement>(null);
 
@@ -124,11 +122,17 @@ const HeroSection = () => {
           style={{ animationDelay: "0.1s", fontFamily: "'Outfit', sans-serif" }}
         >
           We Build Modern{" "}
-          <span className="gradient-text-shine">{typewriterText}</span>
-          <span
-            className="inline-block w-[3px] h-[0.85em] bg-primary ml-1 align-middle"
-            style={{ animation: "typewriter-cursor 0.9s ease-in-out infinite" }}
-          />
+          <span className="inline-block relative">
+            <span
+              className={`inline-block gradient-text-shine transition-all duration-350 ease-out transform will-change-transform ${
+                fadeState === "in"
+                  ? "opacity-100 translate-y-0 scale-100"
+                  : "opacity-0 -translate-y-4 scale-95"
+              }`}
+            >
+              {word}
+            </span>
+          </span>
         </h1>
         <p className="text-sm font-medium text-muted-foreground uppercase tracking-[0.2em] mb-6 animate-fade-in" style={{ animationDelay: "0.15s" }}>
           That Grow Your Business
