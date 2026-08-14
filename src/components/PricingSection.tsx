@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check } from "lucide-react";
+import { Check, Zap, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import OrderDialog from "@/components/OrderDialog";
@@ -11,13 +11,16 @@ const plans = [
     amount: 999,
     description: "Perfect for personal or starter websites",
     popular: false,
+    delivery: "3–5 Days",
+    badge: null,
+    cardStyle: "border border-border/60",
     features: [
-      "1–3 Page Website",
-      "Mobile Responsive",
-      "Contact Form",
-      "Basic SEO Setup",
-      "1 Revision Round",
-      "Delivery in 3–5 Days",
+      { text: "1–3 Page Website", tip: "Landing page, About, Contact" },
+      { text: "Mobile Responsive", tip: "Looks great on all screen sizes" },
+      { text: "Contact Form", tip: "WhatsApp or email form integration" },
+      { text: "Basic SEO Setup", tip: "Meta tags, sitemap, robots.txt" },
+      { text: "1 Revision Round", tip: "One round of feedback & changes" },
+      { text: "Delivery in 3–5 Days", tip: null },
     ],
   },
   {
@@ -26,14 +29,17 @@ const plans = [
     amount: 2999,
     description: "Great for growing businesses",
     popular: true,
+    delivery: "5–7 Days",
+    badge: "Most Popular",
+    cardStyle: "border-2 border-primary/30 shadow-2xl shadow-primary/15 bg-primary/[0.03]",
     features: [
-      "5–8 Page Website",
-      "Custom Design",
-      "SEO Optimized",
-      "WhatsApp Integration",
-      "Social Media Links",
-      "3 Revision Rounds",
-      "Delivery in 5–10 Days",
+      { text: "5–8 Page Website", tip: "Full business site with all sections" },
+      { text: "Custom Design", tip: "Unique layout built around your brand" },
+      { text: "SEO Optimized", tip: "On-page SEO & PageSpeed 90+ score" },
+      { text: "WhatsApp Integration", tip: "Floating WhatsApp chat button" },
+      { text: "Social Media Links", tip: "All platforms linked & styled" },
+      { text: "3 Revision Rounds", tip: "Three rounds of feedback & changes" },
+      { text: "Delivery in 5–7 Days", tip: null },
     ],
   },
   {
@@ -42,17 +48,32 @@ const plans = [
     amount: 9999,
     description: "Full-scale custom web solutions",
     popular: false,
+    delivery: "10–14 Days",
+    badge: "Best Value",
+    cardStyle: "border border-border/60 bg-secondary/5",
     features: [
-      "Unlimited Pages",
-      "E-commerce / Web App",
-      "Admin Dashboard",
-      "Payment Integration",
-      "Advanced SEO & Analytics",
-      "Priority Support",
-      "Delivery in 10–20 Days",
+      { text: "Unlimited Pages", tip: "No page count restriction" },
+      { text: "E-commerce / Web App", tip: "Full online store or custom web app" },
+      { text: "Admin Dashboard", tip: "Manage content, orders & products" },
+      { text: "Payment Integration", tip: "UPI, Razorpay, cards & EMI support" },
+      { text: "Advanced SEO & Analytics", tip: "Google Analytics 4 + full SEO" },
+      { text: "Priority Support", tip: "Direct WhatsApp line with the dev team" },
+      { text: "Delivery in 10–14 Days", tip: null },
     ],
   },
 ];
+
+const FeatureRow = ({ text, tip }: { text: string; tip: string | null }) => (
+  <li className="flex items-start gap-3 text-sm group/feat">
+    <Check size={15} className="text-accent mt-0.5 shrink-0" />
+    <span className="text-muted-foreground">{text}</span>
+    {tip && (
+      <span className="hidden group-hover/feat:block absolute z-20 left-1/2 -translate-x-1/2 -translate-y-full -top-1 bg-popover text-popover-foreground text-[11px] px-2 py-1 rounded-md border border-border shadow-lg whitespace-nowrap pointer-events-none">
+        {tip}
+      </span>
+    )}
+  </li>
+);
 
 const PricingSection = () => {
   const ref = useScrollAnimation();
@@ -65,51 +86,62 @@ const PricingSection = () => {
   };
 
   return (
-    <section id="pricing" className="py-24 relative">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
+    <section id="pricing" className="py-24 relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] rounded-full bg-primary/5 blur-[140px] pointer-events-none" />
 
       <div ref={ref} className="container relative z-10">
         <div className="text-center mb-16 opacity-0 animate-on-scroll">
-          <span className="text-sm font-medium text-primary uppercase tracking-wider">Pricing</span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-3 mb-4">Simple, Transparent Pricing</h2>
+          <span className="badge-pill mb-3">Pricing</span>
+          <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
+            Simple, Transparent Pricing
+          </h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            Choose a plan that fits your needs. No hidden fees.
+            Choose a plan that fits your needs. No hidden fees, no monthly subscriptions.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
           {plans.map((plan, i) => (
             <div
               key={plan.name}
-              className={`relative glass rounded-xl p-6 hover-lift opacity-0 animate-on-scroll flex flex-col ${
-                plan.popular ? "gradient-border ring-1 ring-primary/20" : ""
-              }`}
+              className={`relative glass rounded-2xl p-7 hover-lift opacity-0 animate-on-scroll flex flex-col ${plan.cardStyle}`}
               style={{ animationDelay: `${i * 0.1}s` }}
             >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-accent text-primary-foreground text-xs font-semibold px-4 py-1 rounded-full">
-                  Most Popular
+              {/* Most Popular badge with shimmer */}
+              {plan.badge && (
+                <div className={`absolute -top-3.5 left-1/2 -translate-x-1/2 overflow-hidden rounded-full px-4 py-1 text-xs font-bold text-white ${plan.popular ? "bg-gradient-to-r from-primary to-accent" : "bg-gradient-to-r from-violet-600 to-purple-500"}`}>
+                  <span className="relative z-10">{plan.badge}</span>
+                  <div className="absolute inset-0 shimmer opacity-40" />
                 </div>
               )}
 
+              {/* Plan info */}
               <div className="mb-6">
-                <h3 className="text-xl font-semibold mb-1">{plan.name}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{plan.description}</p>
-                <div className="text-2xl font-bold gradient-text">{plan.price}</div>
+                <h3 className="text-xl font-bold mb-1" style={{ fontFamily: "'Outfit', sans-serif" }}>{plan.name}</h3>
+                <p className="text-sm text-muted-foreground mb-5">{plan.description}</p>
+                <div className="flex items-end gap-2">
+                  <span className="text-4xl font-extrabold gradient-text" style={{ fontFamily: "'Outfit', sans-serif" }}>{plan.price}</span>
+                  <span className="text-sm text-muted-foreground mb-1.5">one-time</span>
+                </div>
               </div>
 
+              {/* Delivery badge */}
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-accent bg-accent/10 w-fit px-3 py-1.5 rounded-full mb-6 border border-accent/20">
+                <Zap size={12} /> {plan.delivery}
+              </div>
+
+              {/* Features */}
               <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3 text-sm">
-                    <Check size={16} className="text-accent mt-0.5 shrink-0" />
-                    <span className="text-muted-foreground">{feature}</span>
-                  </li>
+                  <div key={feature.text} className="relative">
+                    <FeatureRow text={feature.text} tip={feature.tip} />
+                  </div>
                 ))}
               </ul>
 
               <Button
                 variant={plan.popular ? "hero" : "hero-outline"}
-                className="w-full"
+                className={`w-full font-semibold ${plan.popular ? "shadow-lg shadow-primary/25" : ""}`}
                 onClick={() => handleGetStarted(plan)}
               >
                 Get Started
@@ -117,6 +149,12 @@ const PricingSection = () => {
             </div>
           ))}
         </div>
+
+        {/* Trust note */}
+        <p className="text-center text-xs text-muted-foreground mt-8 opacity-0 animate-on-scroll flex items-center justify-center gap-1.5">
+          <Clock size={13} className="text-accent" />
+          All plans include free consultation, full source code handover & 30 days post-launch support.
+        </p>
       </div>
 
       <OrderDialog open={dialogOpen} onOpenChange={setDialogOpen} plan={selectedPlan} />
