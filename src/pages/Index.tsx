@@ -14,6 +14,7 @@ import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import MobileStickyBar from "@/components/MobileStickyBar";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
+import AIAdvisorWidget from "@/components/AIAdvisorWidget";
 
 const Index = () => (
   <div className="min-h-screen pb-16 md:pb-0">
@@ -33,6 +34,7 @@ const Index = () => (
     <Footer />
     <WhatsAppButton />
     <MobileStickyBar />
+    <AIAdvisorWidget />
   </div>
 );
 
