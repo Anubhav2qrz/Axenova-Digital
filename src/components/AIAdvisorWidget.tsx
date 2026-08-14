@@ -213,7 +213,7 @@ const AIAdvisorWidget = () => {
               </p>
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                <span className="text-[10px] text-muted-foreground">Powered by Gemini · Always free</span>
+                <span className="text-[10px] text-muted-foreground">Online · Instant Recommendations</span>
               </div>
             </div>
             <div className="flex items-center gap-1">
