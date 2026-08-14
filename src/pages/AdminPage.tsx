@@ -238,10 +238,23 @@ const AdminPage = () => {
               size="sm"
               onClick={async () => {
                 const res = await syncAllToSupabase();
-                toast({
-                  title: "Synced to Cloud! ☁️",
-                  description: `Synced ${res.projects} projects, ${res.plans} plans, ${res.reviews} reviews to Supabase.`,
-                });
+                if (res.projects > 0 || res.plans > 0 || res.reviews > 0) {
+                  toast({
+                    title: "Synced to Cloud! ☁️",
+                    description: `Synced ${res.projects} projects, ${res.plans} plans, ${res.reviews} reviews to Supabase.`,
+                  });
+                } else if (res.errorMessage) {
+                  toast({
+                    title: "Supabase Setup Required ⚠️",
+                    description: `Database error: ${res.errorMessage}. Please run the script in supabase_setup.sql in your Supabase SQL Editor.`,
+                    variant: "destructive",
+                  });
+                } else {
+                  toast({
+                    title: "Everything Up to Date ☁️",
+                    description: "All projects, plans, and reviews are synced to Supabase.",
+                  });
+                }
               }}
               className="gap-1.5 text-xs font-semibold shadow-md"
             >

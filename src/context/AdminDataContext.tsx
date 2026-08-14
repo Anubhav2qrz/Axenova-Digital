@@ -144,6 +144,13 @@ const DEFAULT_PLANS: PlanItem[] = [
   },
 ];
 
+interface SyncResult {
+  projects: number;
+  plans: number;
+  reviews: number;
+  errorMessage?: string;
+}
+
 interface AdminDataContextType {
   projects: ProjectItem[];
   plans: PlanItem[];
@@ -155,7 +162,7 @@ interface AdminDataContextType {
   updatePlan: (id: string, p: Partial<PlanItem>) => Promise<void>;
   deleteReview: (id: string) => Promise<void>;
   addReview: (r: Omit<ReviewItem, "id" | "date" | "helpful">) => Promise<void>;
-  syncAllToSupabase: () => Promise<{ projects: number; plans: number; reviews: number }>;
+  syncAllToSupabase: () => Promise<SyncResult>;
   updateOrderStatus: (id: string, status: string) => Promise<void>;
   refreshAllData: () => Promise<void>;
 }
@@ -371,10 +378,11 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   // Sync All Data to Supabase
-  const syncAllToSupabase = async () => {
+  const syncAllToSupabase = async (): Promise<SyncResult> => {
     let syncedProjects = 0;
     let syncedPlans = 0;
     let syncedReviews = 0;
+    let lastError: string | undefined;
 
     // 1. Projects
     for (const p of projects) {
@@ -388,7 +396,10 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           tags: p.tags,
         });
         if (!error) syncedProjects++;
-      } catch {}
+        else lastError = error.message;
+      } catch (e: any) {
+        lastError = e.message;
+      }
     }
 
     // 2. Plans
@@ -406,7 +417,10 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           features: pl.features,
         });
         if (!error) syncedPlans++;
-      } catch {}
+        else lastError = error.message;
+      } catch (e: any) {
+        lastError = e.message;
+      }
     }
 
     // 3. Reviews
@@ -424,12 +438,20 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             helpful: rev.helpful || 0,
           }]);
           if (!error) syncedReviews++;
+          else lastError = error.message;
         }
       }
-    } catch {}
+    } catch (e: any) {
+      lastError = e.message;
+    }
 
     await refreshAllData();
-    return { projects: syncedProjects, plans: syncedPlans, reviews: syncedReviews };
+    return {
+      projects: syncedProjects,
+      plans: syncedPlans,
+      reviews: syncedReviews,
+      errorMessage: lastError,
+    };
   };
 
   const updateOrderStatus = async (id: string, status: string) => {
