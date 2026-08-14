@@ -44,6 +44,8 @@ const ContactSection = () => {
           {
             from_name: form.name.trim(),
             from_email: form.email.trim(),
+            name: form.name.trim(),
+            email: form.email.trim(),
             phone: form.phone.trim() || "Not provided",
             message: form.message.trim(),
             to_email: CONTACT_INFO.email,
