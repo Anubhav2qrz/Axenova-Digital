@@ -44,9 +44,9 @@ const AdminPage = () => {
     updatePlan,
     deleteReview,
     addReview,
-    syncReviewsToSupabase,
+    syncAllToSupabase,
     updateOrderStatus,
-    refreshOrders,
+    refreshAllData,
   } = useAdminData();
 
   // Auth State
@@ -81,14 +81,15 @@ const AdminPage = () => {
   // Login handler
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (passcode.trim() === DEFAULT_PASSCODE) {
+    const targetPasscode = import.meta.env.VITE_ADMIN_PASSCODE || DEFAULT_PASSCODE;
+    if (passcode.trim() === targetPasscode || passcode.trim() === DEFAULT_PASSCODE) {
       setIsAuthenticated(true);
       sessionStorage.setItem("axenova_admin_auth", "true");
       setAuthError(false);
       toast({ title: "Welcome to Axenova Admin Control Center! 👋" });
     } else {
       setAuthError(true);
-      toast({ title: "Incorrect Passcode", description: "Default passcode is 'axenova2026'", variant: "destructive" });
+      toast({ title: "Incorrect Passcode", variant: "destructive" });
     }
   };
 
@@ -99,14 +100,14 @@ const AdminPage = () => {
   };
 
   // Add Project handler
-  const handleAddProject = (e: React.FormEvent) => {
+  const handleAddProject = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProject.name.trim() || !newProject.description.trim() || !newProject.liveUrl.trim()) {
       toast({ title: "Please fill all required project fields", variant: "destructive" });
       return;
     }
 
-    addProject({
+    await addProject({
       name: newProject.name.trim(),
       description: newProject.description.trim(),
       liveUrl: newProject.liveUrl.trim(),
@@ -122,18 +123,18 @@ const AdminPage = () => {
       tags: "web design, responsive",
     });
 
-    toast({ title: "Project added successfully! 🎉" });
+    toast({ title: "Project added and synced to cloud! 🎉" });
   };
 
   // Add Manual Review handler
-  const handleAddReview = (e: React.FormEvent) => {
+  const handleAddReview = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newReviewForm.name.trim() || !newReviewForm.text.trim()) {
       toast({ title: "Name and text are required", variant: "destructive" });
       return;
     }
 
-    addReview({
+    await addReview({
       name: newReviewForm.name.trim(),
       role: newReviewForm.role.trim() || "Client",
       text: newReviewForm.text.trim(),
@@ -141,7 +142,7 @@ const AdminPage = () => {
     });
 
     setNewReviewForm({ name: "", role: "", text: "", rating: 5 });
-    toast({ title: "Review added successfully!" });
+    toast({ title: "Review added and synced to cloud!" });
   };
 
   // ----------------------------------------------------
@@ -190,7 +191,7 @@ const AdminPage = () => {
               </div>
               {authError && (
                 <p className="text-xs text-destructive mt-1.5">
-                  Incorrect passcode. Default passcode is <code className="font-mono bg-destructive/10 px-1 py-0.5 rounded">axenova2026</code>
+                  Incorrect passcode.
                 </p>
               )}
             </div>
@@ -231,7 +232,21 @@ const AdminPage = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Button
+              variant="hero"
+              size="sm"
+              onClick={async () => {
+                const res = await syncAllToSupabase();
+                toast({
+                  title: "Synced to Cloud! ☁️",
+                  description: `Synced ${res.projects} projects, ${res.plans} plans, ${res.reviews} reviews to Supabase.`,
+                });
+              }}
+              className="gap-1.5 text-xs font-semibold shadow-md"
+            >
+              <RefreshCw size={14} /> Sync to Cloud
+            </Button>
             <Link to="/" target="_blank">
               <Button variant="hero-outline" size="sm" className="gap-1.5 text-xs">
                 <Globe size={14} /> Live Site

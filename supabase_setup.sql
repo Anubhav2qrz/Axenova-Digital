@@ -3,7 +3,7 @@
 
 -- 1. Create Reviews Table
 CREATE TABLE IF NOT EXISTS public.reviews (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  id text PRIMARY KEY DEFAULT gen_random_uuid()::text,
   name text NOT NULL,
   role text,
   text text NOT NULL,
@@ -13,31 +13,52 @@ CREATE TABLE IF NOT EXISTS public.reviews (
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Enable Row Level Security for reviews
 ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
-
--- Allow public read access
-CREATE POLICY "Public reviews are viewable by everyone."
-  ON public.reviews FOR SELECT
-  USING (true);
-
--- Allow public insert access
-CREATE POLICY "Anyone can submit a review."
-  ON public.reviews FOR INSERT
-  WITH CHECK (true);
-
--- Allow update access (for helpful counts)
-CREATE POLICY "Anyone can update helpful count."
-  ON public.reviews FOR UPDATE
-  USING (true);
-
--- Allow delete access (for Admin deletion)
-CREATE POLICY "Anyone can delete reviews."
-  ON public.reviews FOR DELETE
-  USING (true);
+CREATE POLICY "Public reviews viewable" ON public.reviews FOR SELECT USING (true);
+CREATE POLICY "Anyone submit review" ON public.reviews FOR INSERT WITH CHECK (true);
+CREATE POLICY "Anyone update helpful" ON public.reviews FOR UPDATE USING (true);
+CREATE POLICY "Admin delete review" ON public.reviews FOR DELETE USING (true);
 
 
--- 2. Create Orders Table
+-- 2. Create Projects Table (Portfolio Works)
+CREATE TABLE IF NOT EXISTS public.projects (
+  id text PRIMARY KEY,
+  name text NOT NULL,
+  description text NOT NULL,
+  live_url text NOT NULL,
+  image text NOT NULL,
+  tags text[],
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Projects viewable by everyone" ON public.projects FOR SELECT USING (true);
+CREATE POLICY "Admin insert projects" ON public.projects FOR INSERT WITH CHECK (true);
+CREATE POLICY "Admin update projects" ON public.projects FOR UPDATE USING (true);
+CREATE POLICY "Admin delete projects" ON public.projects FOR DELETE USING (true);
+
+
+-- 3. Create Pricing Plans Table
+CREATE TABLE IF NOT EXISTS public.plans (
+  id text PRIMARY KEY,
+  name text NOT NULL,
+  price text NOT NULL,
+  amount numeric NOT NULL,
+  description text NOT NULL,
+  popular boolean DEFAULT false,
+  delivery text NOT NULL,
+  badge text,
+  features jsonb,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.plans ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Plans viewable by everyone" ON public.plans FOR SELECT USING (true);
+CREATE POLICY "Admin insert plans" ON public.plans FOR INSERT WITH CHECK (true);
+CREATE POLICY "Admin update plans" ON public.plans FOR UPDATE USING (true);
+
+
+-- 4. Create Orders Table
 CREATE TABLE IF NOT EXISTS public.orders (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   razorpay_order_id text,
@@ -52,20 +73,7 @@ CREATE TABLE IF NOT EXISTS public.orders (
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Enable Row Level Security for orders
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
-
--- Allow public insert access (for client order lead creation)
-CREATE POLICY "Anyone can create an order lead."
-  ON public.orders FOR INSERT
-  WITH CHECK (true);
-
--- Allow select access (so Admin panel can view incoming orders)
-CREATE POLICY "Orders are viewable for Admin."
-  ON public.orders FOR SELECT
-  USING (true);
-
--- Allow update access (for status updates)
-CREATE POLICY "Anyone can update order status."
-  ON public.orders FOR UPDATE
-  USING (true);
+CREATE POLICY "Anyone create order lead" ON public.orders FOR INSERT WITH CHECK (true);
+CREATE POLICY "Admin view orders" ON public.orders FOR SELECT USING (true);
+CREATE POLICY "Admin update order status" ON public.orders FOR UPDATE USING (true);

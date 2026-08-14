@@ -149,21 +149,20 @@ interface AdminDataContextType {
   plans: PlanItem[];
   reviews: ReviewItem[];
   orders: OrderItem[];
-  addProject: (p: Omit<ProjectItem, "id">) => void;
-  updateProject: (id: string, p: Partial<ProjectItem>) => void;
-  deleteProject: (id: string) => void;
-  updatePlan: (id: string, p: Partial<PlanItem>) => void;
-  deleteReview: (id: string) => void;
-  addReview: (r: Omit<ReviewItem, "id" | "date" | "helpful">) => void;
-  syncReviewsToSupabase: () => Promise<number>;
+  addProject: (p: Omit<ProjectItem, "id">) => Promise<void>;
+  updateProject: (id: string, p: Partial<ProjectItem>) => Promise<void>;
+  deleteProject: (id: string) => Promise<void>;
+  updatePlan: (id: string, p: Partial<PlanItem>) => Promise<void>;
+  deleteReview: (id: string) => Promise<void>;
+  addReview: (r: Omit<ReviewItem, "id" | "date" | "helpful">) => Promise<void>;
+  syncAllToSupabase: () => Promise<{ projects: number; plans: number; reviews: number }>;
   updateOrderStatus: (id: string, status: string) => Promise<void>;
-  refreshOrders: () => Promise<void>;
+  refreshAllData: () => Promise<void>;
 }
 
 const AdminDataContext = createContext<AdminDataContextType | undefined>(undefined);
 
 export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // 1. Projects State
   const [projects, setProjects] = useState<ProjectItem[]>(() => {
     try {
       const saved = localStorage.getItem("axenova_admin_projects");
@@ -173,7 +172,6 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   });
 
-  // 2. Plans State
   const [plans, setPlans] = useState<PlanItem[]>(() => {
     try {
       const saved = localStorage.getItem("axenova_admin_plans");
@@ -183,24 +181,60 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   });
 
-  // 3. Reviews State
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
-
-  // 4. Orders State
   const [orders, setOrders] = useState<OrderItem[]>([]);
 
-  // Save projects to localStorage
+  // Local storage persistence
   useEffect(() => {
     localStorage.setItem("axenova_admin_projects", JSON.stringify(projects));
   }, [projects]);
 
-  // Save plans to localStorage
   useEffect(() => {
     localStorage.setItem("axenova_admin_plans", JSON.stringify(plans));
   }, [plans]);
 
-  // Fetch reviews from Supabase & LocalStorage
-  const fetchReviews = async () => {
+  // Fetch all data from Supabase
+  const refreshAllData = async () => {
+    // 1. Projects
+    try {
+      const { data, error } = await supabase.from("projects").select("*");
+      if (data && data.length > 0 && !error) {
+        const formatted: ProjectItem[] = data.map((d: any) => ({
+          id: d.id,
+          name: d.name,
+          description: d.description,
+          liveUrl: d.live_url || d.liveUrl,
+          image: d.image,
+          tags: Array.isArray(d.tags) ? d.tags : [],
+        }));
+        setProjects(formatted);
+      }
+    } catch (e) {
+      console.warn("Projects Supabase fetch notice:", e);
+    }
+
+    // 2. Plans
+    try {
+      const { data, error } = await supabase.from("plans").select("*");
+      if (data && data.length > 0 && !error) {
+        const formatted: PlanItem[] = data.map((d: any) => ({
+          id: d.id,
+          name: d.name,
+          price: d.price,
+          amount: Number(d.amount) || 0,
+          description: d.description,
+          popular: Boolean(d.popular),
+          delivery: d.delivery,
+          badge: d.badge || null,
+          features: Array.isArray(d.features) ? d.features : [],
+        }));
+        setPlans(formatted);
+      }
+    } catch (e) {
+      console.warn("Plans Supabase fetch notice:", e);
+    }
+
+    // 3. Reviews
     let dbReviews: ReviewItem[] = [];
     try {
       const { data } = await supabase.from("reviews").select("*").order("date", { ascending: false });
@@ -213,56 +247,87 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       if (saved) localReviews = JSON.parse(saved);
     } catch {}
 
-    const map = new Map<string, ReviewItem>();
-    localReviews.forEach((r) => map.set(r.id, r));
-    dbReviews.forEach((r) => map.set(r.id, r));
-    setReviews(Array.from(map.values()));
-  };
+    const revMap = new Map<string, ReviewItem>();
+    localReviews.forEach((r) => revMap.set(r.id, r));
+    dbReviews.forEach((r) => revMap.set(r.id, r));
+    setReviews(Array.from(revMap.values()));
 
-  // Fetch orders from Supabase
-  const refreshOrders = async () => {
+    // 4. Orders
     try {
-      const { data, error } = await supabase
-        .from("orders")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (data && !error) {
-        setOrders(data);
-      }
-    } catch (err) {
-      console.warn("Notice: orders table query", err);
-    }
+      const { data } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
+      if (data) setOrders(data);
+    } catch {}
   };
 
   useEffect(() => {
-    fetchReviews();
-    refreshOrders();
+    refreshAllData();
   }, []);
 
-  // Actions
-  const addProject = (p: Omit<ProjectItem, "id">) => {
-    const newProj: ProjectItem = { ...p, id: `proj-${Date.now()}` };
+  // Project Actions
+  const addProject = async (p: Omit<ProjectItem, "id">) => {
+    const id = `proj-${Date.now()}`;
+    const newProj: ProjectItem = { ...p, id };
     setProjects((prev) => [newProj, ...prev]);
+
+    try {
+      await supabase.from("projects").insert([{
+        id,
+        name: p.name,
+        description: p.description,
+        live_url: p.liveUrl,
+        image: p.image,
+        tags: p.tags,
+      }]);
+    } catch (e) {
+      console.warn("Supabase project insert notice:", e);
+    }
   };
 
-  const updateProject = (id: string, updated: Partial<ProjectItem>) => {
+  const updateProject = async (id: string, updated: Partial<ProjectItem>) => {
     setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, ...updated } : p)));
+
+    try {
+      const dbPayload: any = {};
+      if (updated.name) dbPayload.name = updated.name;
+      if (updated.description) dbPayload.description = updated.description;
+      if (updated.liveUrl) dbPayload.live_url = updated.liveUrl;
+      if (updated.image) dbPayload.image = updated.image;
+      if (updated.tags) dbPayload.tags = updated.tags;
+
+      await supabase.from("projects").update(dbPayload).eq("id", id);
+    } catch {}
   };
 
-  const deleteProject = (id: string) => {
+  const deleteProject = async (id: string) => {
     setProjects((prev) => prev.filter((p) => p.id !== id));
+    try {
+      await supabase.from("projects").delete().eq("id", id);
+    } catch {}
   };
 
-  const updatePlan = (id: string, updated: Partial<PlanItem>) => {
+  // Plan Actions
+  const updatePlan = async (id: string, updated: Partial<PlanItem>) => {
     setPlans((prev) => prev.map((p) => (p.id === id ? { ...p, ...updated } : p)));
+
+    try {
+      await supabase.from("plans").upsert({
+        id,
+        name: updated.name,
+        price: updated.price,
+        amount: updated.amount,
+        description: updated.description,
+        popular: updated.popular,
+        delivery: updated.delivery,
+        badge: updated.badge,
+        features: updated.features,
+      });
+    } catch {}
   };
 
+  // Review Actions
   const deleteReview = async (id: string) => {
-    // 1. Remove from React state
     setReviews((prev) => prev.filter((r) => r.id !== id));
 
-    // 2. Remove from LocalStorage
     try {
       const saved = localStorage.getItem("axenova_custom_reviews");
       if (saved) {
@@ -272,16 +337,16 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       }
     } catch {}
 
-    // 3. Remove from Supabase
     try {
       await supabase.from("reviews").delete().eq("id", id);
     } catch {}
   };
 
   const addReview = async (r: Omit<ReviewItem, "id" | "date" | "helpful">) => {
+    const id = `rev-${Date.now()}`;
     const newRev: ReviewItem = {
       ...r,
-      id: `rev-${Date.now()}`,
+      id,
       date: new Date().toISOString().split("T")[0],
       helpful: 0,
     };
@@ -302,40 +367,73 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         date: newRev.date,
         helpful: 0,
       }]);
-    } catch (err) {
-      console.warn("Supabase insert notice:", err);
-    }
+    } catch {}
   };
 
-  const syncReviewsToSupabase = async (): Promise<number> => {
-    let synced = 0;
+  // Sync All Data to Supabase
+  const syncAllToSupabase = async () => {
+    let syncedProjects = 0;
+    let syncedPlans = 0;
+    let syncedReviews = 0;
+
+    // 1. Projects
+    for (const p of projects) {
+      try {
+        const { error } = await supabase.from("projects").upsert({
+          id: p.id,
+          name: p.name,
+          description: p.description,
+          live_url: p.liveUrl,
+          image: p.image,
+          tags: p.tags,
+        });
+        if (!error) syncedProjects++;
+      } catch {}
+    }
+
+    // 2. Plans
+    for (const pl of plans) {
+      try {
+        const { error } = await supabase.from("plans").upsert({
+          id: pl.id,
+          name: pl.name,
+          price: pl.price,
+          amount: pl.amount,
+          description: pl.description,
+          popular: pl.popular,
+          delivery: pl.delivery,
+          badge: pl.badge,
+          features: pl.features,
+        });
+        if (!error) syncedPlans++;
+      } catch {}
+    }
+
+    // 3. Reviews
     try {
       const saved = localStorage.getItem("axenova_custom_reviews");
       if (saved) {
-        const localList: ReviewItem[] = JSON.parse(saved);
-        for (const rev of localList) {
-          const { data, error } = await supabase.from("reviews").insert([{
+        const localReviews: ReviewItem[] = JSON.parse(saved);
+        for (const rev of localReviews) {
+          const { error } = await supabase.from("reviews").insert([{
             name: rev.name,
             role: rev.role,
             text: rev.text,
             rating: rev.rating,
             date: rev.date,
             helpful: rev.helpful || 0,
-          }]).select();
-
-          if (data && !error) synced++;
+          }]);
+          if (!error) syncedReviews++;
         }
       }
-    } catch (e) {
-      console.error("Sync error:", e);
-    }
-    await fetchReviews();
-    return synced;
+    } catch {}
+
+    await refreshAllData();
+    return { projects: syncedProjects, plans: syncedPlans, reviews: syncedReviews };
   };
 
   const updateOrderStatus = async (id: string, status: string) => {
     setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
-
     try {
       await supabase.from("orders").update({ status }).eq("id", id);
     } catch {}
@@ -354,9 +452,9 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         updatePlan,
         deleteReview,
         addReview,
-        syncReviewsToSupabase,
+        syncAllToSupabase,
         updateOrderStatus,
-        refreshOrders,
+        refreshAllData,
       }}
     >
       {children}
