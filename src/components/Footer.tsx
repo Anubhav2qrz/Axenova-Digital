@@ -144,9 +144,15 @@ const Footer = () => (
         <p>
           © {new Date().getFullYear()} <span className="font-semibold text-foreground">Axenova Digital</span>. All rights reserved.
         </p>
-        <div className="flex items-center gap-1 text-xs">
-          <Sparkles size={13} className="text-accent" />
-          Crafted with care in India
+        <div className="flex items-center gap-3 text-xs">
+          <span className="flex items-center gap-1">
+            <Sparkles size={13} className="text-accent" />
+            Crafted with care in India
+          </span>
+          <span className="text-border">·</span>
+          <a href="/admin" className="hover:text-primary transition-colors underline font-medium">
+            Admin Portal
+          </a>
         </div>
         <button
           onClick={scrollToTop}

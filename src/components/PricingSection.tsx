@@ -4,75 +4,17 @@ import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useTilt } from "@/hooks/useTilt";
 import { useMouseSpotlight } from "@/hooks/useMouseSpotlight";
+import { useAdminData, type PlanItem } from "@/context/AdminDataContext";
 import OrderDialog from "@/components/OrderDialog";
-
-const plans = [
-  {
-    name: "Basic",
-    price: "₹999",
-    amount: 999,
-    description: "Perfect for personal or starter websites",
-    popular: false,
-    delivery: "3–5 Days",
-    badge: null,
-    cardClass: "border border-border/60",
-    features: [
-      { text: "1–3 Page Website" },
-      { text: "Mobile Responsive" },
-      { text: "Contact Form" },
-      { text: "Basic SEO Setup" },
-      { text: "1 Revision Round" },
-      { text: "Delivery in 3–5 Days" },
-    ],
-  },
-  {
-    name: "Standard",
-    price: "₹2,999",
-    amount: 2999,
-    description: "Great for growing businesses",
-    popular: true,
-    delivery: "5–7 Days",
-    badge: "Most Popular",
-    cardClass: "shadow-2xl shadow-primary/15",
-    features: [
-      { text: "5–8 Page Website" },
-      { text: "Custom Design" },
-      { text: "SEO Optimized" },
-      { text: "WhatsApp Integration" },
-      { text: "Social Media Links" },
-      { text: "3 Revision Rounds" },
-      { text: "Delivery in 5–7 Days" },
-    ],
-  },
-  {
-    name: "Premium",
-    price: "₹9,999",
-    amount: 9999,
-    description: "Full-scale custom web solutions",
-    popular: false,
-    delivery: "10–14 Days",
-    badge: "Best Value",
-    cardClass: "border border-border/60",
-    features: [
-      { text: "Unlimited Pages" },
-      { text: "E-commerce / Web App" },
-      { text: "Admin Dashboard" },
-      { text: "Payment Integration" },
-      { text: "Advanced SEO & Analytics" },
-      { text: "Priority Support" },
-      { text: "Delivery in 10–14 Days" },
-    ],
-  },
-];
 
 const PricingCard = ({
   plan,
   i,
   onGetStarted,
 }: {
-  plan: typeof plans[0];
+  plan: PlanItem;
   i: number;
-  onGetStarted: (plan: typeof plans[0]) => void;
+  onGetStarted: (plan: PlanItem) => void;
 }) => {
   const { onMouseMove: tiltMove, onMouseLeave: tiltLeave } = useTilt(5);
   const { onMouseMove: spotMove, onMouseLeave: spotLeave } = useMouseSpotlight();
@@ -92,7 +34,7 @@ const PricingCard = ({
       style={{ animationDelay: `${i * 0.1}s` }}
     >
       <div
-        className={`glass rounded-2xl p-7 flex flex-col flex-1 spotlight-card cursor-default ${plan.cardClass}`}
+        className={`glass rounded-2xl p-7 flex flex-col flex-1 spotlight-card cursor-default ${plan.popular ? "shadow-2xl shadow-primary/15" : "border border-border/60"}`}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
@@ -143,10 +85,11 @@ const PricingCard = ({
 
 const PricingSection = () => {
   const ref = useScrollAnimation();
+  const { plans } = useAdminData();
   const [selectedPlan, setSelectedPlan] = useState<{ name: string; price: string; amount: number } | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const handleGetStarted = (plan: typeof plans[0]) => {
+  const handleGetStarted = (plan: PlanItem) => {
     setSelectedPlan({ name: plan.name, price: plan.price, amount: plan.amount });
     setDialogOpen(true);
   };
@@ -168,7 +111,7 @@ const PricingSection = () => {
 
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
           {plans.map((plan, i) => (
-            <PricingCard key={plan.name} plan={plan} i={i} onGetStarted={handleGetStarted} />
+            <PricingCard key={plan.id || plan.name} plan={plan} i={i} onGetStarted={handleGetStarted} />
           ))}
         </div>
 

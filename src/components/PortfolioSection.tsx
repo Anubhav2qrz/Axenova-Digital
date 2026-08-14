@@ -1,51 +1,20 @@
 import { ExternalLink, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import portfolio1 from "@/assets/portfolio-1.png";
-import portfolio2 from "@/assets/portfolio-2.png";
-import portfolio3 from "@/assets/portfolio-3.png";
-import portfolio4 from "@/assets/portfolio-4.png";
-
-const projects = [
-  {
-    image: portfolio1,
-    name: "Nex Agency Mentors",
-    description: "NexAgency is a modern digital agency delivering creative web solutions.",
-    liveUrl: "https://nexagency.netlify.app/",
-    tags: ["digital agency", "UI/UX design", "responsive design"],
-  },
-  {
-    image: portfolio2,
-    name: "Zego Portfolio",
-    description: "Zego Portfolio showcases projects, skills, and modern web development work.",
-    liveUrl: "https://zego-portfolio.netlify.app/",
-    tags: ["Portfolio", "Gallery", "Editing"],
-  },
-  {
-    image: portfolio3,
-    name: "NexusModel AI",
-    description: "NexusModel AI delivers powerful AI tools for smarter digital solutions.",
-    liveUrl: "https://nexusmodel-ai.netlify.app/",
-    tags: ["AI tools", "API integration", "Smart solutions"],
-  },
-  {
-    image: portfolio4,
-    name: "The Brew Haven Cafe",
-    description: "The Brew Haven Cafe is a modern cafe website with online ordering and reservation system.",
-    liveUrl: "https://thebrewhavencafe.netlify.app/",
-    tags: ["Cafe website", "Online ordering", "Reservations"],
-  },
-];
+import { useAdminData } from "@/context/AdminDataContext";
 
 const PortfolioSection = () => {
   const ref = useScrollAnimation();
+  const { projects } = useAdminData();
 
   return (
     <section id="portfolio" className="py-24 relative">
       <div ref={ref} className="container">
         <div className="text-center mb-16 opacity-0 animate-on-scroll">
-          <span className="text-sm font-medium text-primary uppercase tracking-wider">Our Work</span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-3 mb-4">Featured Projects</h2>
+          <span className="badge-pill mb-3">Our Work</span>
+          <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
+            Featured Projects
+          </h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
             A glimpse of what we've built for our clients. Click to view live projects.
           </p>
@@ -54,14 +23,14 @@ const PortfolioSection = () => {
         <div className="grid sm:grid-cols-2 gap-6">
           {projects.map((project, i) => (
             <a
-              key={project.name}
+              key={project.id}
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group glass rounded-xl overflow-hidden hover-lift opacity-0 animate-on-scroll block cursor-pointer"
+              className="group glass rounded-2xl overflow-hidden hover-lift card-glow opacity-0 animate-on-scroll block cursor-pointer border border-border/50"
               style={{ animationDelay: `${i * 0.1}s` }}
             >
-              <div className="relative overflow-hidden aspect-video">
+              <div className="relative overflow-hidden aspect-video bg-secondary/40">
                 <img
                   src={project.image}
                   alt={project.name}
@@ -69,7 +38,7 @@ const PortfolioSection = () => {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <Button variant="hero" size="sm" tabIndex={-1} className="pointer-events-none">
+                  <Button variant="hero" size="sm" tabIndex={-1} className="pointer-events-none font-semibold">
                     View Live Site <ExternalLink size={14} className="ml-1" />
                   </Button>
                 </div>
@@ -84,15 +53,15 @@ const PortfolioSection = () => {
               </div>
               <div className="p-5">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-semibold text-lg">{project.name}</h3>
+                  <h3 className="font-bold text-lg">{project.name}</h3>
                   <Globe size={16} className="text-muted-foreground group-hover:text-accent transition-colors" />
                 </div>
-                <p className="text-sm text-muted-foreground mb-3">{project.description}</p>
-                <div className="flex flex-wrap gap-2">
+                <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{project.description}</p>
+                <div className="flex flex-wrap gap-1.5">
                   {project.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary/80 border border-primary/10"
+                      className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/15 font-medium"
                     >
                       {tag}
                     </span>
