@@ -8,14 +8,22 @@ export const useScrollAnimation = () => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Animate element and all children with animate-on-scroll
-            const targets = [entry.target, ...entry.target.querySelectorAll(".animate-on-scroll")];
-            targets.forEach((el) => el.classList.add("animate-fade-in"));
+            const targets = [
+              entry.target,
+              ...entry.target.querySelectorAll(".animate-on-scroll"),
+            ];
+            targets.forEach((el, i) => {
+              const delay = el === entry.target ? 0 : i * 60;
+              setTimeout(() => {
+                el.classList.add("animate-fade-in");
+                el.classList.remove("scroll-hidden");
+              }, delay);
+            });
             observer.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
     );
 
     if (ref.current) observer.observe(ref.current);

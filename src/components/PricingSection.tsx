@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Check, Zap, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useTilt } from "@/hooks/useTilt";
+import { useMouseSpotlight } from "@/hooks/useMouseSpotlight";
 import OrderDialog from "@/components/OrderDialog";
 
 const plans = [
@@ -13,14 +15,14 @@ const plans = [
     popular: false,
     delivery: "3–5 Days",
     badge: null,
-    cardStyle: "border border-border/60",
+    cardClass: "border border-border/60",
     features: [
-      { text: "1–3 Page Website", tip: "Landing page, About, Contact" },
-      { text: "Mobile Responsive", tip: "Looks great on all screen sizes" },
-      { text: "Contact Form", tip: "WhatsApp or email form integration" },
-      { text: "Basic SEO Setup", tip: "Meta tags, sitemap, robots.txt" },
-      { text: "1 Revision Round", tip: "One round of feedback & changes" },
-      { text: "Delivery in 3–5 Days", tip: null },
+      { text: "1–3 Page Website" },
+      { text: "Mobile Responsive" },
+      { text: "Contact Form" },
+      { text: "Basic SEO Setup" },
+      { text: "1 Revision Round" },
+      { text: "Delivery in 3–5 Days" },
     ],
   },
   {
@@ -31,15 +33,15 @@ const plans = [
     popular: true,
     delivery: "5–7 Days",
     badge: "Most Popular",
-    cardStyle: "border-2 border-primary/30 shadow-2xl shadow-primary/15 bg-primary/[0.03]",
+    cardClass: "shadow-2xl shadow-primary/15",
     features: [
-      { text: "5–8 Page Website", tip: "Full business site with all sections" },
-      { text: "Custom Design", tip: "Unique layout built around your brand" },
-      { text: "SEO Optimized", tip: "On-page SEO & PageSpeed 90+ score" },
-      { text: "WhatsApp Integration", tip: "Floating WhatsApp chat button" },
-      { text: "Social Media Links", tip: "All platforms linked & styled" },
-      { text: "3 Revision Rounds", tip: "Three rounds of feedback & changes" },
-      { text: "Delivery in 5–7 Days", tip: null },
+      { text: "5–8 Page Website" },
+      { text: "Custom Design" },
+      { text: "SEO Optimized" },
+      { text: "WhatsApp Integration" },
+      { text: "Social Media Links" },
+      { text: "3 Revision Rounds" },
+      { text: "Delivery in 5–7 Days" },
     ],
   },
   {
@@ -50,30 +52,94 @@ const plans = [
     popular: false,
     delivery: "10–14 Days",
     badge: "Best Value",
-    cardStyle: "border border-border/60 bg-secondary/5",
+    cardClass: "border border-border/60",
     features: [
-      { text: "Unlimited Pages", tip: "No page count restriction" },
-      { text: "E-commerce / Web App", tip: "Full online store or custom web app" },
-      { text: "Admin Dashboard", tip: "Manage content, orders & products" },
-      { text: "Payment Integration", tip: "UPI, Razorpay, cards & EMI support" },
-      { text: "Advanced SEO & Analytics", tip: "Google Analytics 4 + full SEO" },
-      { text: "Priority Support", tip: "Direct WhatsApp line with the dev team" },
-      { text: "Delivery in 10–14 Days", tip: null },
+      { text: "Unlimited Pages" },
+      { text: "E-commerce / Web App" },
+      { text: "Admin Dashboard" },
+      { text: "Payment Integration" },
+      { text: "Advanced SEO & Analytics" },
+      { text: "Priority Support" },
+      { text: "Delivery in 10–14 Days" },
     ],
   },
 ];
 
-const FeatureRow = ({ text, tip }: { text: string; tip: string | null }) => (
-  <li className="flex items-start gap-3 text-sm group/feat">
-    <Check size={15} className="text-accent mt-0.5 shrink-0" />
-    <span className="text-muted-foreground">{text}</span>
-    {tip && (
-      <span className="hidden group-hover/feat:block absolute z-20 left-1/2 -translate-x-1/2 -translate-y-full -top-1 bg-popover text-popover-foreground text-[11px] px-2 py-1 rounded-md border border-border shadow-lg whitespace-nowrap pointer-events-none">
-        {tip}
-      </span>
-    )}
-  </li>
-);
+const PricingCard = ({
+  plan,
+  i,
+  onGetStarted,
+}: {
+  plan: typeof plans[0];
+  i: number;
+  onGetStarted: (plan: typeof plans[0]) => void;
+}) => {
+  const { onMouseMove: tiltMove, onMouseLeave: tiltLeave } = useTilt(5);
+  const { onMouseMove: spotMove, onMouseLeave: spotLeave } = useMouseSpotlight();
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    tiltMove(e);
+    spotMove(e);
+  };
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    tiltLeave(e);
+    spotLeave(e);
+  };
+
+  return (
+    <div
+      className={`relative opacity-0 animate-on-scroll flex flex-col tilt-card ${plan.popular ? "rotating-border" : ""}`}
+      style={{ animationDelay: `${i * 0.1}s` }}
+    >
+      <div
+        className={`glass rounded-2xl p-7 flex flex-col flex-1 spotlight-card cursor-default ${plan.cardClass}`}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
+        {/* Badge */}
+        {plan.badge && (
+          <div className={`absolute -top-3.5 left-1/2 -translate-x-1/2 overflow-hidden rounded-full px-4 py-1 text-xs font-bold text-white z-10 ${plan.popular ? "bg-gradient-to-r from-primary to-accent" : "bg-gradient-to-r from-violet-600 to-purple-500"}`}>
+            <span className="relative z-10">{plan.badge}</span>
+            <div className="absolute inset-0 shimmer opacity-40" />
+          </div>
+        )}
+
+        {/* Plan info */}
+        <div className="mb-6">
+          <h3 className="text-xl font-bold mb-1" style={{ fontFamily: "'Outfit', sans-serif" }}>{plan.name}</h3>
+          <p className="text-sm text-muted-foreground mb-5">{plan.description}</p>
+          <div className="flex items-end gap-2">
+            <span className="text-4xl font-extrabold gradient-text" style={{ fontFamily: "'Outfit', sans-serif" }}>{plan.price}</span>
+            <span className="text-sm text-muted-foreground mb-1.5">one-time</span>
+          </div>
+        </div>
+
+        {/* Delivery badge */}
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-accent bg-accent/10 w-fit px-3 py-1.5 rounded-full mb-6 border border-accent/20">
+          <Zap size={12} /> {plan.delivery}
+        </div>
+
+        {/* Features */}
+        <ul className="space-y-3 mb-8 flex-1">
+          {plan.features.map((feature) => (
+            <li key={feature.text} className="flex items-start gap-3 text-sm">
+              <Check size={15} className="text-accent mt-0.5 shrink-0" />
+              <span className="text-muted-foreground">{feature.text}</span>
+            </li>
+          ))}
+        </ul>
+
+        <Button
+          variant={plan.popular ? "hero" : "hero-outline"}
+          className={`w-full font-semibold ${plan.popular ? "shadow-lg shadow-primary/25" : ""}`}
+          onClick={() => onGetStarted(plan)}
+        >
+          Get Started
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 const PricingSection = () => {
   const ref = useScrollAnimation();
@@ -102,56 +168,11 @@ const PricingSection = () => {
 
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
           {plans.map((plan, i) => (
-            <div
-              key={plan.name}
-              className={`relative glass rounded-2xl p-7 hover-lift opacity-0 animate-on-scroll flex flex-col ${plan.cardStyle}`}
-              style={{ animationDelay: `${i * 0.1}s` }}
-            >
-              {/* Most Popular badge with shimmer */}
-              {plan.badge && (
-                <div className={`absolute -top-3.5 left-1/2 -translate-x-1/2 overflow-hidden rounded-full px-4 py-1 text-xs font-bold text-white ${plan.popular ? "bg-gradient-to-r from-primary to-accent" : "bg-gradient-to-r from-violet-600 to-purple-500"}`}>
-                  <span className="relative z-10">{plan.badge}</span>
-                  <div className="absolute inset-0 shimmer opacity-40" />
-                </div>
-              )}
-
-              {/* Plan info */}
-              <div className="mb-6">
-                <h3 className="text-xl font-bold mb-1" style={{ fontFamily: "'Outfit', sans-serif" }}>{plan.name}</h3>
-                <p className="text-sm text-muted-foreground mb-5">{plan.description}</p>
-                <div className="flex items-end gap-2">
-                  <span className="text-4xl font-extrabold gradient-text" style={{ fontFamily: "'Outfit', sans-serif" }}>{plan.price}</span>
-                  <span className="text-sm text-muted-foreground mb-1.5">one-time</span>
-                </div>
-              </div>
-
-              {/* Delivery badge */}
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-accent bg-accent/10 w-fit px-3 py-1.5 rounded-full mb-6 border border-accent/20">
-                <Zap size={12} /> {plan.delivery}
-              </div>
-
-              {/* Features */}
-              <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((feature) => (
-                  <div key={feature.text} className="relative">
-                    <FeatureRow text={feature.text} tip={feature.tip} />
-                  </div>
-                ))}
-              </ul>
-
-              <Button
-                variant={plan.popular ? "hero" : "hero-outline"}
-                className={`w-full font-semibold ${plan.popular ? "shadow-lg shadow-primary/25" : ""}`}
-                onClick={() => handleGetStarted(plan)}
-              >
-                Get Started
-              </Button>
-            </div>
+            <PricingCard key={plan.name} plan={plan} i={i} onGetStarted={handleGetStarted} />
           ))}
         </div>
 
-        {/* Trust note */}
-        <p className="text-center text-xs text-muted-foreground mt-8 opacity-0 animate-on-scroll flex items-center justify-center gap-1.5">
+        <p className="text-center text-xs text-muted-foreground mt-10 opacity-0 animate-on-scroll flex items-center justify-center gap-1.5">
           <Clock size={13} className="text-accent" />
           All plans include free consultation, full source code handover & 30 days post-launch support.
         </p>

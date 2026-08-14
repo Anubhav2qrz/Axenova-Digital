@@ -1,5 +1,7 @@
 import { Globe, Briefcase, ShoppingCart, Code2, ArrowRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useTilt } from "@/hooks/useTilt";
+import { useMouseSpotlight } from "@/hooks/useMouseSpotlight";
 
 const services = [
   {
@@ -48,6 +50,58 @@ const services = [
   },
 ];
 
+const ServiceCard = ({ service, i }: { service: typeof services[0]; i: number }) => {
+  const { onMouseMove: tiltMove, onMouseLeave: tiltLeave } = useTilt(6);
+  const { onMouseMove: spotMove, onMouseLeave: spotLeave } = useMouseSpotlight();
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    tiltMove(e);
+    spotMove(e);
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    tiltLeave(e);
+    spotLeave(e);
+  };
+
+  return (
+    <div
+      className={`group glass rounded-2xl p-6 card-glow spotlight-card tilt-card cursor-default opacity-0 animate-on-scroll border border-border/50 ${service.border} transition-colors duration-300`}
+      style={{ animationDelay: `${i * 0.1}s` }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className={`w-12 h-12 rounded-xl ${service.iconBg} flex items-center justify-center mb-5 transition-all duration-300`}>
+        <service.icon className={service.iconColor} size={24} />
+      </div>
+
+      <div className="flex items-start justify-between mb-2">
+        <h3 className="text-base font-bold leading-tight">{service.title}</h3>
+        <span className="text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full whitespace-nowrap ml-2">
+          From {service.from}
+        </span>
+      </div>
+
+      <p className="text-sm text-muted-foreground leading-relaxed mb-5">{service.description}</p>
+
+      <div className="flex flex-wrap gap-1.5 mb-5">
+        {service.features.map((feat) => (
+          <span key={feat} className="text-[10px] px-2 py-0.5 rounded-full bg-secondary/80 text-muted-foreground border border-border/60 font-medium">
+            {feat}
+          </span>
+        ))}
+      </div>
+
+      <a
+        href="#pricing"
+        className={`inline-flex items-center gap-1 text-xs font-semibold ${service.iconColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+      >
+        View Pricing <ArrowRight size={12} />
+      </a>
+    </div>
+  );
+};
+
 const ServicesSection = () => {
   const ref = useScrollAnimation();
 
@@ -68,44 +122,7 @@ const ServicesSection = () => {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {services.map((service, i) => (
-            <div
-              key={service.title}
-              className={`group glass rounded-2xl p-6 hover-lift card-glow cursor-default opacity-0 animate-on-scroll border border-border/50 ${service.border} transition-all duration-300`}
-              style={{ animationDelay: `${i * 0.1}s` }}
-            >
-              {/* Icon */}
-              <div className={`w-12 h-12 rounded-xl ${service.iconBg} flex items-center justify-center mb-5 transition-all duration-300`}>
-                <service.icon className={service.iconColor} size={24} />
-              </div>
-
-              {/* Title & from price */}
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="text-base font-bold leading-tight">{service.title}</h3>
-                <span className="text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full whitespace-nowrap ml-2">
-                  From {service.from}
-                </span>
-              </div>
-
-              {/* Description */}
-              <p className="text-sm text-muted-foreground leading-relaxed mb-5">{service.description}</p>
-
-              {/* Feature pills */}
-              <div className="flex flex-wrap gap-1.5 mb-5">
-                {service.features.map((feat) => (
-                  <span key={feat} className="text-[10px] px-2 py-0.5 rounded-full bg-secondary/80 text-muted-foreground border border-border/60 font-medium">
-                    {feat}
-                  </span>
-                ))}
-              </div>
-
-              {/* CTA */}
-              <a
-                href="#pricing"
-                className={`inline-flex items-center gap-1 text-xs font-semibold ${service.iconColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-              >
-                View Pricing <ArrowRight size={12} />
-              </a>
-            </div>
+            <ServiceCard key={service.title} service={service} i={i} />
           ))}
         </div>
       </div>

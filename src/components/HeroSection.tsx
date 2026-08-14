@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const ROTATING_WORDS = ["Business Website", "Online Store", "Portfolio Site", "Custom Web App", "SaaS Platform"];
 
@@ -55,6 +55,13 @@ const stats = [
   { value: 99, suffix: "%", label: "Satisfaction Rate" },
 ];
 
+const techBadges = [
+  { label: "React", emoji: "⚛️", delay: "0s", x: "8%", y: "25%" },
+  { label: "TailwindCSS", emoji: "🎨", delay: "0.8s", x: "85%", y: "20%" },
+  { label: "Razorpay", emoji: "💳", delay: "1.6s", x: "10%", y: "72%" },
+  { label: "Supabase", emoji: "🔥", delay: "2.4s", x: "82%", y: "68%" },
+];
+
 const HeroSection = () => {
   const typewriterText = useTypewriter(ROTATING_WORDS);
   const [statsVisible, setStatsVisible] = useState(false);
@@ -76,10 +83,30 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+
+      {/* Animated dot-grid background */}
+      <div className="absolute inset-0 dot-grid opacity-50 pointer-events-none" />
+      {/* Radial fade mask over the grid */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: "radial-gradient(ellipse 80% 60% at 50% 50%, transparent 30%, hsl(var(--background)) 85%)"
+      }} />
+
       {/* Animated gradient orbs */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full bg-primary/10 blur-[130px] pointer-events-none animate-glow-pulse" />
       <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] rounded-full bg-accent/8 blur-[110px] pointer-events-none animate-float" style={{ animationDelay: "2s" }} />
       <div className="absolute top-1/3 left-1/4 w-[300px] h-[300px] rounded-full bg-primary/5 blur-[90px] pointer-events-none animate-float" style={{ animationDelay: "4s" }} />
+
+      {/* Floating tech badges */}
+      {techBadges.map((badge) => (
+        <div
+          key={badge.label}
+          className="absolute hidden lg:flex items-center gap-1.5 glass rounded-full px-3 py-1.5 text-xs font-semibold text-foreground border border-border/60 shadow-lg animate-float pointer-events-none select-none"
+          style={{ left: badge.x, top: badge.y, animationDelay: badge.delay, animationDuration: "5s" }}
+        >
+          <span>{badge.emoji}</span>
+          {badge.label}
+        </div>
+      ))}
 
       <div className="container relative z-10 text-center max-w-5xl">
         {/* Live badge */}
@@ -134,9 +161,7 @@ const HeroSection = () => {
         {/* Trust badges */}
         <div className="flex flex-wrap items-center justify-center gap-3 mt-8 animate-fade-in" style={{ animationDelay: "0.35s" }}>
           {["⚡ 3–7 Day Delivery", "🔒 100% Code Ownership", "💳 Razorpay Secure Pay"].map((badge) => (
-            <span key={badge} className="badge-pill text-xs">
-              {badge}
-            </span>
+            <span key={badge} className="badge-pill text-xs">{badge}</span>
           ))}
         </div>
 
@@ -147,7 +172,7 @@ const HeroSection = () => {
           style={{ animationDelay: "0.4s" }}
         >
           {stats.map((stat, i) => (
-            <div key={stat.label} className="group">
+            <div key={stat.label}>
               <div className="text-2xl md:text-3xl font-bold gradient-text" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 {statsVisible ? counts[i] : 0}{stat.suffix}
               </div>
