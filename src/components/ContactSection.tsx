@@ -96,7 +96,7 @@ const ContactSection = () => {
                   Full Name *
                 </label>
                 <Input
-                  placeholder="John Doe"
+                  placeholder="Your Name"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   maxLength={100}
