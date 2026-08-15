@@ -53,7 +53,6 @@ const ProjectTrackerDialog = ({ open, onOpenChange }: ProjectTrackerDialogProps)
     const query = searchQuery.trim();
 
     try {
-      // Try querying Supabase by phone, UUID, or friendly order_id
       const { data, error } = await supabase
         .from("orders")
         .select("*")
@@ -61,29 +60,15 @@ const ProjectTrackerDialog = ({ open, onOpenChange }: ProjectTrackerDialogProps)
         .order("created_at", { ascending: false })
         .limit(1);
 
-      if (data && data.length > 0 && !error) {
+      if (!error && data && data.length > 0) {
         setOrder(data[0]);
-        setLoading(false);
-        return;
+      } else {
+        setErrorMsg("No order found with that Order ID or Phone number. Please double-check and try again.");
       }
     } catch {
-      // Supabase query error ignored for fallback
+      setErrorMsg("Could not connect to the database. Please try again in a moment.");
     }
 
-    // Demo fallback if phone or looks like AXN- order ID
-    if (/^\d{10}$/.test(query) || /^AXN-/i.test(query) || query.toLowerCase().startsWith("ax") || query.startsWith("pay_") || query.length >= 4) {
-      setOrder({
-        id: query,
-        order_id: /^AXN-/i.test(query) ? query.toUpperCase() : `AXN-DEMO-${query.slice(-4)}`,
-        name: "Valued Customer",
-        plan: "Standard Plan",
-        status: "dev",
-        created_at: new Date().toISOString(),
-        phone: query,
-      });
-    } else {
-      setErrorMsg("No active order found with that Order ID or Phone number. Please check and try again.");
-    }
     setLoading(false);
   };
 
