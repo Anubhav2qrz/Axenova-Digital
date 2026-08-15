@@ -344,47 +344,44 @@ const ReviewsSection = () => {
   );
 
   return (
-    <section id="reviews" className="py-24 relative">
+    <section id="reviews" className="py-20 sm:py-24 relative">
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-accent/5 blur-[120px] pointer-events-none" />
       <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
 
-      <div ref={ref} className="container relative z-10">
-        <div className="text-center mb-12 sm:mb-16 animate-on-scroll">
+      <div ref={ref} className="container relative z-10 px-4 sm:px-6">
+        <div className="text-center mb-10 sm:mb-16 animate-on-scroll">
           <span className="badge-pill mb-3">Client Reviews</span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-3 mb-3" style={{ fontFamily: "'Outfit', sans-serif" }}>
             What Our Clients Say
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto mb-8 text-sm sm:text-base">
+          <p className="text-muted-foreground max-w-xl mx-auto mb-6 sm:mb-8 text-sm sm:text-base">
             Real reviews from real clients. See why businesses trust Axenova Digital.
           </p>
 
-          <div className="flex flex-wrap sm:inline-flex items-center justify-center gap-3 sm:gap-6 glass rounded-2xl sm:rounded-full p-4 sm:px-6 sm:py-3 border border-border/60 max-w-xs sm:max-w-none mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 glass rounded-2xl sm:rounded-full p-3.5 sm:px-6 sm:py-3 border border-border/60 w-full max-w-md sm:max-w-none mx-auto shadow-md">
             {allReviews.length > 0 && (
-              <>
+              <div className="flex items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto">
                 <div className="flex items-center gap-2">
                   <StarDisplay rating={Math.round(averageRating)} />
-                  <span className="font-semibold text-sm">
+                  <span className="font-bold text-sm text-foreground">
                     {averageRating.toFixed(1)}
                   </span>
                 </div>
-                <div className="hidden sm:block w-px h-5 bg-border" />
-                <span className="text-sm text-muted-foreground">
-                  <span className="font-semibold text-foreground">
-                    {allReviews.length}
-                  </span>{" "}
-                  {allReviews.length === 1 ? "review" : "reviews"}
+                <div className="w-px h-4 bg-border" />
+                <span className="text-xs sm:text-sm text-muted-foreground">
+                  <strong className="text-foreground">{allReviews.length}</strong> {allReviews.length === 1 ? "review" : "reviews"}
                 </span>
-                <div className="hidden sm:block w-px h-5 bg-border" />
-              </>
+                <div className="hidden sm:block w-px h-4 bg-border" />
+              </div>
             )}
             <Button
               variant="hero"
               size="sm"
               onClick={() => setDialogOpen(true)}
-              className="gap-1.5 font-semibold w-full sm:w-auto"
+              className="gap-1.5 font-bold w-full sm:w-auto h-10 sm:h-9 shadow-sm"
               id="write-review-btn"
             >
-              <MessageSquarePlus size={16} />
+              <MessageSquarePlus size={15} />
               Write a Review
             </Button>
           </div>
@@ -412,11 +409,11 @@ const ReviewsSection = () => {
         )}
 
         {allReviews.length > 0 && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 max-w-6xl mx-auto">
             {paginatedReviews.map((review, i) => (
               <div
                 key={review.id}
-                className="glass rounded-2xl p-6 hover-lift card-glow animate-on-scroll flex flex-col relative group border border-border/50"
+                className="glass rounded-2xl p-5 sm:p-6 hover-lift card-glow animate-on-scroll flex flex-col relative group border border-border/50"
                 style={{ animationDelay: `${i * 0.08}s` }}
               >
                 <Quote

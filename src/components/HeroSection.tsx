@@ -105,19 +105,20 @@ const HeroSection = () => {
         </div>
       ))}
 
-      <div className="container relative z-10 text-center max-w-5xl px-4">
+      <div className="container relative z-10 text-center max-w-5xl px-4 sm:px-6">
         {/* Live badge */}
-        <div className="inline-flex items-center gap-2 glass rounded-full px-3.5 py-1.5 text-xs sm:text-sm text-muted-foreground mb-6 max-w-[95%] sm:max-w-none animate-fade-in border border-border/60">
+        <div className="inline-flex items-center gap-2 glass rounded-full px-3.5 py-1.5 text-xs sm:text-sm text-muted-foreground mb-6 max-w-full animate-fade-in border border-border/60">
           <span className="relative flex h-2 w-2 shrink-0">
             <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-75 animate-ping" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
           </span>
-          <span className="truncate">Available for new projects · Web Development Agency</span>
+          <span className="truncate sm:hidden">⚡ Open for New Projects</span>
+          <span className="hidden sm:inline">Available for new projects · Web Development Agency</span>
         </div>
 
         {/* Headline */}
         <h1
-          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.2] sm:leading-tight tracking-tight mb-3 sm:mb-4 animate-fade-in"
+          className="text-3xl min-[400px]:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.2] sm:leading-tight tracking-tight mb-3 sm:mb-4 animate-fade-in"
           style={{ animationDelay: "0.1s", fontFamily: "'Outfit', sans-serif" }}
         >
           We Build Modern{" "}
@@ -133,30 +134,30 @@ const HeroSection = () => {
             </span>
           </span>
         </h1>
-        <p className="text-xs sm:text-sm font-semibold text-muted-foreground uppercase tracking-[0.15em] sm:tracking-[0.2em] mb-6 animate-fade-in" style={{ animationDelay: "0.15s" }}>
+        <p className="text-xs sm:text-sm font-semibold text-muted-foreground uppercase tracking-[0.12em] sm:tracking-[0.2em] mb-5 sm:mb-6 animate-fade-in" style={{ animationDelay: "0.15s" }}>
           That Grow Your Business
         </p>
 
         <p
-          className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2 animate-fade-in"
+          className="text-sm sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-7 sm:mb-10 leading-relaxed px-1 sm:px-2 animate-fade-in"
           style={{ animationDelay: "0.2s" }}
         >
-          From stunning portfolios to powerful e-commerce stores, we craft pixel-perfect,
-          high-performance websites that convert visitors into customers.
+          From stunning portfolios to high-converting online stores, we craft pixel-perfect,
+          ultra-fast websites that turn visitors into loyal customers.
         </p>
 
         {/* CTA Buttons */}
         <div
-          className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-xs sm:max-w-none mx-auto animate-fade-in"
+          className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 w-full max-w-sm sm:max-w-none mx-auto animate-fade-in"
           style={{ animationDelay: "0.3s" }}
         >
-          <Button variant="hero" size="lg" asChild className="group shadow-lg hover:shadow-xl hover:shadow-primary/25 transition-all duration-300 w-full sm:w-auto font-semibold">
+          <Button variant="hero" size="lg" asChild className="group shadow-lg hover:shadow-xl hover:shadow-primary/25 transition-all duration-300 w-full sm:w-auto font-semibold h-12 sm:h-11">
             <a href="#pricing">
               Get Your Website
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
             </a>
           </Button>
-          <Button variant="hero-outline" size="lg" asChild className="w-full sm:w-auto font-semibold">
+          <Button variant="hero-outline" size="lg" asChild className="w-full sm:w-auto font-semibold h-12 sm:h-11">
             <a href="#portfolio">View Our Work</a>
           </Button>
         </div>
@@ -171,15 +172,15 @@ const HeroSection = () => {
         {/* Stats */}
         <div
           ref={statsRef}
-          className="mt-12 sm:mt-16 grid grid-cols-3 gap-3 sm:gap-8 max-w-md mx-auto animate-fade-in"
+          className="mt-10 sm:mt-16 grid grid-cols-3 gap-2.5 sm:gap-8 max-w-sm sm:max-w-md mx-auto animate-fade-in"
           style={{ animationDelay: "0.4s" }}
         >
           {stats.map((stat, i) => (
-            <div key={stat.label} className="p-2 sm:p-0">
+            <div key={stat.label} className="p-3 sm:p-0 glass sm:glass-none sm:border-0 rounded-xl sm:rounded-none">
               <div className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 {statsVisible ? counts[i] : 0}{stat.suffix}
               </div>
-              <div className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 leading-tight">{stat.label}</div>
+              <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 leading-tight">{stat.label}</div>
             </div>
           ))}
         </div>

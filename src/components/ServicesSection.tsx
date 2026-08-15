@@ -94,7 +94,7 @@ const ServiceCard = ({ service, i }: { service: typeof services[0]; i: number })
 
       <a
         href="#pricing"
-        className={`inline-flex items-center gap-1 text-xs font-semibold ${service.iconColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+        className={`inline-flex items-center gap-1 text-xs font-semibold ${service.iconColor} md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 mt-auto`}
       >
         View Pricing <ArrowRight size={12} />
       </a>
@@ -106,21 +106,21 @@ const ServicesSection = () => {
   const ref = useScrollAnimation();
 
   return (
-    <section id="services" className="py-24 relative overflow-hidden mesh-bg">
+    <section id="services" className="py-20 sm:py-24 relative overflow-hidden mesh-bg">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/4 blur-[120px] pointer-events-none" />
 
-      <div ref={ref} className="container relative z-10">
-        <div className="text-center mb-16 opacity-0 animate-on-scroll">
+      <div ref={ref} className="container relative z-10 px-4 sm:px-6">
+        <div className="text-center mb-12 sm:mb-16 opacity-0 animate-on-scroll">
           <span className="badge-pill mb-3">What We Build</span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-3 mb-3" style={{ fontFamily: "'Outfit', sans-serif" }}>
             Our Web Development Services
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto text-base">
+          <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
             We deliver end-to-end web solutions tailored to your goals, budget, and timeline.
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {services.map((service, i) => (
             <ServiceCard key={service.title} service={service} i={i} />
           ))}

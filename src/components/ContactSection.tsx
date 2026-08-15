@@ -73,26 +73,26 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="py-24 relative overflow-hidden">
+    <section id="contact" className="py-20 sm:py-24 relative overflow-hidden">
       <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
-      <div ref={ref} className="container relative z-10">
-        <div className="text-center mb-16 opacity-0 animate-on-scroll">
+      <div ref={ref} className="container relative z-10 px-4 sm:px-6">
+        <div className="text-center mb-12 sm:mb-16 opacity-0 animate-on-scroll">
           <span className="badge-pill mb-3">Contact Us</span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-3 mb-3" style={{ fontFamily: "'Outfit', sans-serif" }}>
             Let's Build Something Great Together
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
             Ready to start your project? Get in touch — we typically respond within 2 hours.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 sm:gap-10 max-w-4xl mx-auto">
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4 opacity-0 animate-on-scroll">
-            <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-4 opacity-0 animate-on-scroll glass p-5 sm:p-7 rounded-2xl border border-border/60 shadow-xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
               <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
                   Full Name *
                 </label>
                 <Input
@@ -100,12 +100,12 @@ const ContactSection = () => {
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   maxLength={100}
-                  className="bg-secondary/40 border-border/60 focus:border-primary transition-colors"
+                  className="bg-secondary/50 border-border/60 focus:border-primary transition-colors text-base sm:text-sm h-11"
                   required
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
                   Phone (optional)
                 </label>
                 <Input
@@ -114,13 +114,13 @@ const ContactSection = () => {
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   maxLength={15}
-                  className="bg-secondary/40 border-border/60 focus:border-primary transition-colors"
+                  className="bg-secondary/50 border-border/60 focus:border-primary transition-colors text-base sm:text-sm h-11"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5">
+              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
                 Email Address *
               </label>
               <Input
@@ -129,13 +129,13 @@ const ContactSection = () => {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 maxLength={255}
-                className="bg-secondary/40 border-border/60 focus:border-primary transition-colors"
+                className="bg-secondary/50 border-border/60 focus:border-primary transition-colors text-base sm:text-sm h-11"
                 required
               />
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5">
+              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
                 Your Message *
               </label>
               <Textarea
@@ -143,8 +143,8 @@ const ContactSection = () => {
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 maxLength={1000}
-                rows={5}
-                className="bg-secondary/40 border-border/60 focus:border-primary transition-colors resize-none"
+                rows={4}
+                className="bg-secondary/50 border-border/60 focus:border-primary transition-colors resize-none text-base sm:text-sm"
                 required
               />
               <div className="text-xs text-muted-foreground/50 text-right mt-1">{form.message.length}/1000</div>
@@ -153,7 +153,7 @@ const ContactSection = () => {
             {/* Submit Button */}
             <Button
               variant="hero"
-              className={`w-full gap-2 font-semibold transition-all ${formState === "success" ? "bg-emerald-500 hover:bg-emerald-600" : ""} ${formState === "error" ? "bg-destructive hover:bg-destructive" : ""}`}
+              className={`w-full gap-2 font-bold h-12 transition-all ${formState === "success" ? "bg-emerald-500 hover:bg-emerald-600" : ""} ${formState === "error" ? "bg-destructive hover:bg-destructive" : ""}`}
               disabled={formState === "loading" || formState === "success"}
             >
               {formState === "loading" && <><Loader2 size={16} className="animate-spin" /> Sending...</>}
@@ -163,28 +163,28 @@ const ContactSection = () => {
             </Button>
 
             {formState === "success" && (
-              <p className="text-center text-sm text-emerald-500 font-medium animate-fade-in">
+              <p className="text-center text-xs sm:text-sm text-emerald-500 font-medium animate-fade-in">
                 ✅ We received your message and will reply within 2 hours!
               </p>
             )}
           </form>
 
           {/* Contact Options */}
-          <div className="flex flex-col justify-center gap-5 opacity-0 animate-on-scroll" style={{ animationDelay: "0.1s" }}>
-            <div className="glass rounded-2xl p-6 card-glow border border-border/50 hover:border-accent/30 transition-all duration-300">
+          <div className="flex flex-col justify-center gap-4 sm:gap-5 opacity-0 animate-on-scroll" style={{ animationDelay: "0.1s" }}>
+            <div className="glass rounded-2xl p-5 sm:p-6 card-glow border border-border/50 hover:border-accent/30 transition-all duration-300">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-[#25D366]/15 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-[#25D366]/15 flex items-center justify-center shrink-0">
                   <MessageCircle className="text-[#25D366]" size={20} />
                 </div>
                 <div>
-                  <span className="font-bold text-sm block">WhatsApp — Fastest Reply</span>
+                  <span className="font-bold text-sm block text-foreground">WhatsApp — Fastest Reply</span>
                   <span className="text-xs text-muted-foreground">Usually responds within 15 minutes</span>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-xs sm:text-sm text-muted-foreground mb-4">
                 Drop us a message directly for instant quotes and quick answers.
               </p>
-              <Button variant="hero-outline" size="sm" asChild className="border-[#25D366]/30 hover:border-[#25D366] gap-2">
+              <Button variant="hero-outline" size="sm" asChild className="w-full sm:w-auto border-[#25D366]/30 hover:border-[#25D366] gap-2 h-10 font-semibold">
                 <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer">
                   <MessageCircle size={15} className="text-[#25D366]" />
                   Chat on WhatsApp
@@ -192,19 +192,19 @@ const ContactSection = () => {
               </Button>
             </div>
 
-            <div className="glass rounded-2xl p-6 card-glow border border-border/50 hover:border-primary/30 transition-all duration-300">
+            <div className="glass rounded-2xl p-5 sm:p-6 card-glow border border-border/50 hover:border-primary/30 transition-all duration-300">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                   <Mail className="text-primary" size={20} />
                 </div>
                 <div>
-                  <span className="font-bold text-sm block">Email Us</span>
+                  <span className="font-bold text-sm block text-foreground">Email Us</span>
                   <span className="text-xs text-muted-foreground">Replies within 24 hours</span>
                 </div>
               </div>
               <a
                 href={`mailto:${CONTACT_INFO.email}`}
-                className="text-sm text-primary font-semibold hover:underline"
+                className="text-xs sm:text-sm text-primary font-semibold hover:underline break-all"
               >
                 {CONTACT_INFO.email}
               </a>

@@ -68,34 +68,34 @@ const CostEstimatorSection = () => {
   };
 
   return (
-    <section id="estimator" className="py-24 relative overflow-hidden bg-secondary/10">
+    <section id="estimator" className="py-20 sm:py-24 relative overflow-hidden bg-secondary/10">
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[140px] pointer-events-none" />
 
-      <div ref={ref} className="container relative z-10">
-        <div className="text-center mb-16 opacity-0 animate-on-scroll">
-          <div className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-xs text-primary font-medium mb-3">
+      <div ref={ref} className="container relative z-10 px-4 sm:px-6">
+        <div className="text-center mb-10 sm:mb-16 opacity-0 animate-on-scroll">
+          <div className="inline-flex items-center gap-2 glass rounded-full px-3.5 py-1.5 text-xs text-primary font-semibold mb-3 border border-border/60">
             <Sparkles size={14} className="text-accent" />
             Interactive Scope & Price Calculator
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mt-2 mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-2 mb-3" style={{ fontFamily: "'Outfit', sans-serif" }}>
             Calculate Your Website Price
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
             Customize your website requirements and get an instant, transparent price estimate.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
           {/* Left 2 Cols: Controls */}
-          <div className="lg:col-span-2 space-y-8 glass rounded-2xl p-6 md:p-8 opacity-0 animate-on-scroll">
+          <div className="lg:col-span-2 space-y-6 sm:space-y-8 glass rounded-2xl p-5 sm:p-8 opacity-0 animate-on-scroll border border-border/60">
             {/* Step 1: Website Type */}
             <div>
-              <label className="text-sm font-semibold text-foreground uppercase tracking-wider block mb-4 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-primary/20 text-primary text-xs flex items-center justify-center font-bold">1</span>
-                Select Website Type
-              </label>
+              <div className="text-xs sm:text-sm font-bold text-foreground uppercase tracking-wider mb-3.5 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-extrabold shadow-sm">1</span>
+                <span>Select Website Type</span>
+              </div>
 
-              <div className="grid sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                 {siteTypes.map((type) => {
                   const isSelected = selectedType.id === type.id;
                   return (
@@ -103,17 +103,17 @@ const CostEstimatorSection = () => {
                       key={type.id}
                       type="button"
                       onClick={() => setSelectedType(type)}
-                      className={`text-left p-4 rounded-xl border transition-all duration-200 ${
+                      className={`text-left p-3.5 sm:p-4 rounded-xl border transition-all duration-200 active:scale-[0.99] ${
                         isSelected
-                          ? "border-primary bg-primary/10 ring-1 ring-primary/30"
-                          : "border-border/60 hover:border-border bg-secondary/20"
+                          ? "border-primary bg-primary/10 ring-2 ring-primary/40 shadow-sm"
+                          : "border-border/60 hover:border-border bg-secondary/30"
                       }`}
                     >
-                      <div className="flex justify-between items-start mb-1">
-                        <span className="font-semibold text-sm">{type.label}</span>
-                        <span className="text-xs text-accent font-medium">From ₹{type.basePrice}</span>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-bold text-sm text-foreground">{type.label}</span>
+                        <span className="text-xs text-accent font-bold bg-accent/10 px-2 py-0.5 rounded-full">From ₹{type.basePrice.toLocaleString("en-IN")}</span>
                       </div>
-                      <div className="text-xs text-muted-foreground">Est. {type.turnaround}</div>
+                      <div className="text-xs text-muted-foreground">Est. {type.turnaround} • {type.pages}</div>
                     </button>
                   );
                 })}
@@ -123,60 +123,76 @@ const CostEstimatorSection = () => {
             {/* Step 2: Page Count Slider */}
             <div>
               <div className="flex justify-between items-center mb-3">
-                <label className="text-sm font-semibold text-foreground uppercase tracking-wider flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-primary/20 text-primary text-xs flex items-center justify-center font-bold">2</span>
-                  Number of Pages
-                </label>
-                <span className="text-sm font-bold gradient-text">{pageCount} {pageCount === 1 ? "Page" : "Pages"}</span>
+                <div className="text-xs sm:text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-extrabold shadow-sm">2</span>
+                  <span>Number of Pages</span>
+                </div>
+                <span className="text-sm font-extrabold gradient-text bg-primary/10 px-2.5 py-0.5 rounded-full border border-primary/20">{pageCount} {pageCount === 1 ? "Page" : "Pages"}</span>
               </div>
-              <input
-                type="range"
-                min="1"
-                max="15"
-                value={pageCount}
-                onChange={(e) => setPageCount(Number(e.target.value))}
-                className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                <span>1 Page (Landing)</span>
-                <span>5 Pages (Standard)</span>
-                <span>15+ Pages (Enterprise)</span>
+
+              <div className="py-2">
+                <input
+                  type="range"
+                  min="1"
+                  max="15"
+                  value={pageCount}
+                  onChange={(e) => setPageCount(Number(e.target.value))}
+                  className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                />
+              </div>
+
+              {/* Mobile quick page presets */}
+              <div className="flex items-center justify-between gap-1.5 mt-2">
+                {[1, 3, 5, 8, 12, 15].map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setPageCount(preset)}
+                    className={`py-1 px-2.5 rounded-lg text-xs font-semibold transition-all ${
+                      pageCount === preset
+                        ? "bg-primary text-primary-foreground font-bold shadow-sm"
+                        : "bg-secondary/60 text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {preset}p
+                  </button>
+                ))}
               </div>
             </div>
 
             {/* Step 3: Add-on Features */}
             <div>
-              <label className="text-sm font-semibold text-foreground uppercase tracking-wider block mb-4 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-primary/20 text-primary text-xs flex items-center justify-center font-bold">3</span>
-                Select Add-on Features
-              </label>
+              <div className="text-xs sm:text-sm font-bold text-foreground uppercase tracking-wider mb-3.5 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-extrabold shadow-sm">3</span>
+                <span>Select Add-on Features</span>
+              </div>
 
-              <div className="grid sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                 {addonOptions.map((addon) => {
                   const isChecked = selectedAddons.includes(addon.id);
                   return (
                     <div
                       key={addon.id}
                       onClick={() => toggleAddon(addon.id)}
-                      className={`p-3.5 rounded-xl border cursor-pointer select-none transition-all duration-200 flex items-start gap-3 ${
+                      className={`p-3 sm:p-3.5 rounded-xl border cursor-pointer select-none transition-all duration-200 flex items-start gap-3 active:scale-[0.99] ${
                         isChecked
-                          ? "border-primary/60 bg-primary/5 text-foreground"
-                          : "border-border/50 bg-secondary/10 hover:border-border text-muted-foreground"
+                          ? "border-primary/60 bg-primary/10 text-foreground ring-1 ring-primary/30"
+                          : "border-border/50 bg-secondary/20 hover:border-border text-muted-foreground"
                       }`}
                     >
                       <div
-                        className={`w-5 h-5 rounded flex items-center justify-center mt-0.5 shrink-0 transition-colors ${
-                          isChecked ? "bg-primary text-primary-foreground" : "border border-border bg-background"
+                        className={`w-5 h-5 rounded-lg flex items-center justify-center mt-0.5 shrink-0 transition-colors ${
+                          isChecked ? "bg-primary text-primary-foreground shadow-sm" : "border border-border bg-background"
                         }`}
                       >
                         {isChecked && <Check size={12} strokeWidth={3} />}
                       </div>
-                      <div className="flex-1">
-                        <div className="flex justify-between items-center">
-                          <span className="text-xs font-semibold text-foreground">{addon.label}</span>
-                          <span className="text-xs font-medium text-accent">+₹{addon.price}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-center gap-1">
+                          <span className="text-xs font-bold text-foreground truncate">{addon.label}</span>
+                          <span className="text-xs font-bold text-accent shrink-0">+₹{addon.price}</span>
                         </div>
-                        <p className="text-[11px] text-muted-foreground mt-0.5">{addon.description}</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{addon.description}</p>
                       </div>
                     </div>
                   );
@@ -186,22 +202,22 @@ const CostEstimatorSection = () => {
           </div>
 
           {/* Right Col: Summary Card */}
-          <div className="glass rounded-2xl p-6 flex flex-col justify-between border-primary/20 opacity-0 animate-on-scroll h-full">
+          <div className="glass rounded-2xl p-5 sm:p-6 flex flex-col justify-between border border-primary/30 opacity-0 animate-on-scroll shadow-xl">
             <div>
-              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wider mb-6 pb-4 border-b border-border/50">
+              <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-wider mb-5 pb-3 border-b border-border/50">
                 <Calculator size={16} className="text-primary" />
-                Estimated Investment Breakdown
+                <span>Estimated Investment Breakdown</span>
               </div>
 
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between text-sm">
+              <div className="space-y-2.5 mb-6">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">{selectedType.label}</span>
-                  <span className="font-semibold">₹{selectedType.basePrice.toLocaleString("en-IN")}</span>
+                  <span className="font-semibold text-foreground">₹{selectedType.basePrice.toLocaleString("en-IN")}</span>
                 </div>
                 {extraPages > 0 && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Extra Pages ({extraPages})</span>
-                    <span className="font-semibold">+₹{pageCost.toLocaleString("en-IN")}</span>
+                  <div className="flex justify-between text-xs sm:text-sm">
+                    <span className="text-muted-foreground">Extra Pages ({extraPages} × ₹350)</span>
+                    <span className="font-semibold text-foreground">+₹{pageCost.toLocaleString("en-IN")}</span>
                   </div>
                 )}
                 {selectedAddons.map((id) => {
@@ -209,38 +225,38 @@ const CostEstimatorSection = () => {
                   if (!addon) return null;
                   return (
                     <div key={id} className="flex justify-between text-xs">
-                      <span className="text-muted-foreground">{addon.label}</span>
-                      <span className="font-medium text-accent">+₹{addon.price}</span>
+                      <span className="text-muted-foreground truncate mr-2">{addon.label}</span>
+                      <span className="font-semibold text-accent shrink-0">+₹{addon.price}</span>
                     </div>
                   );
                 })}
               </div>
 
-              <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 mb-6">
-                <div className="text-xs text-muted-foreground mb-1">Total Estimated Price</div>
-                <div className="text-3xl font-extrabold gradient-text">
+              <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 mb-6 text-center sm:text-left">
+                <div className="text-xs text-muted-foreground font-medium mb-1">Total Estimated Price</div>
+                <div className="text-3xl font-extrabold gradient-text" style={{ fontFamily: "'Outfit', sans-serif" }}>
                   ₹{totalEstimate.toLocaleString("en-IN")}
                 </div>
-                <div className="text-[11px] text-muted-foreground mt-1">
-                  Est. Delivery: {selectedType.turnaround} • Includes source code & 1yr free hosting support
+                <div className="text-[11px] text-muted-foreground mt-1.5 leading-snug">
+                  Est. Delivery: <strong className="text-foreground">{selectedType.turnaround}</strong> • Includes full code handover & hosting assistance
                 </div>
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               <Button
                 variant="hero"
                 size="lg"
-                className="w-full gap-2 shadow-lg"
+                className="w-full gap-2 font-bold shadow-lg h-12"
                 onClick={() => setDialogOpen(true)}
               >
-                Order This Custom Package <ArrowRight size={16} />
+                Order This Package <ArrowRight size={16} />
               </Button>
 
               <Button
                 variant="hero-outline"
                 size="lg"
-                className="w-full gap-2"
+                className="w-full gap-2 font-semibold h-12 border-[#25D366]/40 hover:border-[#25D366]"
                 asChild
               >
                 <a
@@ -248,7 +264,7 @@ const CostEstimatorSection = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <MessageCircle size={16} className="text-accent" />
+                  <MessageCircle size={16} className="text-[#25D366]" />
                   Send Quote to WhatsApp
                 </a>
               </Button>

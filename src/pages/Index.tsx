@@ -17,7 +17,7 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import AIAdvisorWidget from "@/components/AIAdvisorWidget";
 
 const Index = () => (
-  <div className="min-h-screen pb-16 md:pb-0">
+  <div className="min-h-screen pb-24 md:pb-0 overflow-x-hidden w-full">
     <ScrollProgressBar />
     <Navbar />
     <HeroSection />

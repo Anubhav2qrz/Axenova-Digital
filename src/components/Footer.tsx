@@ -37,15 +37,15 @@ const Footer = () => (
     {/* Background glow */}
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] bg-primary/4 blur-[100px] pointer-events-none" />
 
-    <div className="container relative z-10 pt-16 pb-8">
+    <div className="container relative z-10 px-4 sm:px-6 pt-12 sm:pt-16 pb-8">
       {/* Main grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 mb-10 sm:mb-12">
         {/* Brand column */}
-        <div className="col-span-2 md:col-span-1">
-          <div className="flex items-center gap-2 mb-4">
-            <img src="/logo.png" alt="Axenova Digital Logo" className="w-12 h-12 object-contain" />
+        <div className="sm:col-span-2 md:col-span-1">
+          <div className="flex items-center gap-2 mb-3 sm:mb-4">
+            <img src="/logo.png" alt="Axenova Digital Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mb-5">
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-xs mb-4 sm:mb-5">
             Building modern, high-performance websites that help Indian businesses dominate online.
           </p>
 
@@ -54,7 +54,7 @@ const Footer = () => (
             href={getWhatsAppLink("Hi Axenova! I'd like to discuss a website project.")}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-xs font-semibold text-[#25D366] bg-[#25D366]/10 border border-[#25D366]/20 px-4 py-2 rounded-full hover:bg-[#25D366]/20 transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-[#25D366] bg-[#25D366]/10 border border-[#25D366]/20 px-3.5 py-2 rounded-full hover:bg-[#25D366]/20 transition-colors"
           >
             <MessageCircle size={14} />
             Let's Talk! WhatsApp Us →
@@ -63,11 +63,11 @@ const Footer = () => (
 
         {/* Quick Links */}
         <div>
-          <h4 className="font-bold text-sm mb-5 text-foreground">Quick Links</h4>
-          <ul className="space-y-3">
+          <h4 className="font-bold text-sm mb-3 sm:mb-5 text-foreground">Quick Links</h4>
+          <ul className="space-y-2.5 sm:space-y-3">
             {quickLinks.map((link) => (
               <li key={link.href}>
-                <a href={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <a href={link.href} className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors">
                   {link.label}
                 </a>
               </li>
@@ -77,11 +77,11 @@ const Footer = () => (
 
         {/* Services */}
         <div>
-          <h4 className="font-bold text-sm mb-5 text-foreground">Our Services</h4>
-          <ul className="space-y-3">
+          <h4 className="font-bold text-sm mb-3 sm:mb-5 text-foreground">Our Services</h4>
+          <ul className="space-y-2.5 sm:space-y-3">
             {serviceLinks.map((link) => (
               <li key={link.label}>
-                <a href={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <a href={link.href} className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors">
                   {link.label}
                 </a>
               </li>
@@ -91,27 +91,27 @@ const Footer = () => (
 
         {/* Contact */}
         <div>
-          <h4 className="font-bold text-sm mb-5 text-foreground">Get In Touch</h4>
-          <ul className="space-y-3">
+          <h4 className="font-bold text-sm mb-3 sm:mb-5 text-foreground">Get In Touch</h4>
+          <ul className="space-y-2.5 sm:space-y-3">
             <li>
-              <a href={`mailto:${CONTACT_INFO.email}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
-                <Mail size={14} /> {CONTACT_INFO.email}
+              <a href={`mailto:${CONTACT_INFO.email}`} className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors break-all">
+                <Mail size={14} className="shrink-0" /> {CONTACT_INFO.email}
               </a>
             </li>
             <li>
-              <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-[#25D366] transition-colors">
-                <MessageCircle size={14} /> {CONTACT_INFO.whatsapp.display}
+              <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground hover:text-[#25D366] transition-colors">
+                <MessageCircle size={14} className="shrink-0" /> {CONTACT_INFO.whatsapp.display}
               </a>
             </li>
             <li>
-              <span className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Globe size={14} /> India — Remote Worldwide
+              <span className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                <Globe size={14} className="shrink-0" /> India — Remote Worldwide
               </span>
             </li>
           </ul>
 
           {/* Socials */}
-          <div className="flex gap-2.5 mt-5">
+          <div className="flex gap-2.5 mt-4 sm:mt-5">
             {socials.map((s) => (
               <a
                 key={s.label}
@@ -119,7 +119,7 @@ const Footer = () => (
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.label}
-                className={`w-9 h-9 rounded-lg glass border border-border/60 flex items-center justify-center text-muted-foreground ${s.color} transition-all hover:scale-110 hover:border-primary/30`}
+                className={`w-9 h-9 rounded-xl glass border border-border/60 flex items-center justify-center text-muted-foreground ${s.color} transition-all hover:scale-110 hover:border-primary/30`}
               >
                 <s.icon size={16} />
               </a>
@@ -129,10 +129,10 @@ const Footer = () => (
       </div>
 
       {/* Trust badges bar */}
-      <div className="border-y border-border/40 py-5 mb-8">
-        <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8">
+      <div className="border-y border-border/40 py-4 sm:py-5 mb-6 sm:mb-8">
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-8">
           {trustBadges.map((badge) => (
-            <span key={badge} className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">
+            <span key={badge} className="text-[11px] sm:text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">
               {badge}
             </span>
           ))}
@@ -140,7 +140,7 @@ const Footer = () => (
       </div>
 
       {/* Bottom bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
         <p>
           © {new Date().getFullYear()} <span className="font-semibold text-foreground">Axenova Digital</span>. All rights reserved.
         </p>
@@ -156,9 +156,9 @@ const Footer = () => (
         </div>
         <button
           onClick={scrollToTop}
-          className="flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors glass px-3 py-2 rounded-lg border border-border/50 hover:border-primary/30"
+          className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors glass px-3 py-1.5 rounded-lg border border-border/50 hover:border-primary/30"
         >
-          <ArrowUp size={14} /> Back to Top
+          <ArrowUp size={13} /> Back to Top
         </button>
       </div>
     </div>

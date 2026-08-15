@@ -107,6 +107,12 @@ const AIAdvisorWidget = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    const handleOpenEvent = () => setOpen(true);
+    window.addEventListener("open-ai-advisor", handleOpenEvent);
+    return () => window.removeEventListener("open-ai-advisor", handleOpenEvent);
+  }, []);
+
+  useEffect(() => {
     if (open) {
       setTimeout(() => inputRef.current?.focus(), 300);
     }
@@ -166,23 +172,23 @@ const AIAdvisorWidget = () => {
 
   return (
     <>
-      {/* Floating trigger button */}
-      <div className="fixed bottom-[68px] left-3 z-50 md:bottom-8 md:left-8">
+      {/* Floating trigger button - desktop only (mobile has sticky dock) */}
+      <div className="hidden md:block fixed bottom-8 left-8 z-50">
         <button
           onClick={() => setOpen(true)}
-          className={`relative flex items-center gap-2 glass border border-primary/30 rounded-full px-3 py-2 md:px-4 md:py-3 shadow-xl hover:shadow-primary/20 transition-all duration-300 hover:scale-105 group ${open ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+          className={`relative flex items-center gap-2.5 glass border border-primary/40 rounded-full px-4 py-3 shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 group ${open ? "opacity-0 pointer-events-none" : "opacity-100"}`}
           aria-label="Open AI Website Advisor"
         >
           {/* Pulse ring */}
           <span className="absolute inset-0 rounded-full border border-primary/40 animate-ripple" />
           <span className="absolute inset-0 rounded-full border border-primary/20 animate-ripple" style={{ animationDelay: "0.5s" }} />
 
-          <span className="relative flex h-7 w-7 md:h-8 md:w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent shadow-inner">
-            <Sparkles size={15} className="text-white" />
+          <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent shadow-inner text-white">
+            <Sparkles size={16} />
           </span>
           <div className="text-left">
             <p className="text-xs font-bold text-foreground leading-tight">AI Advisor</p>
-            <p className="hidden md:block text-[10px] text-muted-foreground leading-none">Find your perfect plan</p>
+            <p className="text-[10px] text-muted-foreground leading-none">Find your perfect plan</p>
           </div>
         </button>
       </div>
@@ -193,14 +199,13 @@ const AIAdvisorWidget = () => {
       >
         {/* Backdrop */}
         <div
-          className={`absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"}`}
+          className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"}`}
           onClick={() => setOpen(false)}
         />
 
         {/* Chat panel */}
         <div
-          className={`absolute bottom-0 left-0 right-0 md:bottom-6 md:left-auto md:right-6 md:w-[400px] glass border border-border/60 rounded-t-3xl md:rounded-3xl shadow-2xl flex flex-col transition-all duration-500 ease-out ${open ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}
-          style={{ maxHeight: "90vh", minHeight: "500px" }}
+          className={`absolute bottom-0 left-0 right-0 md:bottom-6 md:left-auto md:right-6 md:w-[420px] glass border border-border/70 rounded-t-3xl md:rounded-3xl shadow-2xl flex flex-col transition-all duration-500 ease-out h-[85dvh] max-h-[650px] md:h-[600px] ${open ? "translate-y-0 opacity-100" : "translate-y-full md:translate-y-8 opacity-0"}`}
         >
           {/* Header */}
           <div className="flex items-center gap-3 p-4 border-b border-border/50">

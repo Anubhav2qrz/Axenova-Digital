@@ -161,13 +161,13 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+        <form onSubmit={handleSubmit} className="space-y-3.5 mt-2">
           <Input
             placeholder="Full Name"
             value={form.name}
             onChange={(e) => handleChange("name", e.target.value)}
             maxLength={100}
-            className="bg-secondary/50 border-border"
+            className="bg-secondary/50 border-border text-base sm:text-sm h-11"
             required
           />
           <Input
@@ -176,7 +176,7 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
             value={form.email}
             onChange={(e) => handleChange("email", e.target.value)}
             maxLength={255}
-            className="bg-secondary/50 border-border"
+            className="bg-secondary/50 border-border text-base sm:text-sm h-11"
             required
           />
           <Input
@@ -184,7 +184,7 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
             placeholder="Phone Number (10 digits)"
             value={form.phone}
             onChange={(e) => handleChange("phone", e.target.value.replace(/\D/g, "").slice(0, 10))}
-            className="bg-secondary/50 border-border"
+            className="bg-secondary/50 border-border text-base sm:text-sm h-11"
             required
           />
           <Textarea
@@ -193,10 +193,10 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
             onChange={(e) => handleChange("requirements", e.target.value)}
             maxLength={1000}
             rows={3}
-            className="bg-secondary/50 border-border resize-none"
+            className="bg-secondary/50 border-border resize-none text-base sm:text-sm"
           />
 
-          <Button variant="hero" className="w-full" type="submit" disabled={loading}>
+          <Button variant="hero" className="w-full h-11 font-bold shadow-lg" type="submit" disabled={loading}>
             {loading ? (
               <>
                 <Loader2 size={16} className="mr-2 animate-spin" /> Processing...
@@ -206,37 +206,37 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
             )}
           </Button>
 
-          <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
+          <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1 pt-1">
             <ShieldCheck size={14} className="text-accent" />
             Secured by Razorpay • 100% Safe Payment
           </p>
 
-          <div className="mt-6 text-center">
+          <div className="mt-4 text-center">
             <button
               type="button"
               onClick={() => setShowFallback(!showFallback)}
-              className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline transition-colors"
+              className="text-xs sm:text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline transition-colors"
             >
               Having trouble with Razorpay? Use Alternative Payment
             </button>
           </div>
 
           {showFallback && (
-            <div className="mt-4 p-4 border border-border rounded-lg bg-secondary/30 text-center animate-in fade-in slide-in-from-top-4">
-              <p className="text-sm font-medium mb-2">Alternative Payment Options</p>
-              <p className="text-sm text-muted-foreground mb-4">
+            <div className="mt-4 p-4 border border-border rounded-xl bg-secondary/30 text-center animate-in fade-in slide-in-from-top-4">
+              <p className="text-sm font-semibold mb-1">Alternative Payment Options</p>
+              <p className="text-xs text-muted-foreground mb-3">
                 You can directly pay via UPI using the QR code or UPI ID below.
               </p>
 
-              <div className="bg-white p-2 w-36 h-36 mx-auto mb-3 rounded-md flex items-center justify-center border text-center text-xs text-black relative">
+              <div className="bg-white p-2 w-32 h-32 mx-auto mb-3 rounded-lg flex items-center justify-center border text-center text-xs text-black relative shadow-sm">
                 <img src="/qr-code.png" alt="Payment QR Code" className="w-full h-full object-contain" />
               </div>
 
-              <div className="bg-secondary/50 p-2 rounded border border-border mt-4 mb-2">
-                <p className="font-semibold select-all text-sm">axenova@ybl</p>
+              <div className="bg-secondary/60 p-2 rounded-lg border border-border mt-3 mb-2">
+                <p className="font-bold select-all text-xs sm:text-sm text-foreground">axenova@ybl</p>
               </div>
 
-              <p className="text-xs text-muted-foreground mt-3">
+              <p className="text-[11px] text-muted-foreground mt-2 leading-tight">
                 After successful payment, please take a screenshot and contact us on WhatsApp with your payment proof.
               </p>
             </div>

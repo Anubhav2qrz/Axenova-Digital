@@ -115,10 +115,10 @@ const ProjectTrackerDialog = ({ open, onOpenChange }: ProjectTrackerDialogProps)
             placeholder="e.g. 9876543210 or AX-1092"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-secondary/50 border-border flex-1"
+            className="bg-secondary/50 border-border flex-1 text-base sm:text-sm h-11"
             required
           />
-          <Button variant="hero" type="submit" disabled={loading} className="gap-1.5 shrink-0">
+          <Button variant="hero" type="submit" disabled={loading} className="gap-1.5 shrink-0 h-11 font-bold">
             {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
             Track
           </Button>

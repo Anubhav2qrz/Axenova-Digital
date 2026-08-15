@@ -52,39 +52,41 @@ const WhyChooseUsSection = () => {
   const ref = useScrollAnimation();
 
   return (
-    <section className="py-24 relative overflow-hidden mesh-bg">
+    <section className="py-20 sm:py-24 relative overflow-hidden mesh-bg">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-primary/5 blur-[120px] pointer-events-none" />
 
-      <div ref={ref} className="container relative z-10">
-        <div className="text-center mb-16 opacity-0 animate-on-scroll">
+      <div ref={ref} className="container relative z-10 px-4 sm:px-6">
+        <div className="text-center mb-12 sm:mb-16 opacity-0 animate-on-scroll">
           <span className="badge-pill mb-3">Why Us</span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-3 mb-3" style={{ fontFamily: "'Outfit', sans-serif" }}>
             Why Businesses Choose Axenova Digital
           </h2>
-          <p className="text-muted-foreground max-w-lg mx-auto">
+          <p className="text-sm sm:text-base text-muted-foreground max-w-lg mx-auto">
             More than a web agency — we're your digital growth partner.
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {reasons.map((r, i) => (
             <div
               key={r.title}
-              className={`group glass rounded-2xl p-6 hover-lift card-glow opacity-0 animate-on-scroll border border-border/50 hover:border-${r.color.split('-')[1]}-500/30 transition-all duration-300`}
+              className="group glass rounded-2xl p-5 sm:p-6 hover-lift card-glow opacity-0 animate-on-scroll border border-border/50 transition-all duration-300 flex flex-col justify-between"
               style={{ animationDelay: `${i * 0.1}s` }}
             >
-              {/* Icon */}
-              <div className={`w-12 h-12 rounded-xl ${r.bg} flex items-center justify-center mb-5 transition-all duration-300`}>
-                <r.icon className={r.color} size={24} />
+              <div>
+                {/* Icon */}
+                <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${r.bg} flex items-center justify-center mb-4 sm:mb-5 transition-all duration-300 shadow-sm`}>
+                  <r.icon className={r.color} size={22} />
+                </div>
+
+                {/* Title */}
+                <h3 className="font-bold text-base mb-1.5 text-foreground">{r.title}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed mb-5">{r.description}</p>
               </div>
 
-              {/* Title */}
-              <h3 className="font-bold text-base mb-2">{r.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed mb-6">{r.description}</p>
-
               {/* Metric bar */}
-              <div className="mt-auto">
-                <div className="flex justify-between items-center mb-2">
+              <div className="mt-auto pt-2 border-t border-border/30">
+                <div className="flex justify-between items-center mb-1.5">
                   <span className="text-xs text-muted-foreground font-medium">{r.metricLabel}</span>
                   <span className={`text-sm font-bold ${r.color}`}>{r.metric}</span>
                 </div>
@@ -100,15 +102,15 @@ const WhyChooseUsSection = () => {
         </div>
 
         {/* Social proof row */}
-        <div className="mt-14 flex flex-wrap items-center justify-center gap-6 opacity-0 animate-on-scroll">
+        <div className="mt-10 sm:mt-14 flex flex-wrap items-center justify-center gap-3 sm:gap-6 opacity-0 animate-on-scroll">
           {[
             { icon: Star, label: "4.9/5 Average Rating", color: "text-amber-500" },
             { icon: Shield, label: "100% Money-Back Guarantee", color: "text-emerald-500" },
             { icon: Clock, label: "On-Time Delivery Promise", color: "text-blue-500" },
           ].map((item) => (
-            <div key={item.label} className="flex items-center gap-2 glass px-4 py-2 rounded-full border border-border/50">
-              <item.icon size={15} className={item.color} />
-              <span className="text-xs font-semibold text-foreground">{item.label}</span>
+            <div key={item.label} className="flex items-center gap-2 glass px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-border/50 text-xs font-semibold text-foreground shadow-sm">
+              <item.icon size={15} className={`${item.color} shrink-0`} />
+              <span>{item.label}</span>
             </div>
           ))}
         </div>
