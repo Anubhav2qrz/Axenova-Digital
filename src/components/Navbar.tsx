@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Sun, Moon, Sparkles, Layers, Image as ImageIcon, Tag, Star, Mail, HelpCircle, MessageCircle } from "lucide-react";
+import { Menu, X, Sun, Moon, Sparkles, Layers, Image as ImageIcon, Tag, Star, Mail, HelpCircle, MessageCircle, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/useTheme";
 import { getWhatsAppLink } from "@/config/contact";
@@ -36,6 +36,11 @@ const Navbar = () => {
     };
   }, [mobileOpen]);
 
+  const handleOpenCareers = () => {
+    setMobileOpen(false);
+    window.dispatchEvent(new CustomEvent("open-careers"));
+  };
+
   return (
     <>
       <nav
@@ -54,7 +59,7 @@ const Navbar = () => {
           </a>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-7">
+          <div className="hidden md:flex items-center gap-6 lg:gap-7">
             {navLinks.slice(0, 5).map((link) => (
               <a
                 key={link.href}
@@ -64,6 +69,19 @@ const Navbar = () => {
                 {link.label}
               </a>
             ))}
+
+            {/* Careers Link with Hiring Badge */}
+            <button
+              type="button"
+              onClick={handleOpenCareers}
+              className="relative flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group cursor-pointer"
+            >
+              <Briefcase size={14} className="text-accent group-hover:scale-110 transition-transform" />
+              <span>Join Us</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-accent/15 text-accent border border-accent/25 px-1.5 py-0.2 rounded-full">
+                Hiring
+              </span>
+            </button>
 
             <button
               onClick={toggleTheme}
@@ -120,7 +138,7 @@ const Navbar = () => {
           />
 
           {/* Menu Card */}
-          <div className="absolute top-[68px] left-3 right-3 glass rounded-2xl p-5 border border-border/60 shadow-2xl space-y-3 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="absolute top-[68px] left-3 right-3 glass rounded-2xl p-4 sm:p-5 border border-border/60 shadow-2xl space-y-3 animate-in fade-in slide-in-from-top-4 duration-300 max-h-[85dvh] overflow-y-auto">
             <div className="grid grid-cols-2 gap-2">
               {navLinks.map((link) => {
                 const Icon = link.icon;
@@ -129,7 +147,7 @@ const Navbar = () => {
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center gap-2.5 p-3 rounded-xl bg-secondary/40 hover:bg-primary/10 border border-border/40 text-xs font-semibold text-foreground transition-all active:scale-95"
+                    className="flex items-center gap-2.5 p-2.5 sm:p-3 rounded-xl bg-secondary/40 hover:bg-primary/10 border border-border/40 text-xs font-semibold text-foreground transition-all active:scale-95"
                   >
                     <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
                       <Icon size={14} />
@@ -139,6 +157,27 @@ const Navbar = () => {
                 );
               })}
             </div>
+
+            {/* Careers banner in mobile menu */}
+            <button
+              type="button"
+              onClick={handleOpenCareers}
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-accent/15 to-primary/15 border border-accent/30 text-left active:scale-98 transition-transform"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent shrink-0">
+                  <Briefcase size={16} />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <span>Join Our Team</span>
+                    <span className="text-[9px] bg-accent text-accent-foreground font-extrabold px-1.5 py-0.2 rounded-full uppercase">We're Hiring</span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">Explore open roles & submit resume</p>
+                </div>
+              </div>
+              <Sparkles size={14} className="text-accent shrink-0" />
+            </button>
 
             <div className="pt-2 border-t border-border/40 space-y-2">
               <Button

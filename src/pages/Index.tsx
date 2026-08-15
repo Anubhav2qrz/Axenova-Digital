@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
@@ -15,27 +16,39 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import MobileStickyBar from "@/components/MobileStickyBar";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import AIAdvisorWidget from "@/components/AIAdvisorWidget";
+import CareersDialog from "@/components/CareersDialog";
 
-const Index = () => (
-  <div className="min-h-screen pb-24 md:pb-0 overflow-x-hidden w-full">
-    <ScrollProgressBar />
-    <Navbar />
-    <HeroSection />
-    <ServicesSection />
-    <ProcessSection />
-    <PortfolioSection />
-    <PricingSection />
-    <CostEstimatorSection />
-    <ComparisonSection />
-    <WhyChooseUsSection />
-    <ReviewsSection />
-    <FaqSection />
-    <ContactSection />
-    <Footer />
-    <WhatsAppButton />
-    <MobileStickyBar />
-    <AIAdvisorWidget />
-  </div>
-);
+const Index = () => {
+  const [careersOpen, setCareersOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpenCareers = () => setCareersOpen(true);
+    window.addEventListener("open-careers", handleOpenCareers);
+    return () => window.removeEventListener("open-careers", handleOpenCareers);
+  }, []);
+
+  return (
+    <div className="min-h-screen pb-24 md:pb-0 overflow-x-hidden w-full">
+      <ScrollProgressBar />
+      <Navbar />
+      <HeroSection />
+      <ServicesSection />
+      <ProcessSection />
+      <PortfolioSection />
+      <PricingSection />
+      <CostEstimatorSection />
+      <ComparisonSection />
+      <WhyChooseUsSection />
+      <ReviewsSection />
+      <FaqSection />
+      <ContactSection />
+      <Footer />
+      <WhatsAppButton />
+      <MobileStickyBar />
+      <AIAdvisorWidget />
+      <CareersDialog open={careersOpen} onOpenChange={setCareersOpen} />
+    </div>
+  );
+};
 
 export default Index;
