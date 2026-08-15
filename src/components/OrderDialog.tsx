@@ -30,7 +30,7 @@ import {
   FileText,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { generateInvoiceNumber, sendAdminOrderAlert, downloadInvoicePDF, openPrintableInvoice, type InvoiceData } from "@/lib/invoice";
+import { generateInvoiceNumber, sendAdminOrderAlert, sendInvoiceEmail, downloadInvoicePDF, openPrintableInvoice, type InvoiceData } from "@/lib/invoice";
 
 interface OrderDialogProps {
   open: boolean;
@@ -171,7 +171,8 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
         }]);
       }
 
-      // 3. Dispatch instant alert email to Admin
+      // 3. Dispatch instant confirmation email to Client and alert email to Admin
+      sendInvoiceEmail(orderInvoiceData).catch((e) => console.error("Client invoice email error:", e));
       sendAdminOrderAlert(orderInvoiceData).catch((e) => console.error("Admin alert error:", e));
 
       toast({
