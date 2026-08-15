@@ -21,15 +21,14 @@ import {
   ArrowRight,
   ExternalLink,
   Smartphone,
-  FileText,
-  Download,
   Mail,
   HelpCircle,
   Sparkles,
   ArrowLeft,
+  Clock,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { generateInvoiceNumber, downloadInvoicePDF, openPrintableInvoice, sendInvoiceEmail, type InvoiceData } from "@/lib/invoice";
+import { generateInvoiceNumber } from "@/lib/invoice";
 
 interface OrderDialogProps {
   open: boolean;
@@ -53,7 +52,6 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
   const [copiedUpi, setCopiedUpi] = useState(false);
   const [copiedId, setCopiedId] = useState(false);
   const [utrNumber, setUtrNumber] = useState("");
-  const [emailSent, setEmailSent] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -92,6 +90,7 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
     try {
       const orderEntry = {
         order_id: friendlyOrderId,
+        invoice_no: invoiceNo,
         plan: plan.name,
         amount: plan.amount,
         name: form.name.trim(),
@@ -126,45 +125,25 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
 
     setLoading(true);
 
-    const invoiceData: InvoiceData = {
-      invoiceNo: currentInvoiceNo || generateInvoiceNumber(currentOrderId),
-      orderId: currentOrderId,
-      date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-      customerName: form.name.trim(),
-      customerEmail: form.email.trim(),
-      customerPhone: form.phone.trim(),
-      planName: plan.name,
-      amount: plan.amount,
-      upiRef: cleanUtr,
-      status: "payment_submitted",
-      requirements: form.requirements.trim(),
-    };
-
     try {
-      // 1. Update order in Supabase with UTR and status
+      // Update order in Supabase with UTR, invoice_no and status
       await supabase
         .from("orders")
         .update({
           upi_ref: cleanUtr,
+          invoice_no: currentInvoiceNo || generateInvoiceNumber(currentOrderId),
           status: "payment_submitted",
         })
         .eq("order_id", currentOrderId);
 
-      // 2. Dispatch automated invoice email via EmailJS
-      const sent = await sendInvoiceEmail(invoiceData);
-      setEmailSent(sent);
-
       toast({
-        title: "Payment Submitted Successfully! 🎉",
-        description: sent
-          ? `Invoice #${invoiceData.invoiceNo} has been sent to ${form.email}`
-          : `Order recorded! You can download your invoice right away.`,
+        title: "Payment Reference Submitted! ⏳",
+        description: `UTR ${cleanUtr} recorded. We will verify and email your official invoice to ${form.email}.`,
       });
 
       setStep("confirmed");
     } catch (err) {
-      console.error("Error finalizing payment verification:", err);
-      // Still allow step progression so customer gets their invoice
+      console.error("Error submitting payment reference:", err);
       setStep("confirmed");
     } finally {
       setLoading(false);
@@ -195,46 +174,6 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
     onOpenChange(val);
   };
 
-  const handleDownloadInvoice = () => {
-    if (!plan) return;
-    const invoiceData: InvoiceData = {
-      invoiceNo: currentInvoiceNo || generateInvoiceNumber(currentOrderId),
-      orderId: currentOrderId,
-      date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-      customerName: form.name.trim(),
-      customerEmail: form.email.trim(),
-      customerPhone: form.phone.trim(),
-      planName: plan.name,
-      amount: plan.amount,
-      upiRef: utrNumber.trim() || "Direct UPI",
-      status: "payment_submitted",
-      requirements: form.requirements.trim(),
-    };
-    downloadInvoicePDF(invoiceData);
-    toast({
-      title: "PDF Invoice Downloaded! 📄",
-      description: `Saved as Axenova_Invoice_${currentOrderId}.pdf`,
-    });
-  };
-
-  const handleViewInvoice = () => {
-    if (!plan) return;
-    const invoiceData: InvoiceData = {
-      invoiceNo: currentInvoiceNo || generateInvoiceNumber(currentOrderId),
-      orderId: currentOrderId,
-      date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-      customerName: form.name.trim(),
-      customerEmail: form.email.trim(),
-      customerPhone: form.phone.trim(),
-      planName: plan.name,
-      amount: plan.amount,
-      upiRef: utrNumber.trim() || "Direct UPI",
-      status: "payment_submitted",
-      requirements: form.requirements.trim(),
-    };
-    openPrintableInvoice(invoiceData);
-  };
-
   // UPI intent link with exact amount, payee, and order note
   const upiIntentUrl = plan
     ? `upi://pay?pa=${CONTACT_INFO.upi.id}&pn=${encodeURIComponent(CONTACT_INFO.upi.name)}&am=${plan.amount}&tn=${encodeURIComponent(`Axenova Order ${currentOrderId}`)}&cu=INR`
@@ -246,18 +185,17 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
     : "";
 
   // WhatsApp confirmation text with UTR included
-  const whatsappMessage = `Hi Axenova Digital! I have completed payment for the *${plan?.name} Plan* (${plan?.price}).
+  const whatsappMessage = `Hi Axenova Digital! I have completed the UPI payment for the *${plan?.name} Plan* (${plan?.price}).
 
 *Order Details:*
 • Order ID: ${currentOrderId}
-• Invoice No: ${currentInvoiceNo}
 • Name: ${form.name.trim()}
 • Phone: ${form.phone.trim()}
 • Email: ${form.email.trim()}
-• UPI UTR / Ref No: ${utrNumber.trim() || "Attached screenshot"}
+• UPI UTR / Ref No: ${utrNumber.trim()}
 ${form.requirements.trim() ? `• Requirements: ${form.requirements.trim()}` : ""}
 
-Please confirm my order.`;
+Here is my payment confirmation screenshot. Please verify and send my tax invoice.`;
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -284,7 +222,7 @@ Please confirm my order.`;
               />
               <Input
                 type="email"
-                placeholder="Email Address (Invoice will be sent here)"
+                placeholder="Email Address (Official invoice will be sent here)"
                 value={form.email}
                 onChange={(e) => handleChange("email", e.target.value)}
                 maxLength={255}
@@ -322,7 +260,7 @@ Please confirm my order.`;
 
               <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1 pt-1">
                 <ShieldCheck size={14} className="text-accent" />
-                Direct UPI Transfer • Instant Official Tax Invoice
+                Direct UPI Transfer • Verified Official Tax Invoice
               </p>
             </form>
           </>
@@ -406,7 +344,7 @@ Please confirm my order.`;
                   Enter 12-Digit UPI Reference (UTR)
                 </label>
                 <span className="text-[10px] text-accent font-semibold flex items-center gap-0.5">
-                  <ShieldCheck size={12} /> Instant Invoice
+                  <ShieldCheck size={12} /> Secure Verification
                 </span>
               </div>
 
@@ -422,7 +360,7 @@ Please confirm my order.`;
               <p className="text-[11px] text-muted-foreground flex items-start gap-1">
                 <HelpCircle size={13} className="shrink-0 mt-0.5 text-primary" />
                 <span>
-                  Found in your UPI app transaction details as <strong>UPI Ref No. / UTR / Txn ID</strong>.
+                  Found in your UPI app transaction receipt as <strong>UPI Ref No. / UTR / Txn ID</strong>.
                 </span>
               </p>
 
@@ -434,11 +372,11 @@ Please confirm my order.`;
               >
                 {loading ? (
                   <>
-                    <Loader2 size={14} className="animate-spin" /> Verifying &amp; Generating Invoice...
+                    <Loader2 size={14} className="animate-spin" /> Submitting Payment Reference...
                   </>
                 ) : (
                   <>
-                    <FileText size={15} /> Submit Payment &amp; Get Invoice
+                    <ShieldCheck size={15} /> Submit for Verification
                   </>
                 )}
               </Button>
@@ -465,71 +403,57 @@ Please confirm my order.`;
 
         {step === "confirmed" && (
           <div className="flex flex-col items-center text-center py-3 animate-fade-in space-y-4">
-            {/* Success Icon */}
-            <div className="w-16 h-16 rounded-full bg-emerald-500/15 border-2 border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-lg shadow-emerald-500/10">
-              <CheckCircle2 size={36} />
+            {/* Clock / In-Progress Icon */}
+            <div className="w-16 h-16 rounded-full bg-amber-500/15 border-2 border-amber-500/30 flex items-center justify-center text-amber-400 shadow-lg shadow-amber-500/10">
+              <Clock size={36} />
             </div>
 
             <div>
               <h3 className="text-xl font-extrabold text-foreground font-outfit">
-                Payment Submitted! 🎉
+                Payment Under Verification ⏳
               </h3>
               <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
-                Thank you, <strong>{form.name}</strong>! Your order for the <strong>{plan?.name} Plan</strong> has been recorded.
+                Thank you, <strong>{form.name}</strong>! Your payment reference for the <strong>{plan?.name} Plan</strong> has been received.
               </p>
             </div>
 
-            {/* Invoice & Order Details Box */}
+            {/* Order Summary Box */}
             <div className="w-full p-3.5 rounded-2xl bg-secondary/50 border border-border/70 text-left space-y-2 text-xs">
               <div className="flex justify-between items-center pb-2 border-b border-border/50">
                 <span className="text-muted-foreground">Order ID:</span>
                 <span className="font-mono font-bold text-primary">{currentOrderId}</span>
               </div>
               <div className="flex justify-between items-center pb-2 border-b border-border/50">
-                <span className="text-muted-foreground">Invoice No:</span>
-                <span className="font-mono font-bold text-foreground">{currentInvoiceNo}</span>
-              </div>
-              <div className="flex justify-between items-center pb-2 border-b border-border/50">
                 <span className="text-muted-foreground">Amount:</span>
                 <span className="font-bold text-foreground">{plan?.price}</span>
               </div>
+              <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                <span className="text-muted-foreground">Submitted UTR:</span>
+                <span className="font-mono font-bold text-foreground">{utrNumber}</span>
+              </div>
               <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">UPI Reference:</span>
-                <span className="font-mono font-bold text-accent">{utrNumber || "Verified"}</span>
+                <span className="text-muted-foreground">Status:</span>
+                <span className="font-semibold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20 text-[11px]">
+                  ● Verification in Progress
+                </span>
               </div>
             </div>
 
-            {/* Email Dispatch Notice */}
-            <div className="w-full p-2.5 rounded-xl bg-primary/10 border border-primary/20 text-[11px] text-primary flex items-center gap-2 text-left">
-              <Mail size={16} className="shrink-0" />
+            {/* Invoice Delivery Information Note */}
+            <div className="w-full p-3 rounded-xl bg-primary/10 border border-primary/20 text-[11px] text-primary flex items-start gap-2 text-left leading-relaxed">
+              <Mail size={16} className="shrink-0 mt-0.5" />
               <span>
-                An official tax invoice has been sent to <strong className="underline">{form.email}</strong>.
+                Our team is matching your UTR (<strong>{utrNumber}</strong>) with our bank records. Your official <strong>Tax Invoice PDF</strong> and project onboarding details will be emailed to <strong className="underline">{form.email}</strong> right after verification.
               </span>
             </div>
 
             {/* Actions */}
             <div className="w-full space-y-2 pt-1">
-              <Button
-                variant="hero"
-                className="w-full h-11 font-bold shadow-lg gap-2 text-xs"
-                onClick={handleDownloadInvoice}
-              >
-                <Download size={16} /> Download Official PDF Invoice
-              </Button>
-
-              <Button
-                variant="outline"
-                className="w-full h-9 font-semibold gap-2 text-xs border-border/80"
-                onClick={handleViewInvoice}
-              >
-                <FileText size={15} /> View &amp; Print Invoice
-              </Button>
-
               <a
                 href={getWhatsAppLink(whatsappMessage)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold shadow-md shadow-[#25D366]/20 transition-all active:scale-98"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold shadow-md shadow-[#25D366]/20 transition-all active:scale-98"
               >
                 <MessageCircle size={16} />
                 Send Confirmation on WhatsApp
@@ -542,7 +466,7 @@ Please confirm my order.`;
                 className="w-full text-xs text-muted-foreground hover:text-foreground"
                 onClick={() => handleClose(false)}
               >
-                Done
+                Done / Close
               </Button>
             </div>
           </div>

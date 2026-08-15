@@ -26,13 +26,16 @@ import {
   Download,
   Copy,
   CheckCircle2,
+  Loader2,
+  Send,
+  XCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminData, type ProjectItem, type PlanItem, type ReviewItem, type OrderItem } from "@/context/AdminDataContext";
-import { openPrintableInvoice, downloadInvoicePDF, generateInvoiceNumber, type InvoiceData } from "@/lib/invoice";
+import { openPrintableInvoice, downloadInvoicePDF, generateInvoiceNumber, sendInvoiceEmail, type InvoiceData } from "@/lib/invoice";
 
 const DEFAULT_PASSCODE = import.meta.env.VITE_ADMIN_PASSCODE || "axenova2026";
 
@@ -82,6 +85,49 @@ const AdminPage = () => {
     text: "",
     rating: 5,
   });
+
+  const [verifyingId, setVerifyingId] = useState<string | null>(null);
+
+  const handleVerifyAndSendInvoice = async (o: OrderItem) => {
+    setVerifyingId(o.id);
+    try {
+      const invData: InvoiceData = {
+        invoiceNo: o.invoice_no || generateInvoiceNumber(o.order_id || o.id),
+        orderId: o.order_id || o.id,
+        date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+        customerName: o.name,
+        customerEmail: o.email,
+        customerPhone: o.phone,
+        planName: o.plan,
+        amount: o.amount,
+        upiRef: o.upi_ref || "Verified UPI",
+        status: "verified",
+        requirements: o.requirements,
+      };
+
+      // 1. Dispatch official invoice email to client's email
+      const emailSent = await sendInvoiceEmail(invData);
+
+      // 2. Update status in database
+      await updateOrderStatus(o.id, "verified");
+
+      toast({
+        title: "Order Verified & Tax Invoice Sent! 🎉",
+        description: emailSent
+          ? `Official Tax Invoice #${invData.invoiceNo} has been emailed to ${o.email}.`
+          : `Order verified! Status updated to Verified & Paid.`,
+      });
+    } catch (err) {
+      console.error("Failed to verify order:", err);
+      toast({
+        title: "Error verifying order",
+        description: "Please check console for details",
+        variant: "destructive",
+      });
+    } finally {
+      setVerifyingId(null);
+    }
+  };
 
   // Login handler
   const handleLogin = (e: React.FormEvent) => {
@@ -732,78 +778,131 @@ const AdminPage = () => {
                             <span className="text-primary font-semibold">₹{o.amount.toLocaleString("en-IN")}</span>
                           </td>
                           <td className="p-4">
-                            <select
-                              value={o.status || "pending_payment"}
-                              onChange={(e) => updateOrderStatus(o.id, e.target.value)}
-                              className="h-8 rounded-lg bg-secondary/80 border border-border/60 px-2 text-xs font-semibold"
-                            >
-                              <option value="pending_payment">⏳ Pending Payment</option>
-                              <option value="payment_submitted">📩 Payment Submitted</option>
-                              <option value="verified">✅ Verified &amp; Paid</option>
-                              <option value="paid">✅ Paid</option>
-                              <option value="in_progress">🚧 In Progress</option>
-                              <option value="completed">🎉 Completed</option>
-                              <option value="cancelled">❌ Cancelled</option>
-                            </select>
+                            <div className="space-y-1.5">
+                              {o.status === "verified" || o.status === "paid" ? (
+                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                                  <CheckCircle2 size={12} /> Verified &amp; Paid
+                                </span>
+                              ) : o.status === "payment_submitted" ? (
+                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-full animate-pulse">
+                                  <Clock size={12} /> Verification Pending
+                                </span>
+                              ) : o.status === "cancelled" ? (
+                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-400 bg-rose-500/15 border border-rose-500/30 px-2 py-0.5 rounded-full">
+                                  <XCircle size={12} /> Cancelled / Fake
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
+                                  ⏳ Draft / Pending
+                                </span>
+                              )}
+
+                              <select
+                                value={o.status || "pending_payment"}
+                                onChange={(e) => updateOrderStatus(o.id, e.target.value)}
+                                className="h-7 w-full rounded-md bg-secondary/80 border border-border/60 px-1.5 text-[11px] font-medium text-muted-foreground block"
+                              >
+                                <option value="pending_payment">Draft / Pending</option>
+                                <option value="payment_submitted">Payment Submitted</option>
+                                <option value="verified">✅ Verified &amp; Paid</option>
+                                <option value="in_progress">🚧 In Progress</option>
+                                <option value="completed">🎉 Completed</option>
+                                <option value="cancelled">❌ Cancelled / Fake</option>
+                              </select>
+                            </div>
                           </td>
                           <td className="p-4 text-muted-foreground whitespace-nowrap">
                             {new Date(o.created_at).toLocaleDateString()}
                           </td>
                           <td className="p-4 text-right">
                             <div className="flex items-center justify-end gap-1.5">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  const invData: InvoiceData = {
-                                    invoiceNo: o.invoice_no || generateInvoiceNumber(o.order_id || o.id),
-                                    orderId: o.order_id || o.id,
-                                    date: new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-                                    customerName: o.name,
-                                    customerEmail: o.email,
-                                    customerPhone: o.phone,
-                                    planName: o.plan,
-                                    amount: o.amount,
-                                    upiRef: o.upi_ref,
-                                    status: o.status,
-                                    requirements: o.requirements,
-                                  };
-                                  downloadInvoicePDF(invData);
-                                  toast({
-                                    title: "Invoice PDF Downloaded",
-                                    description: `Saved as Axenova_Invoice_${o.order_id || o.id}.pdf`,
-                                  });
-                                }}
-                                className="h-8 text-xs font-semibold gap-1"
-                                title="Download PDF directly"
-                              >
-                                <Download size={13} /> PDF
-                              </Button>
+                              {o.status !== "verified" && o.status !== "paid" ? (
+                                <>
+                                  <Button
+                                    variant="default"
+                                    size="sm"
+                                    onClick={() => handleVerifyAndSendInvoice(o)}
+                                    disabled={verifyingId === o.id}
+                                    className="h-8 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white gap-1 shadow-sm"
+                                  >
+                                    {verifyingId === o.id ? (
+                                      <>
+                                        <Loader2 size={12} className="animate-spin" /> Verifying...
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Send size={12} /> Verify &amp; Send Invoice
+                                      </>
+                                    )}
+                                  </Button>
 
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  const invData: InvoiceData = {
-                                    invoiceNo: o.invoice_no || generateInvoiceNumber(o.order_id || o.id),
-                                    orderId: o.order_id || o.id,
-                                    date: new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-                                    customerName: o.name,
-                                    customerEmail: o.email,
-                                    customerPhone: o.phone,
-                                    planName: o.plan,
-                                    amount: o.amount,
-                                    upiRef: o.upi_ref,
-                                    status: o.status,
-                                    requirements: o.requirements,
-                                  };
-                                  openPrintableInvoice(invData);
-                                }}
-                                className="h-8 text-xs font-semibold gap-1 text-muted-foreground hover:text-foreground"
-                                title="View & Print"
-                              >
-                                <FileText size={13} /> View
-                              </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => updateOrderStatus(o.id, "cancelled")}
+                                    className="h-8 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 p-2"
+                                    title="Mark as Fake / Cancelled"
+                                  >
+                                    <XCircle size={14} />
+                                  </Button>
+                                </>
+                              ) : (
+                                <>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      const invData: InvoiceData = {
+                                        invoiceNo: o.invoice_no || generateInvoiceNumber(o.order_id || o.id),
+                                        orderId: o.order_id || o.id,
+                                        date: new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+                                        customerName: o.name,
+                                        customerEmail: o.email,
+                                        customerPhone: o.phone,
+                                        planName: o.plan,
+                                        amount: o.amount,
+                                        upiRef: o.upi_ref,
+                                        status: o.status,
+                                        requirements: o.requirements,
+                                      };
+                                      downloadInvoicePDF(invData);
+                                      toast({
+                                        title: "Official Invoice Downloaded",
+                                        description: `Saved as Axenova_Invoice_${o.order_id || o.id}.pdf`,
+                                      });
+                                    }}
+                                    className="h-8 text-xs font-semibold gap-1"
+                                    title="Download Verified PDF Invoice"
+                                  >
+                                    <Download size={13} /> PDF
+                                  </Button>
+
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      const invData: InvoiceData = {
+                                        invoiceNo: o.invoice_no || generateInvoiceNumber(o.order_id || o.id),
+                                        orderId: o.order_id || o.id,
+                                        date: new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+                                        customerName: o.name,
+                                        customerEmail: o.email,
+                                        customerPhone: o.phone,
+                                        planName: o.plan,
+                                        amount: o.amount,
+                                        upiRef: o.upi_ref,
+                                        status: o.status,
+                                        requirements: o.requirements,
+                                      };
+                                      openPrintableInvoice(invData);
+                                    }}
+                                    className="h-8 text-xs font-semibold gap-1 text-muted-foreground hover:text-foreground"
+                                    title="View & Print Invoice"
+                                  >
+                                    <FileText size={13} /> View
+                                  </Button>
+                                </>
+                              )}
                             </div>
                           </td>
                         </tr>
