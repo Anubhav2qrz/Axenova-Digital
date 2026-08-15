@@ -18,13 +18,13 @@ const TeamCard = ({ member }: { member: TeamMember }) => {
     <div className="group glass rounded-3xl p-5 sm:p-6 border border-border/60 hover:border-primary/40 transition-all duration-300 card-glow flex flex-col justify-between max-w-sm w-full mx-auto shadow-xl hover:-translate-y-1">
       <div>
         {/* Dedicated Image Space */}
-        <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden mb-5 bg-gradient-to-br from-secondary/60 via-secondary/30 to-background border border-border/60 flex items-center justify-center group-hover:border-primary/40 transition-colors">
+        <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden mb-5 bg-gradient-to-br from-secondary/60 via-secondary/30 to-background border border-border/60 flex items-center justify-center group-hover:border-primary/40 transition-colors shadow-inner">
           {member.image && !imageError ? (
             <img
               src={member.image}
               alt={member.name}
               onError={() => setImageError(true)}
-              className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
             <div className="flex flex-col items-center justify-center p-6 text-center">

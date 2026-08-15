@@ -2,7 +2,7 @@ export interface TeamMember {
   id: string;
   name: string;
   role: string;
-  image?: string; // Place your image path here e.g. "/team/anubhav.jpg" or an external URL
+  image?: string; // Place your image path here e.g. "/team/anubhav-goon.jpg" or an external URL
   initials: string;
   bio?: string;
   badge?: string;
@@ -19,13 +19,14 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "anubhav-goon",
     name: "Anubhav Goon",
-    role: "Founder & Lead Developer",
-    badge: "Founder",
-    image: "", // Put your image URL or local path here (e.g. "/anubhav.png" or "/team/anubhav.jpg")
+    role: "Founder & CEO",
+    badge: "Founder & CEO",
+    image: "/team/anubhav-goon.jpg",
     initials: "AG",
-    bio: "Full-stack developer and founder leading web engineering, architecture, and client digital experiences.",
+    bio: "Leading full-stack engineering, web architecture, and digital growth at Axenova Digital to build cutting-edge web experiences for businesses.",
     socials: {
       github: "https://github.com/Anubhav2qrz",
+      linkedin: "https://linkedin.com/company/axenova-digital",
       email: "axenovadigital@gmail.com",
     },
   },
