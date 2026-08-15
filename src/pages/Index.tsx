@@ -8,6 +8,7 @@ import PricingSection from "@/components/PricingSection";
 import CostEstimatorSection from "@/components/CostEstimatorSection";
 import ComparisonSection from "@/components/ComparisonSection";
 import WhyChooseUsSection from "@/components/WhyChooseUsSection";
+import TeamSection from "@/components/TeamSection";
 import ReviewsSection from "@/components/ReviewsSection";
 import FaqSection from "@/components/FaqSection";
 import ContactSection from "@/components/ContactSection";
@@ -55,6 +56,7 @@ const Index = ({ scrollTo }: IndexProps) => {
       <CostEstimatorSection />
       <ComparisonSection />
       <WhyChooseUsSection />
+      <TeamSection />
       <ReviewsSection />
       <FaqSection />
       <ContactSection />

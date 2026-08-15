@@ -22,6 +22,7 @@ const App = () => (
             <Route path="/services" element={<Index scrollTo="services" />} />
             <Route path="/portfolio" element={<Index scrollTo="portfolio" />} />
             <Route path="/pricing" element={<Index scrollTo="pricing" />} />
+            <Route path="/team" element={<Index scrollTo="team" />} />
             <Route path="/about" element={<Index scrollTo="about" />} />
             <Route path="/contact" element={<Index scrollTo="contact" />} />
             <Route path="/reviews" element={<Index scrollTo="reviews" />} />

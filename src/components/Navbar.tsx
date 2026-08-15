@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Sun, Moon, Sparkles, Layers, Image as ImageIcon, Tag, Star, Mail, HelpCircle, MessageCircle, Briefcase, Search } from "lucide-react";
+import { Menu, X, Sun, Moon, Sparkles, Layers, Image as ImageIcon, Tag, Star, Mail, HelpCircle, MessageCircle, Briefcase, Search, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/useTheme";
 import { getWhatsAppLink } from "@/config/contact";
@@ -9,6 +9,7 @@ const navLinks = [
   { label: "Services", href: "#services", icon: Layers },
   { label: "Portfolio", href: "#portfolio", icon: ImageIcon },
   { label: "Pricing", href: "#pricing", icon: Tag },
+  { label: "Team", href: "#team", icon: Users },
   { label: "Reviews", href: "#reviews", icon: Star },
   { label: "FAQ", href: "#faq", icon: HelpCircle },
   { label: "Contact", href: "#contact", icon: Mail },
