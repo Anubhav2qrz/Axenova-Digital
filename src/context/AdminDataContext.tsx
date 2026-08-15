@@ -167,7 +167,7 @@ interface AdminDataContextType {
   addReview: (r: Omit<ReviewItem, "id" | "date" | "helpful">) => Promise<void>;
   syncAllToSupabase: () => Promise<SyncResult>;
   updateOrderStatus: (id: string, status: string) => Promise<void>;
-  deleteOrder: (id: string) => Promise<void>;
+  deleteOrder: (id: string) => Promise<{ success: boolean; error?: string }>;
   refreshAllData: () => Promise<void>;
 }
 
@@ -465,12 +465,26 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     } catch {}
   };
 
-  const deleteOrder = async (id: string) => {
-    setOrders((prev) => prev.filter((o) => o.id !== id));
+  const deleteOrder = async (id: string): Promise<{ success: boolean; error?: string }> => {
+    setOrders((prev) => prev.filter((o) => o.id !== id && o.order_id !== id));
     try {
-      await supabase.from("orders").delete().eq("id", id);
-    } catch (e) {
-      console.error("Failed to delete order from Supabase:", e);
+      // 1. Try deleting by primary key id
+      let { error } = await supabase.from("orders").delete().eq("id", id);
+      
+      // 2. If no match or error, try deleting by order_id
+      if (error) {
+        const res2 = await supabase.from("orders").delete().eq("order_id", id);
+        error = res2.error;
+      }
+
+      if (error) {
+        console.error("Failed to delete order from Supabase:", error);
+        return { success: false, error: error.message };
+      }
+      return { success: true };
+    } catch (e: any) {
+      console.error("Delete order exception:", e);
+      return { success: false, error: e?.message || "Unknown error" };
     }
   };
 

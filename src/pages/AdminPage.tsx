@@ -145,11 +145,19 @@ const AdminPage = () => {
     if (!window.confirm(`Are you sure you want to delete the order record for "${name || "this client"}"?`)) {
       return;
     }
-    await deleteOrder(id);
-    toast({
-      title: "Order Deleted 🗑️",
-      description: "The order has been removed from database.",
-    });
+    const res = await deleteOrder(id);
+    if (res.success) {
+      toast({
+        title: "Order Deleted 🗑️",
+        description: "The order has been permanently removed from database.",
+      });
+    } else {
+      toast({
+        title: "Could not delete order",
+        description: res.error || "Database permission error. Please disable RLS on the orders table in Supabase.",
+        variant: "destructive",
+      });
+    }
   };
 
   // Login handler
