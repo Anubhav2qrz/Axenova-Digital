@@ -332,7 +332,7 @@ const AdminPage = () => {
             </div>
             <div>
               <p className="text-xs text-muted-foreground font-medium">Portfolio Works</p>
-              <p className="text-2xl font-bold" style={{ fontFamily: "'Outfit', sans-serif" }}>{projects.length}</p>
+              <p className="text-2xl font-bold" style={{ fontFamily: "'Outfit', sans-serif" }}>{(projects || []).length}</p>
             </div>
           </div>
 
@@ -342,7 +342,7 @@ const AdminPage = () => {
             </div>
             <div>
               <p className="text-xs text-muted-foreground font-medium">Total Reviews</p>
-              <p className="text-2xl font-bold" style={{ fontFamily: "'Outfit', sans-serif" }}>{reviews.length}</p>
+              <p className="text-2xl font-bold" style={{ fontFamily: "'Outfit', sans-serif" }}>{(reviews || []).length}</p>
             </div>
           </div>
 
@@ -352,7 +352,7 @@ const AdminPage = () => {
             </div>
             <div>
               <p className="text-xs text-muted-foreground font-medium">Pricing Plans</p>
-              <p className="text-2xl font-bold" style={{ fontFamily: "'Outfit', sans-serif" }}>{plans.length}</p>
+              <p className="text-2xl font-bold" style={{ fontFamily: "'Outfit', sans-serif" }}>{(plans || []).length}</p>
             </div>
           </div>
 
@@ -362,7 +362,7 @@ const AdminPage = () => {
             </div>
             <div>
               <p className="text-xs text-muted-foreground font-medium">Orders / Leads</p>
-              <p className="text-2xl font-bold" style={{ fontFamily: "'Outfit', sans-serif" }}>{orders.length}</p>
+              <p className="text-2xl font-bold" style={{ fontFamily: "'Outfit', sans-serif" }}>{(orders || []).length}</p>
             </div>
           </div>
         </div>
@@ -370,10 +370,10 @@ const AdminPage = () => {
         {/* Tab Navigation */}
         <div className="flex border-b border-border/60 mb-8 overflow-x-auto gap-2">
           {[
-            { id: "projects", label: "💼 Portfolio Works", count: projects.length },
-            { id: "reviews", label: "💬 Reviews Manager", count: reviews.length },
-            { id: "pricing", label: "🏷️ Pricing Plans", count: plans.length },
-            { id: "orders", label: "📦 Orders & Leads", count: orders.length },
+            { id: "projects", label: "💼 Portfolio Works", count: (projects || []).length },
+            { id: "reviews", label: "💬 Reviews Manager", count: (reviews || []).length },
+            { id: "pricing", label: "🏷️ Pricing Plans", count: (plans || []).length },
+            { id: "orders", label: "📦 Orders & Leads", count: (orders || []).length },
           ].map((tab) => (
             <button
               key={tab.id}
