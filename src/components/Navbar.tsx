@@ -54,9 +54,14 @@ const Navbar = () => {
         <div className="container flex items-center justify-between px-4 sm:px-6">
           <a href="/" className="flex items-center gap-2 group" aria-label="Axenova Digital Home">
             <img
-              src="/logo.png"
+              src="/logo-dark.png"
               alt="Axenova Digital Logo"
-              className="w-10 h-10 sm:w-12 sm:h-12 object-contain rounded-xl transition-transform group-hover:scale-105 shadow-sm"
+              className="hidden dark:block h-9 sm:h-11 w-auto max-w-[170px] sm:max-w-[210px] object-contain transition-transform group-hover:scale-105"
+            />
+            <img
+              src="/logo-light.png"
+              alt="Axenova Digital Logo"
+              className="block dark:hidden h-9 sm:h-11 w-auto max-w-[170px] sm:max-w-[210px] object-contain transition-transform group-hover:scale-105"
             />
             <span className="sr-only">Axenova Digital</span>
           </a>

@@ -3,13 +3,18 @@
   "short_name": "Axenova",
   "icons": [
     {
-      "src": "/logo.png",
+      "src": "/favicon-app.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/logo.png",
+      "src": "/favicon-app.png",
       "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo-mark.png",
+      "sizes": "145x130",
       "type": "image/png"
     }
   ],
