@@ -26,9 +26,11 @@ import {
   Sparkles,
   ArrowLeft,
   Clock,
+  Download,
+  FileText,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { generateInvoiceNumber, sendAdminOrderAlert, type InvoiceData } from "@/lib/invoice";
+import { generateInvoiceNumber, sendAdminOrderAlert, downloadInvoicePDF, openPrintableInvoice, type InvoiceData } from "@/lib/invoice";
 
 interface OrderDialogProps {
   open: boolean;
@@ -485,6 +487,64 @@ Here is my payment confirmation screenshot. Please verify and send my tax invoic
 
             {/* Actions */}
             <div className="w-full space-y-2 pt-1">
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  variant="hero"
+                  size="sm"
+                  className="w-full text-xs font-bold gap-1.5 shadow-md"
+                  onClick={() => {
+                    if (!plan) return;
+                    const invData: InvoiceData = {
+                      invoiceNo: currentInvoiceNo || generateInvoiceNumber(currentOrderId),
+                      orderId: currentOrderId,
+                      date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+                      customerName: form.name.trim(),
+                      customerEmail: form.email.trim(),
+                      customerPhone: form.phone.trim(),
+                      planName: plan.name,
+                      amount: plan.amount,
+                      upiRef: utrNumber,
+                      status: "payment_submitted",
+                      requirements: form.requirements.trim(),
+                    };
+                    downloadInvoicePDF(invData);
+                    toast({
+                      title: "Invoice Downloaded! 📄",
+                      description: `Saved as Axenova_Invoice_${currentOrderId}.pdf`,
+                    });
+                  }}
+                >
+                  <Download size={14} /> Download PDF
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-xs font-semibold gap-1.5 border-border/80"
+                  onClick={() => {
+                    if (!plan) return;
+                    const invData: InvoiceData = {
+                      invoiceNo: currentInvoiceNo || generateInvoiceNumber(currentOrderId),
+                      orderId: currentOrderId,
+                      date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+                      customerName: form.name.trim(),
+                      customerEmail: form.email.trim(),
+                      customerPhone: form.phone.trim(),
+                      planName: plan.name,
+                      amount: plan.amount,
+                      upiRef: utrNumber,
+                      status: "payment_submitted",
+                      requirements: form.requirements.trim(),
+                    };
+                    openPrintableInvoice(invData);
+                  }}
+                >
+                  <FileText size={14} /> View Invoice
+                </Button>
+              </div>
+
               <a
                 href={getWhatsAppLink(whatsappMessage)}
                 target="_blank"
