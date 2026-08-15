@@ -100,9 +100,22 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
         status: "pending_payment",
       };
 
-      await supabase.from("orders").insert([orderEntry]);
+      const { error } = await supabase.from("orders").insert([orderEntry]);
+      if (error) {
+        console.warn("Supabase initial insert warning:", error.message);
+        // Fallback minimal insert if new columns aren't present yet
+        await supabase.from("orders").insert([{
+          plan: plan.name,
+          amount: plan.amount,
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          requirements: form.requirements.trim(),
+          status: "pending_payment",
+        }]).catch(() => {});
+      }
     } catch (err) {
-      console.error("Supabase insert error (fallback enabled):", err);
+      console.error("Supabase insert error:", err);
     } finally {
       setLoading(false);
       setStep("payment");
@@ -140,15 +153,45 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
         requirements: form.requirements.trim(),
       };
 
-      // 1. Update order in Supabase with UTR, invoice_no and status
-      await supabase
+      // 1. Try to update existing row by order_id
+      const { data, error } = await supabase
         .from("orders")
         .update({
           upi_ref: cleanUtr,
           invoice_no: currentInvoiceNo || generateInvoiceNumber(currentOrderId),
           status: "payment_submitted",
         })
-        .eq("order_id", currentOrderId);
+        .eq("order_id", currentOrderId)
+        .select();
+
+      // If no row was updated or order_id wasn't found, insert new record
+      if (!data || data.length === 0 || error) {
+        const { error: insertErr } = await supabase.from("orders").insert([{
+          order_id: currentOrderId,
+          invoice_no: currentInvoiceNo || generateInvoiceNumber(currentOrderId),
+          upi_ref: cleanUtr,
+          plan: plan.name,
+          amount: plan.amount,
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          requirements: form.requirements.trim(),
+          status: "payment_submitted",
+        }]);
+
+        if (insertErr) {
+          // Fallback minimal insert
+          await supabase.from("orders").insert([{
+            plan: plan.name,
+            amount: plan.amount,
+            name: form.name.trim(),
+            email: form.email.trim(),
+            phone: form.phone.trim(),
+            requirements: `UTR: ${cleanUtr} | ${form.requirements.trim()}`,
+            status: "payment_submitted",
+          }]).catch(() => {});
+        }
+      }
 
       // 2. Dispatch instant alert email to Admin
       sendAdminOrderAlert(orderInvoiceData).catch((e) => console.error("Admin alert error:", e));

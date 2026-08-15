@@ -88,6 +88,17 @@ const AdminPage = () => {
   });
 
   const [verifyingId, setVerifyingId] = useState<string | null>(null);
+  const [isRefreshingOrders, setIsRefreshingOrders] = useState<boolean>(false);
+
+  const handleRefreshOrders = async () => {
+    setIsRefreshingOrders(true);
+    await refreshAllData();
+    setIsRefreshingOrders(false);
+    toast({
+      title: "Orders Synced 🔄",
+      description: `Loaded ${(orders || []).length} order records from database.`,
+    });
+  };
 
   const handleVerifyAndSendInvoice = async (o: OrderItem) => {
     setVerifyingId(o.id);
@@ -731,8 +742,15 @@ const AdminPage = () => {
               <p className="text-xs text-muted-foreground">
                 Showing all submitted client orders from Razorpay and lead forms
               </p>
-              <Button variant="hero-outline" size="sm" onClick={refreshAllData} className="gap-1.5 text-xs">
-                <RefreshCw size={13} /> Refresh List
+              <Button
+                variant="hero-outline"
+                size="sm"
+                onClick={handleRefreshOrders}
+                disabled={isRefreshingOrders}
+                className="gap-1.5 text-xs font-semibold"
+              >
+                <RefreshCw size={13} className={isRefreshingOrders ? "animate-spin text-primary" : ""} />
+                {isRefreshingOrders ? "Syncing..." : "Refresh List"}
               </Button>
             </div>
 
