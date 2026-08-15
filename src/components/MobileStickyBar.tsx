@@ -12,7 +12,7 @@ const MobileStickyBar = () => {
 
   return (
     <>
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 glass border-t border-border/70 px-2.5 pt-2 pb-[max(0.65rem,env(safe-area-inset-bottom))] grid grid-cols-4 gap-1.5 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-2xl bg-background/95">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 glass-dock border-t border-white/10 px-2.5 pt-2 pb-[max(0.65rem,env(safe-area-inset-bottom))] grid grid-cols-4 gap-1.5 shadow-[0_-12px_40px_rgba(0,0,0,0.25)] backdrop-blur-3xl bg-background/85">
         {/* 1. AI Advisor */}
         <button
           type="button"

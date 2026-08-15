@@ -47,8 +47,10 @@
     --shadow-card: 0 10px 40px -10px hsl(222 20% 40% / 0.12);
     --shadow-neon: 0 0 20px hsl(217 91% 53% / 0.4), 0 0 40px hsl(217 91% 53% / 0.2);
 
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(200, 215, 235, 0.6);
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-border: rgba(220, 230, 245, 0.75);
+    --glass-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    --glass-shadow: 0 12px 36px -8px rgba(0, 30, 80, 0.08), 0 4px 16px -2px rgba(0, 30, 80, 0.04);
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 25% 8%;
@@ -60,56 +62,58 @@
     --sidebar-ring: 217 91% 53%;
   }
 
-  /* ───────────── Dark Theme ───────────── */
+  /* ───────────── Dark Theme (Apple Obsidian Glass) ───────────── */
   .dark {
-    --background: 222 28% 3%;
-    --foreground: 210 25% 95%;
+    --background: 224 32% 4%;
+    --foreground: 210 25% 96%;
 
-    --card: 222 25% 6%;
-    --card-foreground: 210 25% 95%;
+    --card: 224 28% 7%;
+    --card-foreground: 210 25% 96%;
 
-    --popover: 222 25% 6%;
-    --popover-foreground: 210 25% 95%;
+    --popover: 224 28% 7%;
+    --popover-foreground: 210 25% 96%;
 
     --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 222 22% 12%;
-    --secondary-foreground: 210 22% 88%;
+    --secondary: 224 24% 12%;
+    --secondary-foreground: 210 22% 90%;
 
-    --muted: 222 22% 10%;
-    --muted-foreground: 217 18% 56%;
+    --muted: 224 24% 10%;
+    --muted-foreground: 217 18% 60%;
 
     --accent: 174 85% 48%;
-    --accent-foreground: 222 28% 3%;
+    --accent-foreground: 224 32% 4%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 222 22% 14%;
-    --input: 222 22% 14%;
+    --border: 224 24% 16%;
+    --input: 224 24% 16%;
     --ring: 217 91% 60%;
 
     --gradient-primary: linear-gradient(135deg, hsl(217, 91%, 60%), hsl(174, 85%, 48%));
-    --gradient-hero: linear-gradient(180deg, hsl(222, 28%, 3%) 0%, hsl(222, 35%, 7%) 50%, hsl(222, 28%, 3%) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(222, 25%, 8%) 0%, hsl(222, 25%, 5%) 100%);
-    --gradient-glow: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsl(217 91% 60% / 0.07), transparent 40%);
-    --gradient-mesh: radial-gradient(at 40% 20%, hsl(217 91% 60% / 0.12) 0px, transparent 50%), radial-gradient(at 80% 0%, hsl(174 85% 48% / 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, hsl(217 91% 60% / 0.06) 0px, transparent 50%);
+    --gradient-hero: linear-gradient(180deg, hsl(224, 32% 4%) 0%, hsl(224, 35%, 8%) 50%, hsl(224, 32%, 4%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(224, 28%, 9%) 0%, hsl(224, 28%, 6%) 100%);
+    --gradient-glow: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsl(217 91% 60% / 0.1), transparent 40%);
+    --gradient-mesh: radial-gradient(at 40% 20%, hsl(217 91% 60% / 0.15) 0px, transparent 50%), radial-gradient(at 80% 0%, hsl(174 85% 48% / 0.1) 0px, transparent 50%), radial-gradient(at 0% 50%, hsl(217 91% 60% / 0.08) 0px, transparent 50%);
 
-    --shadow-glow: 0 0 40px -10px hsl(217 91% 60% / 0.35);
-    --shadow-card: 0 10px 40px -10px hsl(0 0% 0% / 0.6);
-    --shadow-neon: 0 0 20px hsl(217 91% 60% / 0.5), 0 0 40px hsl(217 91% 60% / 0.25);
+    --shadow-glow: 0 0 50px -10px hsl(217 91% 60% / 0.4);
+    --shadow-card: 0 20px 50px -15px rgba(0, 0, 0, 0.7);
+    --shadow-neon: 0 0 25px hsl(217 91% 60% / 0.5), 0 0 50px hsl(217 91% 60% / 0.25);
 
-    --glass-bg: hsla(222, 25%, 6%, 0.72);
-    --glass-border: hsla(222, 22%, 18%, 0.55);
+    --glass-bg: rgba(15, 23, 42, 0.68);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    --glass-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5), 0 4px 16px -2px rgba(0, 0, 0, 0.3);
 
-    --sidebar-background: 222 25% 5%;
-    --sidebar-foreground: 210 22% 88%;
+    --sidebar-background: 224 28% 6%;
+    --sidebar-foreground: 210 22% 90%;
     --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 22% 12%;
-    --sidebar-accent-foreground: 210 22% 88%;
-    --sidebar-border: 222 22% 14%;
+    --sidebar-accent: 224 24% 12%;
+    --sidebar-accent-foreground: 210 22% 90%;
+    --sidebar-border: 224 24% 16%;
     --sidebar-ring: 217 91% 60%;
   }
 }
@@ -136,13 +140,36 @@
 }
 
 @layer components {
-  /* ── Glass Effect ── */
+  /* ── Apple Liquid Glass Effect ── */
   .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(28px) saturate(190%);
+    -webkit-backdrop-filter: blur(28px) saturate(190%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight), var(--glass-shadow);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  }
+
+  .glass:hover {
+    border-color: rgba(255, 255, 255, 0.22);
+  }
+
+  /* ── Apple Vision Glass Dock ── */
+  .glass-dock {
+    background: var(--glass-bg);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight), 0 20px 50px -10px rgba(0, 0, 0, 0.35);
+  }
+
+  /* ── Apple Vision Glass Pill ── */
+  .glass-pill {
     background: var(--glass-bg);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid var(--glass-border);
-    box-shadow: 0 4px 24px -4px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
+    box-shadow: var(--glass-highlight);
   }
 
   /* ── Gradient Utilities ── */
@@ -183,7 +210,7 @@
   /* ── Card Glow ── */
   .card-glow {
     position: relative;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .card-glow::after {
     content: '';
@@ -193,11 +220,11 @@
     background: var(--gradient-primary);
     opacity: 0;
     z-index: -1;
-    filter: blur(12px);
+    filter: blur(14px);
     transition: opacity 0.4s ease;
   }
   .card-glow:hover::after {
-    opacity: 0.25;
+    opacity: 0.35;
   }
 
   /* ── Neon Border ── */
