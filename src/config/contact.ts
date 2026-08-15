@@ -5,9 +5,14 @@ export const CONTACT_INFO = {
     message: "Hi, I want a website",
   },
   email: "axenovadigital@gmail.com",
+  upi: {
+    id: "axenova@ybl",
+    name: "Axenova Digital",
+  },
 };
 
 export const getWhatsAppLink = (message?: string) => {
   const msg = message || CONTACT_INFO.whatsapp.message;
   return `https://wa.me/${CONTACT_INFO.whatsapp.number}?text=${encodeURIComponent(msg)}`;
 };
+
