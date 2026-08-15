@@ -10,29 +10,57 @@ const ROTATING_WORDS = [
   "SaaS Platforms",
 ];
 
-const useRotatingWord = (words: string[], interval = 3200) => {
+const SmoothRotatingWord = () => {
   const [index, setIndex] = useState(0);
-  const [stage, setStage] = useState<"entering" | "active" | "exiting">("active");
+  const [prevIndex, setPrevIndex] = useState<number | null>(null);
+  const [animating, setAnimating] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setStage("exiting");
+      setPrevIndex(index);
+      setIndex((curr) => (curr + 1) % ROTATING_WORDS.length);
+      setAnimating(true);
 
-      setTimeout(() => {
-        setIndex((prev) => (prev + 1) % words.length);
-        setStage("entering");
+      const animTimeout = setTimeout(() => {
+        setAnimating(false);
+        setPrevIndex(null);
+      }, 700);
 
-        // Smooth glide in on next frame
-        setTimeout(() => {
-          setStage("active");
-        }, 50);
-      }, 420);
-    }, interval);
+      return () => clearTimeout(animTimeout);
+    }, 3200);
 
     return () => clearInterval(timer);
-  }, [words, interval]);
+  }, [index]);
 
-  return { word: words[index], stage };
+  return (
+    <span className="relative inline-flex items-center justify-center align-baseline min-w-[200px] min-[420px]:min-w-[270px] sm:min-w-[340px] md:min-w-[440px] h-[1.25em] overflow-hidden select-none">
+      {/* Exiting word */}
+      {animating && prevIndex !== null && (
+        <span
+          key={`prev-${prevIndex}`}
+          className="absolute inset-0 flex items-center justify-center gradient-text-shine whitespace-nowrap will-change-transform pointer-events-none"
+          style={{
+            animation: "heroSlideOut 700ms cubic-bezier(0.16, 1, 0.3, 1) forwards",
+          }}
+        >
+          {ROTATING_WORDS[prevIndex]}
+        </span>
+      )}
+
+      {/* Active / Incoming word */}
+      <span
+        key={`curr-${index}`}
+        className="flex items-center justify-center gradient-text-shine whitespace-nowrap will-change-transform"
+        style={{
+          animation: animating
+            ? "heroSlideIn 700ms cubic-bezier(0.16, 1, 0.3, 1) forwards"
+            : "none",
+        }}
+      >
+        {ROTATING_WORDS[index]}
+      </span>
+    </span>
+  );
 };
 
 const useCounterAnimation = (end: number, duration = 1800, shouldStart = false) => {
@@ -67,7 +95,6 @@ const techBadges = [
 ];
 
 const HeroSection = () => {
-  const { word, stage } = useRotatingWord(ROTATING_WORDS);
   const [inView, setInView] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
 
@@ -131,25 +158,7 @@ const HeroSection = () => {
           className="text-3xl min-[400px]:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.2] sm:leading-tight tracking-tight mb-3 sm:mb-4 animate-fade-in"
           style={{ animationDelay: "0.1s", fontFamily: "'Outfit', sans-serif" }}
         >
-          We Build Modern{" "}
-          <span className="inline-block relative">
-            <span
-              className="inline-block gradient-text-shine transition-all duration-500 will-change-transform select-none"
-              style={{
-                transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-                transform:
-                  stage === "exiting"
-                    ? "translateY(-14px) scale(0.96)"
-                    : stage === "entering"
-                    ? "translateY(14px) scale(0.96)"
-                    : "translateY(0) scale(1)",
-                opacity: stage === "active" ? 1 : 0,
-                filter: stage === "active" ? "blur(0px)" : "blur(3px)",
-              }}
-            >
-              {word}
-            </span>
-          </span>
+          We Build Modern <SmoothRotatingWord />
         </h1>
         <p className="text-xs sm:text-sm font-semibold text-muted-foreground uppercase tracking-[0.12em] sm:tracking-[0.2em] mb-5 sm:mb-6 animate-fade-in" style={{ animationDelay: "0.15s" }}>
           That Grow Your Business

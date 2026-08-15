@@ -478,6 +478,32 @@ input[type="range"]::-moz-range-thumb {
   100% { opacity: 1; filter: blur(0px); transform: translateY(0); }
 }
 
+@keyframes heroSlideIn {
+  0% {
+    transform: translate3d(0, 105%, 0) scale(0.96);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  100% {
+    transform: translate3d(0, 0%, 0) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+@keyframes heroSlideOut {
+  0% {
+    transform: translate3d(0, 0%, 0) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    transform: translate3d(0, -105%, 0) scale(0.96);
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+
 @property --angle {
   syntax: '<angle>';
   initial-value: 0deg;
