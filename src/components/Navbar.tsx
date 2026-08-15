@@ -52,16 +52,16 @@ const Navbar = () => {
         }`}
       >
         <div className="container flex items-center justify-between px-4 sm:px-6">
-          <a href="/" className="flex items-center group py-0.5" aria-label="Axenova Digital Home">
+          <a href="/" className="flex items-center gap-2 group py-0.5" aria-label="Axenova Digital Home">
             <img
               src="/logo-dark.png"
               alt="Axenova Digital"
-              className="hidden dark:block h-10 sm:h-12 w-auto max-w-[200px] sm:max-w-[240px] object-contain transition-transform group-hover:scale-105"
+              className="hidden dark:block h-10 sm:h-12 w-auto object-contain rounded-full shadow-lg shadow-cyan-500/10 transition-transform group-hover:scale-105"
             />
             <img
               src="/logo-light.png"
               alt="Axenova Digital"
-              className="block dark:hidden h-10 sm:h-12 w-auto max-w-[200px] sm:max-w-[240px] object-contain transition-transform group-hover:scale-105"
+              className="block dark:hidden h-10 sm:h-12 w-auto max-w-[200px] sm:max-w-[240px] object-contain mix-blend-multiply transition-transform group-hover:scale-105"
             />
             <span className="sr-only">Axenova Digital</span>
           </a>

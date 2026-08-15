@@ -52,12 +52,12 @@ const Footer = () => {
               <img
                 src="/logo-dark.png"
                 alt="Axenova Digital Logo"
-                className="hidden dark:block h-12 sm:h-14 w-auto max-w-[220px] sm:max-w-[260px] object-contain"
+                className="hidden dark:block h-14 sm:h-16 w-auto object-contain rounded-full shadow-lg shadow-cyan-500/10"
               />
               <img
                 src="/logo-light.png"
                 alt="Axenova Digital Logo"
-                className="block dark:hidden h-12 sm:h-14 w-auto max-w-[220px] sm:max-w-[260px] object-contain"
+                className="block dark:hidden h-12 sm:h-14 w-auto max-w-[220px] sm:max-w-[260px] object-contain mix-blend-multiply"
               />
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-xs mb-4 sm:mb-5">
