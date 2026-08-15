@@ -306,6 +306,39 @@ export const sendInvoiceEmail = async (invoice: InvoiceData): Promise<boolean> =
 };
 
 /**
+ * Sends an instant Admin Alert Email to the agency owner whenever a new order & UTR is placed
+ */
+export const sendAdminOrderAlert = async (invoice: InvoiceData): Promise<boolean> => {
+  const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+  const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+  const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+  if (!serviceId || !templateId || !publicKey) return false;
+
+  try {
+    const emailjs = (await import("@emailjs/browser")).default;
+    await emailjs.send(
+      serviceId,
+      templateId,
+      {
+        from_name: `${invoice.customerName} (New Order)`,
+        from_email: invoice.customerEmail,
+        name: invoice.customerName,
+        email: invoice.customerEmail,
+        phone: invoice.customerPhone,
+        to_email: CONTACT_INFO.email,
+        message: `🚨 NEW ORDER RECEIVED!\n\n• Order ID: ${invoice.orderId}\n• Plan: ${invoice.planName} (₹${invoice.amount})\n• Customer: ${invoice.customerName} (${invoice.customerPhone}, ${invoice.customerEmail})\n• Submitted UTR: ${invoice.upiRef || "None"}\n• Requirements: ${invoice.requirements || "None"}\n\nPlease verify this UTR in your bank app and approve the order in the Admin Portal.`,
+      },
+      publicKey
+    );
+    return true;
+  } catch (err) {
+    console.error("Failed to send admin order notification:", err);
+    return false;
+  }
+};
+
+/**
  * Opens a clean, branded, print-ready HTML Invoice window that can also be saved as PDF or printed.
  */
 export const openPrintableInvoice = (invoice: InvoiceData) => {

@@ -28,7 +28,7 @@ import {
   Clock,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { generateInvoiceNumber } from "@/lib/invoice";
+import { generateInvoiceNumber, sendAdminOrderAlert, type InvoiceData } from "@/lib/invoice";
 
 interface OrderDialogProps {
   open: boolean;
@@ -126,7 +126,21 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
     setLoading(true);
 
     try {
-      // Update order in Supabase with UTR, invoice_no and status
+      const orderInvoiceData: InvoiceData = {
+        invoiceNo: currentInvoiceNo || generateInvoiceNumber(currentOrderId),
+        orderId: currentOrderId,
+        date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+        customerName: form.name.trim(),
+        customerEmail: form.email.trim(),
+        customerPhone: form.phone.trim(),
+        planName: plan.name,
+        amount: plan.amount,
+        upiRef: cleanUtr,
+        status: "payment_submitted",
+        requirements: form.requirements.trim(),
+      };
+
+      // 1. Update order in Supabase with UTR, invoice_no and status
       await supabase
         .from("orders")
         .update({
@@ -135,6 +149,9 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
           status: "payment_submitted",
         })
         .eq("order_id", currentOrderId);
+
+      // 2. Dispatch instant alert email to Admin
+      sendAdminOrderAlert(orderInvoiceData).catch((e) => console.error("Admin alert error:", e));
 
       toast({
         title: "Payment Reference Submitted! ⏳",
