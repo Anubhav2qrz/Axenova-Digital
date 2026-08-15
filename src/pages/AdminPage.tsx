@@ -719,7 +719,7 @@ const AdminPage = () => {
               <p className="text-xs text-muted-foreground">
                 Showing all submitted client orders from Razorpay and lead forms
               </p>
-              <Button variant="hero-outline" size="sm" onClick={refreshOrders} className="gap-1.5 text-xs">
+              <Button variant="hero-outline" size="sm" onClick={refreshAllData} className="gap-1.5 text-xs">
                 <RefreshCw size={13} /> Refresh List
               </Button>
             </div>
