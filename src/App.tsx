@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdminDataProvider } from "@/context/AdminDataContext";
 import Index from "./pages/Index.tsx";
 import AdminPage from "./pages/AdminPage.tsx";
+import TeamPage from "./pages/TeamPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -22,7 +23,7 @@ const App = () => (
             <Route path="/services" element={<Index scrollTo="services" />} />
             <Route path="/portfolio" element={<Index scrollTo="portfolio" />} />
             <Route path="/pricing" element={<Index scrollTo="pricing" />} />
-            <Route path="/team" element={<Index scrollTo="team" />} />
+            <Route path="/team" element={<TeamPage />} />
             <Route path="/about" element={<Index scrollTo="about" />} />
             <Route path="/contact" element={<Index scrollTo="contact" />} />
             <Route path="/reviews" element={<Index scrollTo="reviews" />} />

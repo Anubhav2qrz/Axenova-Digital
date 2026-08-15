@@ -2,20 +2,20 @@ import { ArrowUp, MessageCircle, Mail, Globe, Instagram, Linkedin, Github, Spark
 import { CONTACT_INFO, getWhatsAppLink } from "@/config/contact";
 
 const quickLinks = [
-  { label: "Services", href: "#services" },
-  { label: "Portfolio", href: "#portfolio" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Our Team", href: "#team" },
-  { label: "FAQ", href: "#faq" },
-  { label: "Contact", href: "#contact" },
+  { label: "Services", href: "/#services" },
+  { label: "Portfolio", href: "/#portfolio" },
+  { label: "Pricing", href: "/#pricing" },
+  { label: "Our Team", href: "/team" },
+  { label: "FAQ", href: "/#faq" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 const serviceLinks = [
-  { label: "Business Website", href: "#pricing" },
-  { label: "Portfolio Website", href: "#pricing" },
-  { label: "E-Commerce Store", href: "#pricing" },
-  { label: "Custom Web App", href: "#pricing" },
-  { label: "Price Estimator", href: "#estimator" },
+  { label: "Business Website", href: "/#pricing" },
+  { label: "Portfolio Website", href: "/#pricing" },
+  { label: "E-Commerce Store", href: "/#pricing" },
+  { label: "Custom Web App", href: "/#pricing" },
+  { label: "Price Estimator", href: "/#estimator" },
 ];
 
 const socials = [

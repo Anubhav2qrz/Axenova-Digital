@@ -6,13 +6,13 @@ import { getWhatsAppLink } from "@/config/contact";
 import ProjectTrackerDialog from "@/components/ProjectTrackerDialog";
 
 const navLinks = [
-  { label: "Services", href: "#services", icon: Layers },
-  { label: "Portfolio", href: "#portfolio", icon: ImageIcon },
-  { label: "Pricing", href: "#pricing", icon: Tag },
-  { label: "Team", href: "#team", icon: Users },
-  { label: "Reviews", href: "#reviews", icon: Star },
-  { label: "FAQ", href: "#faq", icon: HelpCircle },
-  { label: "Contact", href: "#contact", icon: Mail },
+  { label: "Services", href: "/#services", icon: Layers },
+  { label: "Portfolio", href: "/#portfolio", icon: ImageIcon },
+  { label: "Pricing", href: "/#pricing", icon: Tag },
+  { label: "Team", href: "/team", icon: Users },
+  { label: "Reviews", href: "/#reviews", icon: Star },
+  { label: "FAQ", href: "/#faq", icon: HelpCircle },
+  { label: "Contact", href: "/#contact", icon: Mail },
 ];
 
 const Navbar = () => {
@@ -52,7 +52,7 @@ const Navbar = () => {
         }`}
       >
         <div className="container flex items-center justify-between px-4 sm:px-6">
-          <a href="#" className="flex items-center gap-2 group" aria-label="Axenova Digital Home">
+          <a href="/" className="flex items-center gap-2 group" aria-label="Axenova Digital Home">
             <img
               src="/logo.png"
               alt="Axenova Digital Logo"
