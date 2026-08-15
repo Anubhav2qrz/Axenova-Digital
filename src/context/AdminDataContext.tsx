@@ -167,6 +167,7 @@ interface AdminDataContextType {
   addReview: (r: Omit<ReviewItem, "id" | "date" | "helpful">) => Promise<void>;
   syncAllToSupabase: () => Promise<SyncResult>;
   updateOrderStatus: (id: string, status: string) => Promise<void>;
+  deleteOrder: (id: string) => Promise<void>;
   refreshAllData: () => Promise<void>;
 }
 
@@ -464,6 +465,15 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     } catch {}
   };
 
+  const deleteOrder = async (id: string) => {
+    setOrders((prev) => prev.filter((o) => o.id !== id));
+    try {
+      await supabase.from("orders").delete().eq("id", id);
+    } catch (e) {
+      console.error("Failed to delete order from Supabase:", e);
+    }
+  };
+
   return (
     <AdminDataContext.Provider
       value={{
@@ -479,6 +489,7 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         addReview,
         syncAllToSupabase,
         updateOrderStatus,
+        deleteOrder,
         refreshAllData,
       }}
     >

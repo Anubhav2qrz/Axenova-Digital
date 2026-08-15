@@ -54,6 +54,7 @@ const AdminPage = () => {
     addReview,
     syncAllToSupabase,
     updateOrderStatus,
+    deleteOrder,
     refreshAllData,
   } = useAdminData();
 
@@ -127,6 +128,17 @@ const AdminPage = () => {
     } finally {
       setVerifyingId(null);
     }
+  };
+
+  const handleDeleteOrder = async (id: string, name?: string) => {
+    if (!window.confirm(`Are you sure you want to delete the order record for "${name || "this client"}"?`)) {
+      return;
+    }
+    await deleteOrder(id);
+    toast({
+      title: "Order Deleted 🗑️",
+      description: "The order has been removed from database.",
+    });
   };
 
   // Login handler
@@ -847,6 +859,16 @@ const AdminPage = () => {
                                     <Button
                                       variant="ghost"
                                       size="sm"
+                                      onClick={() => handleDeleteOrder(o.id, o.name)}
+                                      className="h-8 text-xs text-muted-foreground hover:text-rose-400 hover:bg-rose-500/10 p-2"
+                                      title="Delete Order Permanently"
+                                    >
+                                      <Trash2 size={14} />
+                                    </Button>
+
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
                                       onClick={() => updateOrderStatus(o.id, "cancelled")}
                                       className="h-8 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 p-2"
                                       title="Mark as Fake / Cancelled"
@@ -908,6 +930,16 @@ const AdminPage = () => {
                                       title="View & Print Invoice"
                                     >
                                       <FileText size={13} /> View
+                                    </Button>
+
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => handleDeleteOrder(o.id, o.name)}
+                                      className="h-8 text-xs text-muted-foreground hover:text-rose-400 hover:bg-rose-500/10 p-2"
+                                      title="Delete Order Permanently"
+                                    >
+                                      <Trash2 size={14} />
                                     </Button>
                                   </>
                                 )}
