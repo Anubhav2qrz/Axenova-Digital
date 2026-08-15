@@ -10,23 +10,29 @@ const ROTATING_WORDS = [
   "SaaS Platforms",
 ];
 
-const useRotatingWord = (words: string[], interval = 2800) => {
+const useRotatingWord = (words: string[], interval = 3200) => {
   const [index, setIndex] = useState(0);
-  const [fadeState, setFadeState] = useState<"in" | "out">("in");
+  const [stage, setStage] = useState<"entering" | "active" | "exiting">("active");
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setFadeState("out");
+      setStage("exiting");
+
       setTimeout(() => {
         setIndex((prev) => (prev + 1) % words.length);
-        setFadeState("in");
-      }, 350);
+        setStage("entering");
+
+        // Smooth glide in on next frame
+        setTimeout(() => {
+          setStage("active");
+        }, 50);
+      }, 420);
     }, interval);
 
     return () => clearInterval(timer);
   }, [words, interval]);
 
-  return { word: words[index], fadeState };
+  return { word: words[index], stage };
 };
 
 const useCounterAnimation = (end: number, duration = 1800, shouldStart = false) => {
@@ -61,26 +67,30 @@ const techBadges = [
 ];
 
 const HeroSection = () => {
-  const { word, fadeState } = useRotatingWord(ROTATING_WORDS);
-  const [statsVisible, setStatsVisible] = useState(false);
-  const statsRef = useRef<HTMLDivElement>(null);
+  const { word, stage } = useRotatingWord(ROTATING_WORDS);
+  const [inView, setInView] = useState(false);
+  const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setStatsVisible(true); },
-      { threshold: 0.3 }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+        }
+      },
+      { threshold: 0.1 }
     );
-    if (statsRef.current) observer.observe(statsRef.current);
+    if (heroRef.current) observer.observe(heroRef.current);
     return () => observer.disconnect();
   }, []);
 
-  const count1 = useCounterAnimation(50, 1600, statsVisible);
-  const count2 = useCounterAnimation(30, 1800, statsVisible);
-  const count3 = useCounterAnimation(99, 2000, statsVisible);
+  const count1 = useCounterAnimation(stats[0].value, 1800, inView);
+  const count2 = useCounterAnimation(stats[1].value, 1800, inView);
+  const count3 = useCounterAnimation(stats[2].value, 1800, inView);
   const counts = [count1, count2, count3];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16 md:py-20">
+    <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16 md:py-20">
 
       {/* Animated dot-grid background */}
       <div className="absolute inset-0 dot-grid opacity-40 md:opacity-50 pointer-events-none" />
@@ -124,11 +134,18 @@ const HeroSection = () => {
           We Build Modern{" "}
           <span className="inline-block relative">
             <span
-              className={`inline-block gradient-text-shine transition-all duration-350 ease-out transform will-change-transform ${
-                fadeState === "in"
-                  ? "opacity-100 translate-y-0 scale-100"
-                  : "opacity-0 -translate-y-4 scale-95"
-              }`}
+              className="inline-block gradient-text-shine transition-all duration-500 will-change-transform select-none"
+              style={{
+                transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                transform:
+                  stage === "exiting"
+                    ? "translateY(-14px) scale(0.96)"
+                    : stage === "entering"
+                    ? "translateY(14px) scale(0.96)"
+                    : "translateY(0) scale(1)",
+                opacity: stage === "active" ? 1 : 0,
+                filter: stage === "active" ? "blur(0px)" : "blur(3px)",
+              }}
             >
               {word}
             </span>
@@ -171,14 +188,13 @@ const HeroSection = () => {
 
         {/* Stats */}
         <div
-          ref={statsRef}
           className="mt-10 sm:mt-16 grid grid-cols-3 gap-2.5 sm:gap-8 max-w-sm sm:max-w-md mx-auto animate-fade-in"
           style={{ animationDelay: "0.4s" }}
         >
           {stats.map((stat, i) => (
             <div key={stat.label} className="p-3 sm:p-0 glass sm:glass-none sm:border-0 rounded-xl sm:rounded-none">
               <div className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                {statsVisible ? counts[i] : 0}{stat.suffix}
+                {inView ? counts[i] : 0}{stat.suffix}
               </div>
               <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 leading-tight">{stat.label}</div>
             </div>
