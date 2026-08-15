@@ -22,12 +22,17 @@ import {
   User,
   Clock,
   CheckCircle,
+  FileText,
+  Download,
+  Copy,
+  CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { useAdminData, type ProjectItem, type PlanItem, type ReviewItem } from "@/context/AdminDataContext";
+import { useAdminData, type ProjectItem, type PlanItem, type ReviewItem, type OrderItem } from "@/context/AdminDataContext";
+import { openPrintableInvoice, downloadInvoicePDF, generateInvoiceNumber, type InvoiceData } from "@/lib/invoice";
 
 const DEFAULT_PASSCODE = import.meta.env.VITE_ADMIN_PASSCODE || "axenova2026";
 
@@ -687,24 +692,44 @@ const AdminPage = () => {
                   <table className="w-full text-left text-xs">
                     <thead className="bg-secondary/60 text-muted-foreground uppercase tracking-wider font-semibold border-b border-border/50">
                       <tr>
+                        <th className="p-4">Order &amp; UTR</th>
                         <th className="p-4">Customer</th>
-                        <th className="p-4">Plan & Amount</th>
+                        <th className="p-4">Plan &amp; Amount</th>
                         <th className="p-4">Status</th>
                         <th className="p-4">Date</th>
-                        <th className="p-4">Requirements</th>
+                        <th className="p-4 text-right">Invoice</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/40">
                       {orders.map((o) => (
                         <tr key={o.id} className="hover:bg-secondary/30 transition-colors">
                           <td className="p-4">
+                            <span className="font-mono font-bold text-primary block text-xs">
+                              {o.order_id || o.id.slice(0, 8)}
+                            </span>
+                            {o.upi_ref ? (
+                              <div className="flex items-center gap-1 mt-1">
+                                <span className="font-mono text-[11px] bg-secondary/80 px-1.5 py-0.5 rounded border border-border text-foreground">
+                                  UTR: {o.upi_ref}
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="text-[10px] text-muted-foreground italic">No UTR submitted</span>
+                            )}
+                          </td>
+                          <td className="p-4">
                             <p className="font-bold text-sm text-foreground">{o.name}</p>
                             <p className="text-muted-foreground">{o.email}</p>
                             <p className="text-[10px] text-accent">{o.phone}</p>
+                            {o.requirements && (
+                              <p className="text-[10px] text-muted-foreground mt-1 max-w-[200px] truncate" title={o.requirements}>
+                                📝 {o.requirements}
+                              </p>
+                            )}
                           </td>
                           <td className="p-4">
                             <span className="font-bold text-foreground block">{o.plan} Plan</span>
-                            <span className="text-primary font-semibold">₹{o.amount}</span>
+                            <span className="text-primary font-semibold">₹{o.amount.toLocaleString("en-IN")}</span>
                           </td>
                           <td className="p-4">
                             <select
@@ -713,6 +738,8 @@ const AdminPage = () => {
                               className="h-8 rounded-lg bg-secondary/80 border border-border/60 px-2 text-xs font-semibold"
                             >
                               <option value="pending_payment">⏳ Pending Payment</option>
+                              <option value="payment_submitted">📩 Payment Submitted</option>
+                              <option value="verified">✅ Verified &amp; Paid</option>
                               <option value="paid">✅ Paid</option>
                               <option value="in_progress">🚧 In Progress</option>
                               <option value="completed">🎉 Completed</option>
@@ -722,8 +749,62 @@ const AdminPage = () => {
                           <td className="p-4 text-muted-foreground whitespace-nowrap">
                             {new Date(o.created_at).toLocaleDateString()}
                           </td>
-                          <td className="p-4 max-w-xs text-muted-foreground truncate">
-                            {o.requirements || "None specified"}
+                          <td className="p-4 text-right">
+                            <div className="flex items-center justify-end gap-1.5">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  const invData: InvoiceData = {
+                                    invoiceNo: o.invoice_no || generateInvoiceNumber(o.order_id || o.id),
+                                    orderId: o.order_id || o.id,
+                                    date: new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+                                    customerName: o.name,
+                                    customerEmail: o.email,
+                                    customerPhone: o.phone,
+                                    planName: o.plan,
+                                    amount: o.amount,
+                                    upiRef: o.upi_ref,
+                                    status: o.status,
+                                    requirements: o.requirements,
+                                  };
+                                  downloadInvoicePDF(invData);
+                                  toast({
+                                    title: "Invoice PDF Downloaded",
+                                    description: `Saved as Axenova_Invoice_${o.order_id || o.id}.pdf`,
+                                  });
+                                }}
+                                className="h-8 text-xs font-semibold gap-1"
+                                title="Download PDF directly"
+                              >
+                                <Download size={13} /> PDF
+                              </Button>
+
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  const invData: InvoiceData = {
+                                    invoiceNo: o.invoice_no || generateInvoiceNumber(o.order_id || o.id),
+                                    orderId: o.order_id || o.id,
+                                    date: new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+                                    customerName: o.name,
+                                    customerEmail: o.email,
+                                    customerPhone: o.phone,
+                                    planName: o.plan,
+                                    amount: o.amount,
+                                    upiRef: o.upi_ref,
+                                    status: o.status,
+                                    requirements: o.requirements,
+                                  };
+                                  openPrintableInvoice(invData);
+                                }}
+                                className="h-8 text-xs font-semibold gap-1 text-muted-foreground hover:text-foreground"
+                                title="View & Print"
+                              >
+                                <FileText size={13} /> View
+                              </Button>
+                            </div>
                           </td>
                         </tr>
                       ))}

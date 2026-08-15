@@ -38,6 +38,7 @@ export interface ReviewItem {
 
 export interface OrderItem {
   id: string;
+  order_id?: string;
   name: string;
   email: string;
   phone: string;
@@ -46,6 +47,8 @@ export interface OrderItem {
   requirements?: string;
   status: string;
   created_at: string;
+  upi_ref?: string;
+  invoice_no?: string;
   razorpay_order_id?: string;
   razorpay_payment_id?: string;
 }
