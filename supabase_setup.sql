@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS public.plans (
 -- 4. Create Orders Table
 CREATE TABLE IF NOT EXISTS public.orders (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  order_id text UNIQUE,                        -- Friendly client-facing ID e.g. AXN-20250815-7492
   razorpay_order_id text,
   razorpay_payment_id text,
   plan text NOT NULL,
@@ -52,6 +53,9 @@ CREATE TABLE IF NOT EXISTS public.orders (
   status text DEFAULT 'pending_payment',
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- If orders table already exists, add order_id column manually:
+-- ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS order_id text UNIQUE;
 
 -- DISABLE RLS on all 4 tables so client operations succeed without permission errors
 ALTER TABLE public.reviews DISABLE ROW LEVEL SECURITY;

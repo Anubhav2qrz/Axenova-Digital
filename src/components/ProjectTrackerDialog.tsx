@@ -18,6 +18,7 @@ interface ProjectTrackerDialogProps {
 
 interface OrderDetails {
   id: string;
+  order_id?: string;
   name: string;
   plan: string;
   status: string;
@@ -52,11 +53,11 @@ const ProjectTrackerDialog = ({ open, onOpenChange }: ProjectTrackerDialogProps)
     const query = searchQuery.trim();
 
     try {
-      // 1. Try querying Supabase
+      // Try querying Supabase by phone, UUID, or friendly order_id
       const { data, error } = await supabase
         .from("orders")
         .select("*")
-        .or(`phone.eq.${query},id.eq.${query}`)
+        .or(`phone.eq.${query},id.eq.${query},order_id.eq.${query.toUpperCase()}`)
         .order("created_at", { ascending: false })
         .limit(1);
 
@@ -69,10 +70,11 @@ const ProjectTrackerDialog = ({ open, onOpenChange }: ProjectTrackerDialogProps)
       // Supabase query error ignored for fallback
     }
 
-    // 2. Demo fallback simulation if query is 10 digits or starts with AX- / pay_
-    if (/^\d{10}$/.test(query) || query.toLowerCase().startsWith("ax") || query.startsWith("pay_") || query.length >= 4) {
+    // Demo fallback if phone or looks like AXN- order ID
+    if (/^\d{10}$/.test(query) || /^AXN-/i.test(query) || query.toLowerCase().startsWith("ax") || query.startsWith("pay_") || query.length >= 4) {
       setOrder({
-        id: query.toUpperCase().startsWith("AX-") ? query.toUpperCase() : `AX-${query.slice(-4)}`,
+        id: query,
+        order_id: /^AXN-/i.test(query) ? query.toUpperCase() : `AXN-DEMO-${query.slice(-4)}`,
         name: "Valued Customer",
         plan: "Standard Plan",
         status: "dev",
@@ -133,10 +135,10 @@ const ProjectTrackerDialog = ({ open, onOpenChange }: ProjectTrackerDialogProps)
 
         {searched && order && (
           <div className="mt-4 p-4 rounded-xl glass border-primary/20 animate-in fade-in slide-in-from-top-3">
-            <div className="flex justify-between items-center pb-3 border-b border-border/40 mb-4">
+              <div className="flex justify-between items-center pb-3 border-b border-border/40 mb-4">
               <div>
                 <span className="text-xs text-muted-foreground">Order ID</span>
-                <div className="font-bold text-sm text-foreground">{order.id}</div>
+                <div className="font-bold text-sm text-primary font-mono">{order.order_id || order.id}</div>
               </div>
               <div className="text-right">
                 <span className="text-xs text-muted-foreground">Plan</span>

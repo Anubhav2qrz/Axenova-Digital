@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { ShieldCheck, Loader2 } from "lucide-react";
+import { ShieldCheck, Loader2, Copy, CheckCircle2, PartyPopper, Search } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 declare global {
@@ -26,10 +26,20 @@ interface OrderDialogProps {
   plan: { name: string; price: string; amount: number } | null;
 }
 
+const generateOrderId = () => {
+  const date = new Date();
+  const dateStr = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}`;
+  const rand = Math.floor(1000 + Math.random() * 9000);
+  return `AXN-${dateStr}-${rand}`;
+};
+
 const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [showFallback, setShowFallback] = useState(false);
+  const [successOrderId, setSuccessOrderId] = useState<string | null>(null);
+  const [successName, setSuccessName] = useState("");
+  const [copied, setCopied] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -61,20 +71,22 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
     setLoading(true);
 
     try {
+      const friendlyOrderId = generateOrderId();
 
       const orderEntry = {
+        order_id: friendlyOrderId,
         plan: plan.name,
         amount: plan.amount,
         name: form.name.trim(),
         email: form.email.trim(),
         phone: form.phone.trim(),
         requirements: form.requirements.trim(),
-        status: 'pending_payment'
+        status: "pending_payment",
       };
-      
+
       let internalOrderId = null;
       try {
-        const { data: dbData } = await supabase.from('orders').insert([orderEntry]).select();
+        const { data: dbData } = await supabase.from("orders").insert([orderEntry]).select();
         if (dbData && dbData.length > 0) {
           internalOrderId = dbData[0].id;
         }
@@ -98,12 +110,11 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
 
       let data;
       if (res.ok) {
-         data = await res.json();
+        data = await res.json();
       } else {
-         console.warn("Backend for Razorpay not available, falling back to dummy order ID");
-         data = { order_id: `pay_${Date.now()}`, amount: plan.amount * 100, currency: "INR" };
+        console.warn("Backend for Razorpay not available, falling back to dummy order ID");
+        data = { order_id: `pay_${Date.now()}`, amount: plan.amount * 100, currency: "INR" };
       }
-
 
       const options = {
         key: RAZORPAY_KEY_ID,
@@ -120,18 +131,13 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
         theme: { color: "#2196F3" },
         handler: async function (response: Record<string, string>) {
           if (internalOrderId) {
-
-            await supabase.from('orders').update({
-              status: 'paid',
-              razorpay_payment_id: response.razorpay_payment_id
-            }).eq('id', internalOrderId);
+            await supabase.from("orders").update({
+              status: "paid",
+              razorpay_payment_id: response.razorpay_payment_id,
+            }).eq("id", internalOrderId);
           }
-          
-          toast({
-            title: "Payment Successful! 🎉",
-            description: `Payment ID: ${response.razorpay_payment_id}. We'll contact you shortly.`,
-          });
-          onOpenChange(false);
+          setSuccessOrderId(friendlyOrderId);
+          setSuccessName(form.name.trim().split(" ")[0]);
           setForm({ name: "", email: "", phone: "", requirements: "" });
         },
       };
@@ -149,8 +155,86 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
     }
   };
 
+  const handleCopy = () => {
+    if (successOrderId) {
+      navigator.clipboard.writeText(successOrderId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleClose = (val: boolean) => {
+    if (!val) {
+      setSuccessOrderId(null);
+      setCopied(false);
+    }
+    onOpenChange(val);
+  };
+
+  // ── Success Screen ──
+  if (successOrderId) {
+    return (
+      <Dialog open={open} onOpenChange={handleClose}>
+        <DialogContent className="glass border-border sm:max-w-md">
+          <div className="flex flex-col items-center py-2 text-center">
+            <div className="w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center mb-4 ring-4 ring-accent/20">
+              <PartyPopper size={32} className="text-accent" />
+            </div>
+            <h2 className="text-2xl font-bold mb-1" style={{ fontFamily: "'Outfit', sans-serif" }}>
+              Congrats{successName ? `, ${successName}` : ""}! 🎉
+            </h2>
+            <p className="text-sm text-muted-foreground mb-6 max-w-xs">
+              Your order is confirmed. Use your <strong>Order ID</strong> to track your project progress anytime.
+            </p>
+
+            {/* Order ID Card */}
+            <div className="w-full glass rounded-2xl p-5 mb-4 border border-primary/20">
+              <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-2 font-semibold">Your Order ID</p>
+              <p className="text-2xl sm:text-3xl font-extrabold gradient-text mb-3 select-all" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                {successOrderId}
+              </p>
+              <Button
+                variant="hero-outline"
+                className="w-full h-9 text-sm font-semibold"
+                onClick={handleCopy}
+              >
+                {copied ? (
+                  <><CheckCircle2 size={15} className="mr-1.5 text-accent" /> Copied to clipboard!</>
+                ) : (
+                  <><Copy size={15} className="mr-1.5" /> Copy Order ID</>
+                )}
+              </Button>
+            </div>
+
+            {/* How to track */}
+            <div className="w-full glass rounded-xl p-4 text-left space-y-2.5 mb-5 border border-border/40">
+              <p className="text-xs font-bold text-foreground uppercase tracking-wider">How to Track Your Order</p>
+              <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                <Search size={13} className="text-primary mt-0.5 shrink-0" />
+                <span>Click <strong className="text-foreground">"Track Order"</strong> from the bottom dock or navigation bar</span>
+              </div>
+              <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                <CheckCircle2 size={13} className="text-accent mt-0.5 shrink-0" />
+                <span>Enter your <strong className="text-foreground">Order ID</strong> <code className="text-primary bg-primary/10 px-1 py-0.5 rounded">{successOrderId}</code> or your <strong className="text-foreground">10-digit phone number</strong></span>
+              </div>
+            </div>
+
+            <p className="text-[11px] text-muted-foreground flex items-center gap-1 mb-5">
+              <ShieldCheck size={12} className="text-accent" />
+              Save this ID — you'll need it to track your project
+            </p>
+
+            <Button variant="hero" className="w-full h-11 font-bold" onClick={() => handleClose(false)}>
+              Done
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="glass border-border sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl">
@@ -202,7 +286,7 @@ const OrderDialog = ({ open, onOpenChange, plan }: OrderDialogProps) => {
                 <Loader2 size={16} className="mr-2 animate-spin" /> Processing...
               </>
             ) : (
-              <>Pay & Place Order</>
+              <>Pay &amp; Place Order</>
             )}
           </Button>
 
