@@ -48,17 +48,25 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 mb-10 sm:mb-12">
           {/* Brand column */}
           <div className="sm:col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-3 sm:mb-4">
-              <img
-                src="/logo-dark.png"
-                alt="Axenova Digital Logo"
-                className="hidden dark:block h-10 sm:h-12 w-auto max-w-[180px] sm:max-w-[220px] object-contain"
-              />
-              <img
-                src="/logo-light.png"
-                alt="Axenova Digital Logo"
-                className="block dark:hidden h-10 sm:h-12 w-auto max-w-[180px] sm:max-w-[220px] object-contain"
-              />
+            <div className="flex items-center gap-2.5 mb-3 sm:mb-4">
+              <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden shadow-md shrink-0 flex items-center justify-center bg-black/90 border border-border/50">
+                <img
+                  src="/favicon-app.png"
+                  alt="Axenova Logo Mark"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex flex-col justify-center text-left select-none">
+                <span
+                  className="text-lg sm:text-xl font-black tracking-wider leading-none text-foreground"
+                  style={{ fontFamily: "'Outfit', sans-serif" }}
+                >
+                  AXENOVA
+                </span>
+                <span className="text-[10px] sm:text-[11px] font-extrabold tracking-[0.26em] text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-cyan-400 to-blue-500 mt-0.5 leading-none uppercase">
+                  DIGITAL
+                </span>
+              </div>
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-xs mb-4 sm:mb-5">
               Building modern, high-performance websites that help Indian businesses dominate online.

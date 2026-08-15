@@ -52,18 +52,25 @@ const Navbar = () => {
         }`}
       >
         <div className="container flex items-center justify-between px-4 sm:px-6">
-          <a href="/" className="flex items-center gap-2 group" aria-label="Axenova Digital Home">
-            <img
-              src="/logo-dark.png"
-              alt="Axenova Digital Logo"
-              className="hidden dark:block h-9 sm:h-11 w-auto max-w-[170px] sm:max-w-[210px] object-contain transition-transform group-hover:scale-105"
-            />
-            <img
-              src="/logo-light.png"
-              alt="Axenova Digital Logo"
-              className="block dark:hidden h-9 sm:h-11 w-auto max-w-[170px] sm:max-w-[210px] object-contain transition-transform group-hover:scale-105"
-            />
-            <span className="sr-only">Axenova Digital</span>
+          <a href="/" className="flex items-center gap-2.5 group" aria-label="Axenova Digital Home">
+            <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden shadow-md group-hover:scale-105 transition-transform shrink-0 flex items-center justify-center bg-black/90 border border-border/50">
+              <img
+                src="/favicon-app.png"
+                alt="Axenova Logo Mark"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex flex-col justify-center text-left select-none">
+              <span
+                className="text-base sm:text-lg font-black tracking-wider leading-none text-foreground"
+                style={{ fontFamily: "'Outfit', sans-serif" }}
+              >
+                AXENOVA
+              </span>
+              <span className="text-[9px] sm:text-[10px] font-extrabold tracking-[0.26em] text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-cyan-400 to-blue-500 mt-0.5 leading-none uppercase">
+                DIGITAL
+              </span>
+            </div>
           </a>
 
           {/* Desktop Nav */}
