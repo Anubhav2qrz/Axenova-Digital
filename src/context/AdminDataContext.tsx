@@ -228,6 +228,7 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     try {
       const { data, error } = await supabase.from("plans").select("*");
       if (data && data.length > 0 && !error) {
+        const orderRank: Record<string, number> = { basic: 1, standard: 2, premium: 3 };
         const formatted: PlanItem[] = data.map((d: any) => ({
           id: d.id,
           name: d.name,
@@ -238,7 +239,11 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           delivery: d.delivery,
           badge: d.badge || null,
           features: Array.isArray(d.features) ? d.features : [],
-        }));
+        })).sort((a, b) => {
+          const rankA = orderRank[a.name.toLowerCase()] || a.amount;
+          const rankB = orderRank[b.name.toLowerCase()] || b.amount;
+          return rankA - rankB;
+        });
         setPlans(formatted);
       }
     } catch (e) {

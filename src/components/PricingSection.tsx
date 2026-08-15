@@ -110,9 +110,17 @@ const PricingSection = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto items-stretch">
-          {plans.map((plan, i) => (
-            <PricingCard key={plan.id || plan.name} plan={plan} i={i} onGetStarted={handleGetStarted} />
-          ))}
+          {(() => {
+            const orderRank: Record<string, number> = { basic: 1, standard: 2, premium: 3 };
+            const sorted = [...plans].sort((a, b) => {
+              const rankA = orderRank[a.name.toLowerCase()] || a.amount;
+              const rankB = orderRank[b.name.toLowerCase()] || b.amount;
+              return rankA - rankB;
+            });
+            return sorted.map((plan, i) => (
+              <PricingCard key={plan.id || plan.name} plan={plan} i={i} onGetStarted={handleGetStarted} />
+            ));
+          })()}
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-8 sm:mt-10 opacity-0 animate-on-scroll flex items-center justify-center gap-1.5 px-2">
