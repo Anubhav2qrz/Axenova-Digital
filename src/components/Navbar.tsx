@@ -56,7 +56,7 @@ const Navbar = () => {
             <img
               src="/logo.png"
               alt="Axenova Digital Logo"
-              className="w-10 h-10 sm:w-12 sm:h-12 object-contain transition-transform group-hover:scale-105"
+              className="w-10 h-10 sm:w-12 sm:h-12 object-contain rounded-xl transition-transform group-hover:scale-105 shadow-sm"
             />
             <span className="sr-only">Axenova Digital</span>
           </a>

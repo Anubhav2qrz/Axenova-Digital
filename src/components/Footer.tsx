@@ -49,7 +49,7 @@ const Footer = () => {
           {/* Brand column */}
           <div className="sm:col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3 sm:mb-4">
-              <img src="/logo.png" alt="Axenova Digital Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
+              <img src="/logo.png" alt="Axenova Digital Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain rounded-xl shadow-sm" />
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-xs mb-4 sm:mb-5">
               Building modern, high-performance websites that help Indian businesses dominate online.
