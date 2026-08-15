@@ -266,8 +266,23 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     // 4. Orders
     try {
       const { data } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
-      if (data) setOrders(data);
-    } catch {}
+      if (data) {
+        const mappedOrders: OrderItem[] = data.map((row: any) => {
+          const extractedUtr =
+            row.upi_ref ||
+            row.razorpay_payment_id ||
+            row.requirements?.match(/\[UTR:\s*([^\]]+)\]/)?.[1] ||
+            "";
+          return {
+            ...row,
+            upi_ref: extractedUtr,
+          };
+        });
+        setOrders(mappedOrders);
+      }
+    } catch (e) {
+      console.error("Failed to load orders from Supabase:", e);
+    }
   };
 
   useEffect(() => {
