@@ -47,10 +47,10 @@
     --shadow-card: 0 10px 40px -10px hsl(222 20% 40% / 0.12);
     --shadow-neon: 0 0 20px hsl(217 91% 53% / 0.4), 0 0 40px hsl(217 91% 53% / 0.2);
 
-    --glass-bg: rgba(255, 255, 255, 0.25);
-    --glass-border: rgba(255, 255, 255, 0.6);
-    --glass-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.35);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    --glass-bg: rgba(255, 255, 255, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.7);
+    --glass-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+    --glass-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.06), 0 1px 4px 0 rgba(0, 0, 0, 0.04);
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 25% 8%;
@@ -102,10 +102,10 @@
     --shadow-card: 0 20px 50px -15px rgba(0, 0, 0, 0.7);
     --shadow-neon: 0 0 25px hsl(217 91% 60% / 0.5), 0 0 50px hsl(217 91% 60% / 0.25);
 
-    --glass-bg: rgba(10, 14, 28, 0.35);
-    --glass-border: rgba(255, 255, 255, 0.18);
-    --glass-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --glass-bg: rgba(30, 35, 50, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+    --glass-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25), 0 1px 4px 0 rgba(0, 0, 0, 0.15);
 
     --sidebar-background: 224 28% 6%;
     --sidebar-foreground: 210 22% 90%;
@@ -143,28 +143,27 @@
   /* ── Apple Liquid Glass Effect ── */
   .glass {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-highlight), var(--glass-shadow);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .glass:hover {
-    background: rgba(255, 255, 255, 0.32);
-    border-color: rgba(255, 255, 255, 0.7);
-    box-shadow: var(--glass-highlight), 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(255, 255, 255, 0.85);
   }
   .dark .glass:hover {
-    background: rgba(10, 14, 28, 0.45);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(35, 40, 58, 0.65);
+    border-color: rgba(255, 255, 255, 0.18);
   }
 
   /* ── Apple Vision Glass Dock ── */
   .glass-dock {
     background: var(--glass-bg);
-    backdrop-filter: blur(28px) saturate(200%);
-    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-highlight), var(--glass-shadow);
   }
@@ -172,8 +171,8 @@
   /* ── Apple Vision Glass Pill ── */
   .glass-pill {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-highlight);
   }
