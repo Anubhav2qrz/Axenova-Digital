@@ -68,7 +68,7 @@ const CostEstimatorSection = () => {
   };
 
   return (
-    <section id="estimator" className="py-20 sm:py-24 relative overflow-hidden">
+    <section id="estimator" className="py-20 sm:py-24 relative overflow-hidden bg-secondary/10">
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[140px] pointer-events-none" />
 
       <div ref={ref} className="container relative z-10 px-4 sm:px-6">

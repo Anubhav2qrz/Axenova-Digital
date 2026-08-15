@@ -17,7 +17,6 @@ import MobileStickyBar from "@/components/MobileStickyBar";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import AIAdvisorWidget from "@/components/AIAdvisorWidget";
 import CareersDialog from "@/components/CareersDialog";
-import AppleGlassBackground from "@/components/AppleGlassBackground";
 
 const Index = () => {
   const [careersOpen, setCareersOpen] = useState(false);
@@ -29,8 +28,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen pb-24 md:pb-0 overflow-x-hidden w-full relative">
-      <AppleGlassBackground />
+    <div className="min-h-screen pb-24 md:pb-0 overflow-x-hidden w-full">
       <ScrollProgressBar />
       <Navbar />
       <HeroSection />

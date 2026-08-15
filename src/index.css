@@ -5,9 +5,9 @@
 @tailwind utilities;
 
 @layer base {
-  /* ───────────── Light Theme (Apple Liquid Glass) ───────────── */
+  /* ───────────── Light Theme (default) ───────────── */
   :root {
-    --background: transparent;
+    --background: 220 30% 98%;
     --foreground: 222 25% 8%;
 
     --card: 0 0% 100%;
@@ -47,10 +47,8 @@
     --shadow-card: 0 10px 40px -10px hsl(222 20% 40% / 0.12);
     --shadow-neon: 0 0 20px hsl(217 91% 53% / 0.4), 0 0 40px hsl(217 91% 53% / 0.2);
 
-    --glass-bg: rgba(255, 255, 255, 0.2);
-    --glass-border: rgba(255, 255, 255, 0.5);
-    --glass-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.7);
-    --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(200, 215, 235, 0.6);
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 25% 8%;
@@ -62,58 +60,56 @@
     --sidebar-ring: 217 91% 53%;
   }
 
-  /* ───────────── Dark Theme (Apple Vision Obsidian Glass) ───────────── */
+  /* ───────────── Dark Theme ───────────── */
   .dark {
-    --background: transparent;
-    --foreground: 210 25% 96%;
+    --background: 222 28% 3%;
+    --foreground: 210 25% 95%;
 
-    --card: 224 28% 7%;
-    --card-foreground: 210 25% 96%;
+    --card: 222 25% 6%;
+    --card-foreground: 210 25% 95%;
 
-    --popover: 224 28% 7%;
-    --popover-foreground: 210 25% 96%;
+    --popover: 222 25% 6%;
+    --popover-foreground: 210 25% 95%;
 
     --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 224 24% 12%;
-    --secondary-foreground: 210 22% 90%;
+    --secondary: 222 22% 12%;
+    --secondary-foreground: 210 22% 88%;
 
-    --muted: 224 24% 10%;
-    --muted-foreground: 217 18% 60%;
+    --muted: 222 22% 10%;
+    --muted-foreground: 217 18% 56%;
 
     --accent: 174 85% 48%;
-    --accent-foreground: 224 32% 4%;
+    --accent-foreground: 222 28% 3%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 224 24% 16%;
-    --input: 224 24% 16%;
+    --border: 222 22% 14%;
+    --input: 222 22% 14%;
     --ring: 217 91% 60%;
 
     --gradient-primary: linear-gradient(135deg, hsl(217, 91%, 60%), hsl(174, 85%, 48%));
-    --gradient-hero: linear-gradient(180deg, hsl(224, 32% 4%) 0%, hsl(224, 35%, 8%) 50%, hsl(224, 32% 4%) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(224, 28%, 9%) 0%, hsl(224, 28%, 6%) 100%);
-    --gradient-glow: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsl(217 91% 60% / 0.1), transparent 40%);
-    --gradient-mesh: radial-gradient(at 40% 20%, hsl(217 91% 60% / 0.15) 0px, transparent 50%), radial-gradient(at 80% 0%, hsl(174 85% 48% / 0.1) 0px, transparent 50%), radial-gradient(at 0% 50%, hsl(217 91% 60% / 0.08) 0px, transparent 50%);
+    --gradient-hero: linear-gradient(180deg, hsl(222, 28%, 3%) 0%, hsl(222, 35%, 7%) 50%, hsl(222, 28%, 3%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(222, 25%, 8%) 0%, hsl(222, 25%, 5%) 100%);
+    --gradient-glow: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsl(217 91% 60% / 0.07), transparent 40%);
+    --gradient-mesh: radial-gradient(at 40% 20%, hsl(217 91% 60% / 0.12) 0px, transparent 50%), radial-gradient(at 80% 0%, hsl(174 85% 48% / 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, hsl(217 91% 60% / 0.06) 0px, transparent 50%);
 
-    --shadow-glow: 0 0 50px -10px hsl(217 91% 60% / 0.4);
-    --shadow-card: 0 20px 50px -15px rgba(0, 0, 0, 0.7);
-    --shadow-neon: 0 0 25px hsl(217 91% 60% / 0.5), 0 0 50px hsl(217 91% 60% / 0.25);
+    --shadow-glow: 0 0 40px -10px hsl(217 91% 60% / 0.35);
+    --shadow-card: 0 10px 40px -10px hsl(0 0% 0% / 0.6);
+    --shadow-neon: 0 0 20px hsl(217 91% 60% / 0.5), 0 0 40px hsl(217 91% 60% / 0.25);
 
-    --glass-bg: rgba(15, 20, 40, 0.3);
-    --glass-border: rgba(255, 255, 255, 0.15);
-    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    --glass-bg: hsla(222, 25%, 6%, 0.72);
+    --glass-border: hsla(222, 22%, 18%, 0.55);
 
-    --sidebar-background: 224 28% 6%;
-    --sidebar-foreground: 210 22% 90%;
+    --sidebar-background: 222 25% 5%;
+    --sidebar-foreground: 210 22% 88%;
     --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 224 24% 12%;
-    --sidebar-accent-foreground: 210 22% 90%;
-    --sidebar-border: 224 24% 16%;
+    --sidebar-accent: 222 22% 12%;
+    --sidebar-accent-foreground: 210 22% 88%;
+    --sidebar-border: 222 22% 14%;
     --sidebar-ring: 217 91% 60%;
   }
 }
@@ -123,89 +119,30 @@
     @apply border-border;
   }
 
-  html {
-    scroll-behavior: smooth;
-    min-height: 100%;
-    /* Apple Liquid Glass — gradient gives glass panels something rich to blur through */
-    background: linear-gradient(135deg,
-      #dbe8f8 0%,
-      #e8dff8 25%,
-      #dff4f0 50%,
-      #f5e8fb 75%,
-      #dbe8f8 100%
-    );
-    background-attachment: fixed;
-    /* Smooth background gradient transition when switching themes */
-    transition: background 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  html.dark {
-    background: linear-gradient(135deg,
-      #090d18 0%,
-      #0d091c 25%,
-      #071219 50%,
-      #11081c 75%,
-      #090d18 100%
-    );
-    background-attachment: fixed;
-  }
-
-  /* Smooth color/border/background transitions on all elements for theme switch */
-  *, *::before, *::after {
-    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
-    transition-duration: 0.35s;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
   body {
-    @apply text-foreground antialiased;
+    @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
-    min-height: 100vh;
-    background: transparent;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Outfit', 'Inter', system-ui, sans-serif;
     @apply font-semibold tracking-tight;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer components {
-  /* ── Apple Liquid Glass Effect ── */
+  /* ── Glass Effect ── */
   .glass {
     background: var(--glass-bg);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-highlight), var(--glass-shadow);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .glass:hover {
-    background: rgba(255, 255, 255, 0.28);
-    border-color: rgba(255, 255, 255, 0.6);
-  }
-  .dark .glass:hover {
-    background: rgba(20, 25, 45, 0.4);
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-
-  /* ── Apple Vision Glass Dock ── */
-  .glass-dock {
-    background: var(--glass-bg);
-    backdrop-filter: blur(30px) saturate(180%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-highlight), var(--glass-shadow);
-  }
-
-  /* ── Apple Vision Glass Pill ── */
-  .glass-pill {
-    background: var(--glass-bg);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-highlight);
+    box-shadow: 0 4px 24px -4px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
   }
 
   /* ── Gradient Utilities ── */
@@ -246,7 +183,7 @@
   /* ── Card Glow ── */
   .card-glow {
     position: relative;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.3s ease;
   }
   .card-glow::after {
     content: '';
@@ -256,11 +193,11 @@
     background: var(--gradient-primary);
     opacity: 0;
     z-index: -1;
-    filter: blur(14px);
+    filter: blur(12px);
     transition: opacity 0.4s ease;
   }
   .card-glow:hover::after {
-    opacity: 0.35;
+    opacity: 0.25;
   }
 
   /* ── Neon Border ── */
@@ -387,8 +324,8 @@ input[type="range"]::-moz-range-thumb {
 }
 
 @keyframes glow-pulse {
-  0%, 100% { opacity: 0.85; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.06); }
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
 }
 
 @keyframes gradient-shift {
