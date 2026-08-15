@@ -5,9 +5,9 @@
 @tailwind utilities;
 
 @layer base {
-  /* ───────────── Light Theme (default) ───────────── */
+  /* ───────────── Light Theme (Apple Liquid Glass) ───────────── */
   :root {
-    --background: 220 30% 98%;
+    --background: 0 0% 100%;
     --foreground: 222 25% 8%;
 
     --card: 0 0% 100%;
@@ -47,10 +47,10 @@
     --shadow-card: 0 10px 40px -10px hsl(222 20% 40% / 0.12);
     --shadow-neon: 0 0 20px hsl(217 91% 53% / 0.4), 0 0 40px hsl(217 91% 53% / 0.2);
 
-    --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.65) 100%);
-    --glass-border: rgba(255, 255, 255, 0.85);
-    --glass-highlight: inset 0 1px 2px 0 rgba(255, 255, 255, 1), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
-    --glass-shadow: 0 20px 48px -10px rgba(0, 30, 80, 0.12), 0 4px 16px -2px rgba(0, 30, 80, 0.05);
+    --glass-bg: rgba(255, 255, 255, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 25% 8%;
@@ -64,7 +64,7 @@
 
   /* ───────────── Dark Theme (Apple Vision Obsidian Glass) ───────────── */
   .dark {
-    --background: 224 32% 4%;
+    --background: 224 35% 5%;
     --foreground: 210 25% 96%;
 
     --card: 224 28% 7%;
@@ -102,10 +102,10 @@
     --shadow-card: 0 20px 50px -15px rgba(0, 0, 0, 0.7);
     --shadow-neon: 0 0 25px hsl(217 91% 60% / 0.5), 0 0 50px hsl(217 91% 60% / 0.25);
 
-    --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%), rgba(10, 15, 30, 0.72);
-    --glass-border: rgba(255, 255, 255, 0.16);
-    --glass-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.35);
-    --glass-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.65), 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+    --glass-bg: rgba(10, 14, 28, 0.35);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --glass-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 
     --sidebar-background: 224 28% 6%;
     --sidebar-foreground: 210 22% 90%;
@@ -143,32 +143,37 @@
   /* ── Apple Liquid Glass Effect ── */
   .glass {
     background: var(--glass-bg);
-    backdrop-filter: blur(32px) saturate(210%);
-    -webkit-backdrop-filter: blur(32px) saturate(210%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-highlight), var(--glass-shadow);
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .glass:hover {
-    border-color: rgba(255, 255, 255, 0.32);
-    box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.45), 0 32px 75px -15px rgba(0, 0, 0, 0.7);
+    background: rgba(255, 255, 255, 0.32);
+    border-color: rgba(255, 255, 255, 0.7);
+    box-shadow: var(--glass-highlight), 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+  }
+  .dark .glass:hover {
+    background: rgba(10, 14, 28, 0.45);
+    border-color: rgba(255, 255, 255, 0.25);
   }
 
   /* ── Apple Vision Glass Dock ── */
   .glass-dock {
     background: var(--glass-bg);
-    backdrop-filter: blur(36px) saturate(220%);
-    -webkit-backdrop-filter: blur(36px) saturate(220%);
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
     border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-highlight), 0 24px 60px -10px rgba(0, 0, 0, 0.45);
+    box-shadow: var(--glass-highlight), var(--glass-shadow);
   }
 
   /* ── Apple Vision Glass Pill ── */
   .glass-pill {
     background: var(--glass-bg);
-    backdrop-filter: blur(28px) saturate(200%);
-    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-highlight);
   }
@@ -352,8 +357,8 @@ input[type="range"]::-moz-range-thumb {
 }
 
 @keyframes glow-pulse {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.05); }
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.06); }
 }
 
 @keyframes gradient-shift {

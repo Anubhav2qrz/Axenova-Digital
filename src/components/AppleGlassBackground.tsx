@@ -1,34 +1,69 @@
 const AppleGlassBackground = () => {
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      {/* 1. Primary Cyan-Blue Fluid Glow */}
+      {/* Rich Blue Orb — Top Left */}
       <div
-        className="absolute -top-[10%] left-[15%] w-[600px] sm:w-[900px] h-[600px] sm:h-[900px] rounded-full bg-gradient-to-br from-primary/20 via-sky-500/15 to-transparent blur-[140px] animate-glow-pulse"
-        style={{ animationDuration: "8s" }}
+        className="absolute -top-[20%] -left-[10%] w-[700px] h-[700px] rounded-full animate-float"
+        style={{
+          background: "radial-gradient(circle, rgba(59,130,246,0.55) 0%, rgba(99,102,241,0.35) 40%, transparent 70%)",
+          filter: "blur(80px)",
+          animationDuration: "12s",
+        }}
       />
 
-      {/* 2. Vibrant Violet/Purple Aurora Glow */}
+      {/* Purple/Violet Orb — Top Right */}
       <div
-        className="absolute top-[25%] -right-[10%] w-[550px] sm:w-[850px] h-[550px] sm:h-[850px] rounded-full bg-gradient-to-bl from-purple-600/18 via-indigo-500/12 to-transparent blur-[150px] animate-float"
-        style={{ animationDuration: "12s", animationDelay: "1s" }}
+        className="absolute -top-[10%] -right-[10%] w-[650px] h-[650px] rounded-full animate-glow-pulse"
+        style={{
+          background: "radial-gradient(circle, rgba(168,85,247,0.5) 0%, rgba(139,92,246,0.3) 45%, transparent 70%)",
+          filter: "blur(90px)",
+          animationDuration: "10s",
+          animationDelay: "1s",
+        }}
       />
 
-      {/* 3. Radiant Emerald/Teal Vision Glow */}
+      {/* Cyan/Teal Orb — Center Left */}
       <div
-        className="absolute top-[55%] -left-[10%] w-[500px] sm:w-[800px] h-[500px] sm:h-[800px] rounded-full bg-gradient-to-tr from-accent/20 via-teal-500/15 to-transparent blur-[140px] animate-float"
-        style={{ animationDuration: "14s", animationDelay: "3s" }}
+        className="absolute top-[35%] -left-[5%] w-[600px] h-[600px] rounded-full animate-float"
+        style={{
+          background: "radial-gradient(circle, rgba(20,184,166,0.5) 0%, rgba(6,182,212,0.3) 45%, transparent 70%)",
+          filter: "blur(85px)",
+          animationDuration: "14s",
+          animationDelay: "2s",
+        }}
       />
 
-      {/* 4. Deep Indigo/Rose Bottom Orb */}
+      {/* Rose/Pink Orb — Center Right */}
       <div
-        className="absolute -bottom-[10%] right-[15%] w-[600px] sm:w-[950px] h-[600px] sm:h-[950px] rounded-full bg-gradient-to-tl from-primary/20 via-fuchsia-600/15 to-transparent blur-[160px] animate-glow-pulse"
-        style={{ animationDuration: "10s", animationDelay: "2s" }}
+        className="absolute top-[45%] -right-[5%] w-[620px] h-[620px] rounded-full animate-glow-pulse"
+        style={{
+          background: "radial-gradient(circle, rgba(244,63,94,0.4) 0%, rgba(236,72,153,0.25) 45%, transparent 70%)",
+          filter: "blur(90px)",
+          animationDuration: "11s",
+          animationDelay: "3s",
+        }}
       />
 
-      {/* 5. Subtle Center Fluid Shimmer */}
+      {/* Indigo Orb — Bottom Center */}
       <div
-        className="absolute top-[75%] left-[25%] w-[450px] sm:w-[700px] h-[450px] sm:h-[700px] rounded-full bg-gradient-to-r from-blue-500/12 to-accent/15 blur-[130px] animate-float"
-        style={{ animationDuration: "16s", animationDelay: "5s" }}
+        className="absolute -bottom-[15%] left-[25%] w-[750px] h-[750px] rounded-full animate-float"
+        style={{
+          background: "radial-gradient(circle, rgba(99,102,241,0.5) 0%, rgba(59,130,246,0.3) 45%, transparent 70%)",
+          filter: "blur(100px)",
+          animationDuration: "16s",
+          animationDelay: "4s",
+        }}
+      />
+
+      {/* Emerald Orb — Bottom Right */}
+      <div
+        className="absolute bottom-[10%] -right-[8%] w-[550px] h-[550px] rounded-full animate-glow-pulse"
+        style={{
+          background: "radial-gradient(circle, rgba(52,211,153,0.45) 0%, rgba(16,185,129,0.28) 45%, transparent 70%)",
+          filter: "blur(80px)",
+          animationDuration: "13s",
+          animationDelay: "5s",
+        }}
       />
     </div>
   );
