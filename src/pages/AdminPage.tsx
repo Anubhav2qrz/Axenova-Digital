@@ -747,166 +747,175 @@ const AdminPage = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/40">
-                      {orders.map((o) => (
-                        <tr key={o.id} className="hover:bg-secondary/30 transition-colors">
-                          <td className="p-4">
-                            <span className="font-mono font-bold text-primary block text-xs">
-                              {o.order_id || o.id.slice(0, 8)}
-                            </span>
-                            {o.upi_ref ? (
-                              <div className="flex items-center gap-1 mt-1">
-                                <span className="font-mono text-[11px] bg-secondary/80 px-1.5 py-0.5 rounded border border-border text-foreground">
-                                  UTR: {o.upi_ref}
-                                </span>
+                      {(orders || []).map((o) => {
+                        const safeOrderId = o.order_id || String(o.id || "").slice(0, 8);
+                        const safeAmount = Number(o.amount || 0);
+                        const safeDateStr = o.created_at ? new Date(o.created_at).toLocaleDateString() : "-";
+                        const safeInvoiceDate = o.created_at
+                          ? new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+                          : new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+
+                        return (
+                          <tr key={o.id || Math.random()} className="hover:bg-secondary/30 transition-colors">
+                            <td className="p-4">
+                              <span className="font-mono font-bold text-primary block text-xs">
+                                {safeOrderId}
+                              </span>
+                              {o.upi_ref ? (
+                                <div className="flex items-center gap-1 mt-1">
+                                  <span className="font-mono text-[11px] bg-secondary/80 px-1.5 py-0.5 rounded border border-border text-foreground">
+                                    UTR: {o.upi_ref}
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="text-[10px] text-muted-foreground italic">No UTR submitted</span>
+                              )}
+                            </td>
+                            <td className="p-4">
+                              <p className="font-bold text-sm text-foreground">{o.name || "Anonymous"}</p>
+                              <p className="text-muted-foreground">{o.email || "-"}</p>
+                              <p className="text-[10px] text-accent">{o.phone || "-"}</p>
+                              {o.requirements && (
+                                <p className="text-[10px] text-muted-foreground mt-1 max-w-[200px] truncate" title={o.requirements}>
+                                  📝 {o.requirements}
+                                </p>
+                              )}
+                            </td>
+                            <td className="p-4">
+                              <span className="font-bold text-foreground block">{o.plan || "Custom"} Plan</span>
+                              <span className="text-primary font-semibold">₹{safeAmount.toLocaleString("en-IN")}</span>
+                            </td>
+                            <td className="p-4">
+                              <div className="space-y-1.5">
+                                {o.status === "verified" || o.status === "paid" ? (
+                                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                                    <CheckCircle2 size={12} /> Verified &amp; Paid
+                                  </span>
+                                ) : o.status === "payment_submitted" ? (
+                                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-full animate-pulse">
+                                    <Clock size={12} /> Verification Pending
+                                  </span>
+                                ) : o.status === "cancelled" ? (
+                                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-400 bg-rose-500/15 border border-rose-500/30 px-2 py-0.5 rounded-full">
+                                    <XCircle size={12} /> Cancelled / Fake
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
+                                    ⏳ Draft / Pending
+                                  </span>
+                                )}
+
+                                <select
+                                  value={o.status || "pending_payment"}
+                                  onChange={(e) => updateOrderStatus(o.id, e.target.value)}
+                                  className="h-7 w-full rounded-md bg-secondary/80 border border-border/60 px-1.5 text-[11px] font-medium text-muted-foreground block"
+                                >
+                                  <option value="pending_payment">Draft / Pending</option>
+                                  <option value="payment_submitted">Payment Submitted</option>
+                                  <option value="verified">✅ Verified &amp; Paid</option>
+                                  <option value="in_progress">🚧 In Progress</option>
+                                  <option value="completed">🎉 Completed</option>
+                                  <option value="cancelled">❌ Cancelled / Fake</option>
+                                </select>
                               </div>
-                            ) : (
-                              <span className="text-[10px] text-muted-foreground italic">No UTR submitted</span>
-                            )}
-                          </td>
-                          <td className="p-4">
-                            <p className="font-bold text-sm text-foreground">{o.name}</p>
-                            <p className="text-muted-foreground">{o.email}</p>
-                            <p className="text-[10px] text-accent">{o.phone}</p>
-                            {o.requirements && (
-                              <p className="text-[10px] text-muted-foreground mt-1 max-w-[200px] truncate" title={o.requirements}>
-                                📝 {o.requirements}
-                              </p>
-                            )}
-                          </td>
-                          <td className="p-4">
-                            <span className="font-bold text-foreground block">{o.plan} Plan</span>
-                            <span className="text-primary font-semibold">₹{o.amount.toLocaleString("en-IN")}</span>
-                          </td>
-                          <td className="p-4">
-                            <div className="space-y-1.5">
-                              {o.status === "verified" || o.status === "paid" ? (
-                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-full">
-                                  <CheckCircle2 size={12} /> Verified &amp; Paid
-                                </span>
-                              ) : o.status === "payment_submitted" ? (
-                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-full animate-pulse">
-                                  <Clock size={12} /> Verification Pending
-                                </span>
-                              ) : o.status === "cancelled" ? (
-                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-400 bg-rose-500/15 border border-rose-500/30 px-2 py-0.5 rounded-full">
-                                  <XCircle size={12} /> Cancelled / Fake
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
-                                  ⏳ Draft / Pending
-                                </span>
-                              )}
+                            </td>
+                            <td className="p-4 text-muted-foreground whitespace-nowrap">
+                              {safeDateStr}
+                            </td>
+                            <td className="p-4 text-right">
+                              <div className="flex items-center justify-end gap-1.5">
+                                {o.status !== "verified" && o.status !== "paid" ? (
+                                  <>
+                                    <Button
+                                      variant="default"
+                                      size="sm"
+                                      onClick={() => handleVerifyAndSendInvoice(o)}
+                                      disabled={verifyingId === o.id}
+                                      className="h-8 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white gap-1 shadow-sm"
+                                    >
+                                      {verifyingId === o.id ? (
+                                        <>
+                                          <Loader2 size={12} className="animate-spin" /> Verifying...
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Send size={12} /> Verify &amp; Send Invoice
+                                        </>
+                                      )}
+                                    </Button>
 
-                              <select
-                                value={o.status || "pending_payment"}
-                                onChange={(e) => updateOrderStatus(o.id, e.target.value)}
-                                className="h-7 w-full rounded-md bg-secondary/80 border border-border/60 px-1.5 text-[11px] font-medium text-muted-foreground block"
-                              >
-                                <option value="pending_payment">Draft / Pending</option>
-                                <option value="payment_submitted">Payment Submitted</option>
-                                <option value="verified">✅ Verified &amp; Paid</option>
-                                <option value="in_progress">🚧 In Progress</option>
-                                <option value="completed">🎉 Completed</option>
-                                <option value="cancelled">❌ Cancelled / Fake</option>
-                              </select>
-                            </div>
-                          </td>
-                          <td className="p-4 text-muted-foreground whitespace-nowrap">
-                            {new Date(o.created_at).toLocaleDateString()}
-                          </td>
-                          <td className="p-4 text-right">
-                            <div className="flex items-center justify-end gap-1.5">
-                              {o.status !== "verified" && o.status !== "paid" ? (
-                                <>
-                                  <Button
-                                    variant="default"
-                                    size="sm"
-                                    onClick={() => handleVerifyAndSendInvoice(o)}
-                                    disabled={verifyingId === o.id}
-                                    className="h-8 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white gap-1 shadow-sm"
-                                  >
-                                    {verifyingId === o.id ? (
-                                      <>
-                                        <Loader2 size={12} className="animate-spin" /> Verifying...
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Send size={12} /> Verify &amp; Send Invoice
-                                      </>
-                                    )}
-                                  </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => updateOrderStatus(o.id, "cancelled")}
+                                      className="h-8 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 p-2"
+                                      title="Mark as Fake / Cancelled"
+                                    >
+                                      <XCircle size={14} />
+                                    </Button>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        const invData: InvoiceData = {
+                                          invoiceNo: o.invoice_no || generateInvoiceNumber(o.order_id || o.id),
+                                          orderId: o.order_id || o.id,
+                                          date: safeInvoiceDate,
+                                          customerName: o.name,
+                                          customerEmail: o.email,
+                                          customerPhone: o.phone,
+                                          planName: o.plan,
+                                          amount: safeAmount,
+                                          upiRef: o.upi_ref,
+                                          status: o.status,
+                                          requirements: o.requirements,
+                                        };
+                                        downloadInvoicePDF(invData);
+                                        toast({
+                                          title: "Official Invoice Downloaded",
+                                          description: `Saved as Axenova_Invoice_${o.order_id || o.id}.pdf`,
+                                        });
+                                      }}
+                                      className="h-8 text-xs font-semibold gap-1"
+                                      title="Download Verified PDF Invoice"
+                                    >
+                                      <Download size={13} /> PDF
+                                    </Button>
 
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => updateOrderStatus(o.id, "cancelled")}
-                                    className="h-8 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 p-2"
-                                    title="Mark as Fake / Cancelled"
-                                  >
-                                    <XCircle size={14} />
-                                  </Button>
-                                </>
-                              ) : (
-                                <>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => {
-                                      const invData: InvoiceData = {
-                                        invoiceNo: o.invoice_no || generateInvoiceNumber(o.order_id || o.id),
-                                        orderId: o.order_id || o.id,
-                                        date: new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-                                        customerName: o.name,
-                                        customerEmail: o.email,
-                                        customerPhone: o.phone,
-                                        planName: o.plan,
-                                        amount: o.amount,
-                                        upiRef: o.upi_ref,
-                                        status: o.status,
-                                        requirements: o.requirements,
-                                      };
-                                      downloadInvoicePDF(invData);
-                                      toast({
-                                        title: "Official Invoice Downloaded",
-                                        description: `Saved as Axenova_Invoice_${o.order_id || o.id}.pdf`,
-                                      });
-                                    }}
-                                    className="h-8 text-xs font-semibold gap-1"
-                                    title="Download Verified PDF Invoice"
-                                  >
-                                    <Download size={13} /> PDF
-                                  </Button>
-
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => {
-                                      const invData: InvoiceData = {
-                                        invoiceNo: o.invoice_no || generateInvoiceNumber(o.order_id || o.id),
-                                        orderId: o.order_id || o.id,
-                                        date: new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-                                        customerName: o.name,
-                                        customerEmail: o.email,
-                                        customerPhone: o.phone,
-                                        planName: o.plan,
-                                        amount: o.amount,
-                                        upiRef: o.upi_ref,
-                                        status: o.status,
-                                        requirements: o.requirements,
-                                      };
-                                      openPrintableInvoice(invData);
-                                    }}
-                                    className="h-8 text-xs font-semibold gap-1 text-muted-foreground hover:text-foreground"
-                                    title="View & Print Invoice"
-                                  >
-                                    <FileText size={13} /> View
-                                  </Button>
-                                </>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => {
+                                        const invData: InvoiceData = {
+                                          invoiceNo: o.invoice_no || generateInvoiceNumber(o.order_id || o.id),
+                                          orderId: o.order_id || o.id,
+                                          date: safeInvoiceDate,
+                                          customerName: o.name,
+                                          customerEmail: o.email,
+                                          customerPhone: o.phone,
+                                          planName: o.plan,
+                                          amount: safeAmount,
+                                          upiRef: o.upi_ref,
+                                          status: o.status,
+                                          requirements: o.requirements,
+                                        };
+                                        openPrintableInvoice(invData);
+                                      }}
+                                      className="h-8 text-xs font-semibold gap-1 text-muted-foreground hover:text-foreground"
+                                      title="View & Print Invoice"
+                                    >
+                                      <FileText size={13} /> View
+                                    </Button>
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

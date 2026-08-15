@@ -165,7 +165,7 @@ export const downloadInvoicePDF = (invoice: InvoiceData) => {
   doc.text("1", pageWidth - margin - 45, y + 9, { align: "center" });
 
   doc.setFont("helvetica", "bold");
-  doc.text(`INR ${invoice.amount.toLocaleString("en-IN")}`, pageWidth - margin - 5, y + 9, { align: "right" });
+  doc.text(`INR ${Number(invoice.amount || 0).toLocaleString("en-IN")}`, pageWidth - margin - 5, y + 9, { align: "right" });
 
   // Requirements note if present
   if (invoice.requirements) {
@@ -196,7 +196,7 @@ export const downloadInvoicePDF = (invoice: InvoiceData) => {
   doc.setTextColor(100, 116, 139);
   doc.text("Subtotal:", summaryX + 5, y + 7);
   doc.setTextColor(15, 23, 42);
-  doc.text(`INR ${invoice.amount.toLocaleString("en-IN")}`, pageWidth - margin - 5, y + 7, { align: "right" });
+  doc.text(`INR ${Number(invoice.amount || 0).toLocaleString("en-IN")}`, pageWidth - margin - 5, y + 7, { align: "right" });
 
   doc.setTextColor(100, 116, 139);
   doc.text("Taxes & GST:", summaryX + 5, y + 14);
@@ -212,7 +212,7 @@ export const downloadInvoicePDF = (invoice: InvoiceData) => {
   doc.setTextColor(15, 23, 42);
   doc.text("Total Paid:", summaryX + 5, y + 25);
   doc.setTextColor(126, 34, 206); // purple-700
-  doc.text(`INR ${invoice.amount.toLocaleString("en-IN")}`, pageWidth - margin - 5, y + 25, { align: "right" });
+  doc.text(`INR ${Number(invoice.amount || 0).toLocaleString("en-IN")}`, pageWidth - margin - 5, y + 25, { align: "right" });
 
   // Notice Box
   y += 38;
@@ -287,7 +287,7 @@ export const sendInvoiceEmail = async (invoice: InvoiceData): Promise<boolean> =
         order_id: invoice.orderId,
         invoice_number: invoice.invoiceNo,
         plan_name: invoice.planName,
-        amount: `₹${invoice.amount.toLocaleString("en-IN")}`,
+        amount: `₹${Number(invoice.amount || 0).toLocaleString("en-IN")}`,
         upi_ref: invoice.upiRef || "Direct UPI",
         date: invoice.date,
         status: invoice.status === "verified" || invoice.status === "paid" ? "Payment Verified & Confirmed" : "Payment Submitted (Pending Verification)",
@@ -717,7 +717,7 @@ export const openPrintableInvoice = (invoice: InvoiceData) => {
               <div class="item-desc">Includes UI/UX Design, High-Performance Development, Mobile Responsiveness, SEO Setup, &amp; Deployment.</div>
             </td>
             <td style="text-align: center;">1</td>
-            <td class="amount-column">₹${invoice.amount.toLocaleString("en-IN")}</td>
+            <td class="amount-column">₹${Number(invoice.amount || 0).toLocaleString("en-IN")}</td>
           </tr>
         </tbody>
       </table>
@@ -727,7 +727,7 @@ export const openPrintableInvoice = (invoice: InvoiceData) => {
       <div class="summary-box">
         <div class="summary-row">
           <span>Subtotal</span>
-          <span class="meta-value">₹${invoice.amount.toLocaleString("en-IN")}</span>
+          <span class="meta-value">₹${Number(invoice.amount || 0).toLocaleString("en-IN")}</span>
         </div>
         <div class="summary-row">
           <span>Tax / GST</span>
@@ -735,7 +735,7 @@ export const openPrintableInvoice = (invoice: InvoiceData) => {
         </div>
         <div class="summary-row total">
           <span>Total Amount</span>
-          <span class="summary-total-val">₹${invoice.amount.toLocaleString("en-IN")}</span>
+          <span class="summary-total-val">₹${Number(invoice.amount || 0).toLocaleString("en-IN")}</span>
         </div>
       </div>
     </div>
