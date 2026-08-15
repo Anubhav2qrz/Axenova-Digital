@@ -33,12 +33,12 @@ const SmoothRotatingWord = () => {
   }, [index]);
 
   return (
-    <span className="relative inline-flex items-center justify-center align-baseline min-w-[200px] min-[420px]:min-w-[270px] sm:min-w-[340px] md:min-w-[440px] h-[1.25em] overflow-hidden select-none">
+    <span className="relative flex items-center justify-center w-full h-[1.25em] overflow-hidden select-none">
       {/* Exiting word */}
       {animating && prevIndex !== null && (
         <span
           key={`prev-${prevIndex}`}
-          className="absolute inset-0 flex items-center justify-center gradient-text-shine whitespace-nowrap will-change-transform pointer-events-none"
+          className="absolute inset-0 flex items-center justify-center gradient-text-shine whitespace-nowrap will-change-transform pointer-events-none text-center"
           style={{
             animation: "heroSlideOut 700ms cubic-bezier(0.16, 1, 0.3, 1) forwards",
           }}
@@ -50,7 +50,7 @@ const SmoothRotatingWord = () => {
       {/* Active / Incoming word */}
       <span
         key={`curr-${index}`}
-        className="flex items-center justify-center gradient-text-shine whitespace-nowrap will-change-transform"
+        className="flex items-center justify-center gradient-text-shine whitespace-nowrap will-change-transform text-center"
         style={{
           animation: animating
             ? "heroSlideIn 700ms cubic-bezier(0.16, 1, 0.3, 1) forwards"
@@ -155,10 +155,13 @@ const HeroSection = () => {
 
         {/* Headline */}
         <h1
-          className="text-3xl min-[400px]:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.2] sm:leading-tight tracking-tight mb-3 sm:mb-4 animate-fade-in"
+          className="text-3xl min-[400px]:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.15] sm:leading-[1.15] tracking-tight mb-4 sm:mb-5 animate-fade-in flex flex-col items-center justify-center gap-1 sm:gap-2"
           style={{ animationDelay: "0.1s", fontFamily: "'Outfit', sans-serif" }}
         >
-          We Build Modern <SmoothRotatingWord />
+          <span className="block text-foreground">We Build Modern</span>
+          <div className="w-full flex items-center justify-center">
+            <SmoothRotatingWord />
+          </div>
         </h1>
         <p className="text-xs sm:text-sm font-semibold text-muted-foreground uppercase tracking-[0.12em] sm:tracking-[0.2em] mb-5 sm:mb-6 animate-fade-in" style={{ animationDelay: "0.15s" }}>
           That Grow Your Business
