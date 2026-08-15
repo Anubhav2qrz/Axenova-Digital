@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Sun, Moon, Sparkles, Layers, Image as ImageIcon, Tag, Star, Mail, HelpCircle, MessageCircle, Briefcase } from "lucide-react";
+import { Menu, X, Sun, Moon, Sparkles, Layers, Image as ImageIcon, Tag, Star, Mail, HelpCircle, MessageCircle, Briefcase, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/useTheme";
 import { getWhatsAppLink } from "@/config/contact";
+import ProjectTrackerDialog from "@/components/ProjectTrackerDialog";
 
 const navLinks = [
   { label: "Services", href: "#services", icon: Layers },
@@ -16,6 +17,7 @@ const navLinks = [
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [trackerOpen, setTrackerOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
 
   useEffect(() => {
@@ -69,6 +71,16 @@ const Navbar = () => {
                 {link.label}
               </a>
             ))}
+
+            {/* Track Order */}
+            <button
+              type="button"
+              onClick={() => setTrackerOpen(true)}
+              className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
+            >
+              <Search size={14} className="group-hover:scale-110 transition-transform" />
+              <span>Track Order</span>
+            </button>
 
             {/* Careers Link with Hiring Badge */}
             <button
@@ -158,6 +170,18 @@ const Navbar = () => {
               })}
             </div>
 
+            {/* Track Order in mobile menu */}
+            <button
+              type="button"
+              onClick={() => { setMobileOpen(false); setTrackerOpen(true); }}
+              className="w-full flex items-center gap-2.5 p-2.5 rounded-xl bg-secondary/40 hover:bg-primary/10 border border-border/40 text-xs font-semibold text-foreground transition-all active:scale-95"
+            >
+              <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <Search size={14} />
+              </div>
+              <span>Track My Order</span>
+            </button>
+
             {/* Careers banner in mobile menu */}
             <button
               type="button"
@@ -214,6 +238,7 @@ const Navbar = () => {
           </div>
         </div>
       )}
+      <ProjectTrackerDialog open={trackerOpen} onOpenChange={setTrackerOpen} />
     </>
   );
 };
