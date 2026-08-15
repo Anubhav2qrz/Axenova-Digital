@@ -7,7 +7,7 @@
 @layer base {
   /* ───────────── Light Theme (Apple Liquid Glass) ───────────── */
   :root {
-    --background: 0 0% 100%;
+    --background: transparent;
     --foreground: 222 25% 8%;
 
     --card: 0 0% 100%;
@@ -47,10 +47,10 @@
     --shadow-card: 0 10px 40px -10px hsl(222 20% 40% / 0.12);
     --shadow-neon: 0 0 20px hsl(217 91% 53% / 0.4), 0 0 40px hsl(217 91% 53% / 0.2);
 
-    --glass-bg: rgba(255, 255, 255, 0.55);
-    --glass-border: rgba(255, 255, 255, 0.7);
-    --glass-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
-    --glass-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.06), 0 1px 4px 0 rgba(0, 0, 0, 0.04);
+    --glass-bg: rgba(255, 255, 255, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.7);
+    --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 25% 8%;
@@ -64,7 +64,7 @@
 
   /* ───────────── Dark Theme (Apple Vision Obsidian Glass) ───────────── */
   .dark {
-    --background: 224 35% 5%;
+    --background: transparent;
     --foreground: 210 25% 96%;
 
     --card: 224 28% 7%;
@@ -102,10 +102,10 @@
     --shadow-card: 0 20px 50px -15px rgba(0, 0, 0, 0.7);
     --shadow-neon: 0 0 25px hsl(217 91% 60% / 0.5), 0 0 50px hsl(217 91% 60% / 0.25);
 
-    --glass-bg: rgba(30, 35, 50, 0.55);
-    --glass-border: rgba(255, 255, 255, 0.12);
-    --glass-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
-    --glass-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25), 0 1px 4px 0 rgba(0, 0, 0, 0.15);
+    --glass-bg: rgba(15, 20, 40, 0.3);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 
     --sidebar-background: 224 28% 6%;
     --sidebar-foreground: 210 22% 90%;
@@ -123,19 +123,42 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+    min-height: 100%;
+    /* Apple Liquid Glass — gradient gives glass panels something rich to blur through */
+    background: linear-gradient(135deg,
+      #dbe8f8 0%,
+      #e8dff8 25%,
+      #dff4f0 50%,
+      #f5e8fb 75%,
+      #dbe8f8 100%
+    );
+    background-attachment: fixed;
+  }
+
+  html.dark {
+    background: linear-gradient(135deg,
+      #090d18 0%,
+      #0d091c 25%,
+      #071219 50%,
+      #11081c 75%,
+      #090d18 100%
+    );
+    background-attachment: fixed;
+  }
+
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+    background: transparent;
+    transition: color 0.3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Outfit', 'Inter', system-ui, sans-serif;
     @apply font-semibold tracking-tight;
-  }
-
-  html {
-    scroll-behavior: smooth;
   }
 }
 
@@ -143,27 +166,27 @@
   /* ── Apple Liquid Glass Effect ── */
   .glass {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-highlight), var(--glass-shadow);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .glass:hover {
-    background: rgba(255, 255, 255, 0.65);
-    border-color: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.28);
+    border-color: rgba(255, 255, 255, 0.6);
   }
   .dark .glass:hover {
-    background: rgba(35, 40, 58, 0.65);
-    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(20, 25, 45, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
   /* ── Apple Vision Glass Dock ── */
   .glass-dock {
     background: var(--glass-bg);
-    backdrop-filter: blur(28px) saturate(160%);
-    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-highlight), var(--glass-shadow);
   }
@@ -171,8 +194,8 @@
   /* ── Apple Vision Glass Pill ── */
   .glass-pill {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-highlight);
   }
