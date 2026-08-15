@@ -19,6 +19,13 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/services" element={<Index scrollTo="services" />} />
+            <Route path="/portfolio" element={<Index scrollTo="portfolio" />} />
+            <Route path="/pricing" element={<Index scrollTo="pricing" />} />
+            <Route path="/about" element={<Index scrollTo="about" />} />
+            <Route path="/contact" element={<Index scrollTo="contact" />} />
+            <Route path="/reviews" element={<Index scrollTo="reviews" />} />
+            <Route path="/faq" element={<Index scrollTo="faq" />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

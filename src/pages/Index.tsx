@@ -18,7 +18,11 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import AIAdvisorWidget from "@/components/AIAdvisorWidget";
 import CareersDialog from "@/components/CareersDialog";
 
-const Index = () => {
+interface IndexProps {
+  scrollTo?: string;
+}
+
+const Index = ({ scrollTo }: IndexProps) => {
   const [careersOpen, setCareersOpen] = useState(false);
 
   useEffect(() => {
@@ -26,6 +30,18 @@ const Index = () => {
     window.addEventListener("open-careers", handleOpenCareers);
     return () => window.removeEventListener("open-careers", handleOpenCareers);
   }, []);
+
+  useEffect(() => {
+    const targetId = scrollTo || (window.location.hash ? window.location.hash.replace("#", "") : null);
+    if (targetId) {
+      setTimeout(() => {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 150);
+    }
+  }, [scrollTo]);
 
   return (
     <div className="min-h-screen pb-24 md:pb-0 overflow-x-hidden w-full">

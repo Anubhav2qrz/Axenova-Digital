@@ -52,7 +52,7 @@ const WhyChooseUsSection = () => {
   const ref = useScrollAnimation();
 
   return (
-    <section className="py-20 sm:py-24 relative overflow-hidden mesh-bg">
+    <section id="about" className="py-20 sm:py-24 relative overflow-hidden mesh-bg">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-primary/5 blur-[120px] pointer-events-none" />
 
       <div ref={ref} className="container relative z-10 px-4 sm:px-6">
