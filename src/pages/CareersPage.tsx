@@ -203,8 +203,6 @@ const HIRING_STEPS = [
   { step: "04", title: "Welcome Aboard", description: "Receive your offer, get onboarded, and start building amazing things.", icon: Award },
 ];
 
-const TECH_TAGS = ["React", "TypeScript", "Tailwind CSS", "Figma", "Node.js", "Supabase", "Next.js", "Shopify", "SEO", "UI/UX Design"];
-
 const CareersPage = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -391,18 +389,6 @@ const CareersPage = () => {
                   </div>
                   <div className="text-[11px] sm:text-xs text-muted-foreground font-medium">{stat.label}</div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Tech Ticker */}
-          <div className="mt-14 pt-6 border-t border-border/40 overflow-hidden">
-            <div className="flex gap-8 whitespace-nowrap overflow-x-auto no-scrollbar py-1">
-              {[...TECH_TAGS, ...TECH_TAGS].map((tech, i) => (
-                <span key={`${tech}-${i}`} className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-2 shrink-0">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/50" />
-                  {tech}
-                </span>
               ))}
             </div>
           </div>
