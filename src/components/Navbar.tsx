@@ -40,10 +40,7 @@ const Navbar = () => {
   }, [mobileOpen]);
 
 
-  const handleOpenCareers = () => {
-    setMobileOpen(false);
-    window.dispatchEvent(new CustomEvent("open-careers"));
-  };
+
 
   return (
     <>
@@ -90,17 +87,16 @@ const Navbar = () => {
             </button>
 
             {/* Careers Link with Hiring Badge */}
-            <button
-              type="button"
-              onClick={handleOpenCareers}
-              className="relative flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group cursor-pointer"
+            <a
+              href="/careers"
+              className="relative flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
             >
               <Briefcase size={14} className="text-accent group-hover:scale-110 transition-transform" />
               <span>Join Us</span>
               <span className="text-[10px] font-bold uppercase tracking-wider bg-accent/15 text-accent border border-accent/25 px-1.5 py-0.2 rounded-full">
                 Hiring
               </span>
-            </button>
+            </a>
 
             <button
               onClick={toggleTheme}
@@ -190,9 +186,9 @@ const Navbar = () => {
             </button>
 
             {/* Careers banner in mobile menu */}
-            <button
-              type="button"
-              onClick={handleOpenCareers}
+            <a
+              href="/careers"
+              onClick={() => setMobileOpen(false)}
               className="w-full flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-accent/15 to-primary/15 border border-accent/30 text-left active:scale-98 transition-transform"
             >
               <div className="flex items-center gap-2.5">
@@ -208,7 +204,7 @@ const Navbar = () => {
                 </div>
               </div>
               <Sparkles size={14} className="text-accent shrink-0" />
-            </button>
+            </a>
 
             <div className="pt-2 border-t border-border/40 space-y-2">
               <Button
