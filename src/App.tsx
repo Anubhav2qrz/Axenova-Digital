@@ -7,6 +7,7 @@ import { AdminDataProvider } from "@/context/AdminDataContext";
 import Index from "./pages/Index.tsx";
 import AdminPage from "./pages/AdminPage.tsx";
 import TeamPage from "./pages/TeamPage.tsx";
+import CareersPage from "./pages/CareersPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/portfolio" element={<Index scrollTo="portfolio" />} />
             <Route path="/pricing" element={<Index scrollTo="pricing" />} />
             <Route path="/team" element={<TeamPage />} />
+            <Route path="/careers" element={<CareersPage />} />
             <Route path="/about" element={<Index scrollTo="about" />} />
             <Route path="/contact" element={<Index scrollTo="contact" />} />
             <Route path="/reviews" element={<Index scrollTo="reviews" />} />

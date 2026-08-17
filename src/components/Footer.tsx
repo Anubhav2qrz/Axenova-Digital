@@ -34,10 +34,6 @@ const trustBadges = [
 const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
 const Footer = () => {
-  const handleOpenCareers = () => {
-    window.dispatchEvent(new CustomEvent("open-careers"));
-  };
-
   return (
     <footer className="relative border-t border-border/50 overflow-hidden">
       {/* Background glow */}
@@ -76,14 +72,13 @@ const Footer = () => {
                 Let's Talk! WhatsApp Us →
               </a>
 
-              <button
-                type="button"
-                onClick={handleOpenCareers}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent bg-accent/10 border border-accent/25 px-3 py-1.5 rounded-full hover:bg-accent/20 transition-colors active:scale-95 cursor-pointer"
+              <a
+                href="/careers"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent bg-accent/10 border border-accent/25 px-3 py-1.5 rounded-full hover:bg-accent/20 transition-colors active:scale-95"
               >
                 <span className="w-2 h-2 rounded-full bg-accent animate-ping" />
                 <span>Careers · Join Our Team</span>
-              </button>
+              </a>
             </div>
           </div>
 
@@ -99,14 +94,13 @@ const Footer = () => {
                 </li>
               ))}
               <li>
-                <button
-                  type="button"
-                  onClick={handleOpenCareers}
-                  className="text-xs sm:text-sm text-muted-foreground hover:text-accent transition-colors flex items-center gap-1.5 cursor-pointer"
+                <a
+                  href="/careers"
+                  className="text-xs sm:text-sm text-muted-foreground hover:text-accent transition-colors flex items-center gap-1.5"
                 >
                   <span>Careers / Hiring</span>
                   <span className="text-[9px] bg-accent/20 text-accent px-1.5 py-0.2 rounded-full font-bold">New</span>
-                </button>
+                </a>
               </li>
             </ul>
           </div>
@@ -186,9 +180,9 @@ const Footer = () => {
               Crafted with care in India
             </span>
             <span className="text-border">·</span>
-            <button onClick={handleOpenCareers} className="hover:text-accent transition-colors underline font-medium cursor-pointer">
+            <a href="/careers" className="hover:text-accent transition-colors underline font-medium">
               Join the Team
-            </button>
+            </a>
             <span className="text-border">·</span>
             <a href="/admin" className="hover:text-primary transition-colors underline font-medium">
               Admin Portal

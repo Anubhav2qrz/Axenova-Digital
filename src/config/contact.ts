@@ -7,7 +7,7 @@ export const CONTACT_INFO = {
   email: "axenovadigital@gmail.com",
   upi: {
     id: "axenova@ybl",
-    name: "Axenova Digital",
+    name: "Anubhav Goon",
   },
 };
 

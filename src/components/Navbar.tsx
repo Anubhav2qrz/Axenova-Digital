@@ -39,6 +39,7 @@ const Navbar = () => {
     };
   }, [mobileOpen]);
 
+
   const handleOpenCareers = () => {
     setMobileOpen(false);
     window.dispatchEvent(new CustomEvent("open-careers"));
