@@ -1,5 +1,5 @@
 const GEMINI_API_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 const GROQ_API_URL =
   "https://api.groq.com/openai/v1/chat/completions";
 
@@ -91,7 +91,7 @@ async function callGroq(history: GeminiMessage[], apiKey: string): Promise<strin
   ];
 
   const body = {
-    model: "llama-3.3-70b-versatile",
+    model: "qwen/qwen3.6-27b",
     messages,
     temperature: 0.7,
     max_tokens: 600,
